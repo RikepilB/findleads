@@ -21,14 +21,20 @@ session. Solved tasks → one concrete one-liner (file / PR / command).
 
 ---
 
-## Current state — (new project)
+## Current state — 2026-07-01
 
-_Nothing recorded yet. Run the `catch-up` skill to orient, `handoff-context` to record._
+Not "no product decided" — a brainstorming session already locked in the MVP design (Google
+Maps/Places API leads scraper for Toronto + Lima, Next.js full-stack, Neon Postgres, DB-backed
+job polling, no auth/billing in MVP). See the session folder below for the full decision list.
+**No code written yet** and no permanent spec file exists — next step is writing
+`docs/specs/2026-07-01-findleads-mvp-design.md` and getting it reviewed before implementation.
 
 ---
 
 ## Session index (append-only, newest first)
 
-_(no sessions yet)_
+- 2026-07-01-mvp-design-brainstorm — architecture/data-model brainstorming, several MVP
+  decisions locked in, ended mid-design awaiting user approval on section 1. Migrated from a
+  root-level `PROYECTOS/handoff.md` that predated this repo's own handoff tree.
 
 <!-- compact-handoff:auto-snapshot -->
