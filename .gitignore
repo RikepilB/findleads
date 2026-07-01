@@ -1,0 +1,33 @@
+# Dependencies
+node_modules/
+.venv/
+__pycache__/
+
+# Build output
+dist/
+build/
+.next/
+out/
+
+# Environment & local overrides (the repo is the prompt — but secrets are not)
+.env
+.env.*
+!.env.example
+CLAUDE.local.md
+.claude/settings.local.json
+
+# Logs & caches
+*.log
+coverage/
+.cache/
+.pytest_cache/
+.eslintcache
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# NOTE: .claude/ IS committed on purpose — agents, rules, commands and hooks are
+# part of the prompt. Only the local-override files above are ignored.
