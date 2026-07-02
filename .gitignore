@@ -8,6 +8,7 @@ dist/
 build/
 .next/
 out/
+*.tsbuildinfo
 
 # Environment & local overrides (the repo is the prompt — but secrets are not)
 .env
