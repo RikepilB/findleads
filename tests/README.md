@@ -7,4 +7,5 @@
 - `e2e/` — critical user flows end-to-end
 
 ## Running
-_TODO: the test command(s)._ CI runs lint → typecheck → test → build.
+Not yet available — no `package.json`. Planned: `pnpm test`. CI runs
+lint → typecheck → test → build.
