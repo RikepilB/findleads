@@ -24,22 +24,25 @@ session. Solved tasks → one concrete one-liner (file / PR / command).
 ## Current state — 2026-07-02
 
 Design pivoted from a plain scraper to **web-presence filtering (no-website businesses) + a
-lightweight CRM** as the core v1 hook — the earlier 2026-07-01 scraper-only design is
-superseded. Project runs on full GSD tracking. All 4 domain research agents (stack/features/
-architecture/pitfalls) completed and surfaced a real Places API ToS conflict (the locked
-store-everything-in-Postgres design breaches the "No Caching" clause beyond `place_id`) —
-presented to the user, who chose to **accept the risk** for this personal single-user tool
-(revisit before any public/paid launch). Also adopted 3 research-recommended refinements into
-`PROJECT.md`: a `businesses`/`leads` identity-vs-sighting split (fixes "contacted" status
-resetting on re-scrape), a checkpointed/resumable `after()` worker (fixes silent timeout past
-Vercel Hobby's 300s ceiling), and folding the free `business_status` closed-business filter
-into Phase 1. `gsd-research-synthesizer` is writing `.planning/research/SUMMARY.md` next, then
-Requirements → Roadmap. Repo is public on GitHub (`RikepilB/findleads`), MIT licensed, `master`
-6 commits ahead of `origin/master` (not pushed beyond the earlier confirmed LICENSE push).
-**No product code written yet.** The pre-pivot docs (`docs/decisions.md`, `docs/architecture.md`,
-`.claude/rules/findleads-architecture.md`, `.claude/CLAUDE.md`) are now stale (still describe
-plain "upsert leads" with no ToS caveat) and still need reconciling with `.planning/` as the
-source of truth.
+lightweight CRM** as the core v1 hook. Full GSD planning pipeline is now complete: research (4
+domain agents + synthesis) → `REQUIREMENTS.md` (27 v1 requirements) → `ROADMAP.md` (5 phases,
+Vertical MVP mode, 100% requirement coverage). A real Places API ToS conflict was surfaced by
+research (storing full lead data beyond `place_id` breaches the "No Caching" clause) —
+presented to the user, who chose to **accept the risk** for this personal tool, revisit before
+any public/paid launch.
+
+**Autopilot mode active:** user directed (`/gsd-ship` redirected mid-command) to autonomously
+drive plan→execute→verify→ship across all 5 roadmap phases using recommended defaults, with
+check-ins only for genuine decision forks. Currently executing Phase 1 (Data Foundation &
+Security — Drizzle schema for `jobs`/`leads`/`businesses`, Neon setup, API key security);
+Phase 1 research is done (`01-RESEARCH.md`, commit `a25c0f1`), planner is next. TaskCreate
+#10-15 tracks phase-by-phase progress. Repo is public on GitHub (`RikepilB/findleads`), MIT
+licensed, `master` 11 commits ahead of `origin/master` (LICENSE push was the last confirmed
+push — no further push confirmed yet). **No product code written yet** — Phase 1 will produce
+the first real code (schema, `package.json`). The pre-pivot docs (`docs/decisions.md`,
+`docs/architecture.md`, `.claude/rules/findleads-architecture.md`, `.claude/CLAUDE.md`) are
+still stale and need reconciling with `.planning/` as source of truth — deprioritized behind
+the active build.
 
 ---
 

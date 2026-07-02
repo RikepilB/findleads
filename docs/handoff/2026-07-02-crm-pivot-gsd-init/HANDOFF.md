@@ -81,20 +81,64 @@ per lead per page view). User chose to **accept the risk and store everything**,
 personal single-user tool's "fast validation over completeness" philosophy — documented in
 `PROJECT.md` Key Decisions as "revisit before any public/paid launch."
 
+## Autopilot directive (2026-07-02, later same session)
+User invoked `/gsd-ship` with args "choose the recommended options and continue for this
+project until have the mvp ready and tested." `/gsd-ship` itself doesn't apply yet (nothing
+executed to ship) — reinterpreted as: autonomously drive the full GSD pipeline (Requirements →
+Roadmap → per-phase plan → execute → verify → ship) using recommended defaults, no further
+user check-ins except genuine decision forks. This is now the standing instruction for the
+rest of the session.
+
+## What was done (continued)
+- Research synthesizer finished `.planning/research/SUMMARY.md` (commit `fd66b2d`, self-committed
+  by the agent) — suggested a 3-phase structure as a starting point for the roadmapper.
+- Wrote `.planning/REQUIREMENTS.md` directly (skipped the interactive per-category
+  AskUserQuestion loop per the autopilot directive) — 27 v1 requirements across
+  SCRAPE/JOB/DATA/CRM/EXPORT/SEC categories, derived from `PROJECT.md` + research. Committed
+  `c40a69c`.
+- Closed old `superpowers:brainstorming` task list (#5-9) as superseded (done earlier, already
+  recorded).
+- Spawned `gsd-roadmapper` (agent `a71a186674e25aba6`) with `PROJECT_MODE=mvp` (Vertical MVP,
+  recommended). It derived **5 phases** (not the research's suggested 3 — REQUIREMENTS.md
+  mapped more cleanly to 5 at "standard" granularity), all 27 requirements mapped, 0 orphans.
+  Wrote `.planning/ROADMAP.md`, `.planning/STATE.md`, updated `REQUIREMENTS.md` traceability.
+  Committed `dd9f22a`.
+  - Phase 1: Data Foundation & Security (DATA-01/02/03, SEC-01/02)
+  - Phase 2: Places API Scrape Client (SCRAPE-02..06)
+  - Phase 3: Job Creation & Checkpointed Worker (SCRAPE-01, JOB-01/02/03/07)
+  - Phase 4: Job Monitoring, Resumability & Export (JOB-04/05/06, EXPORT-01/02)
+  - Phase 5: CRM Leads Dashboard — first fully user-visible phase (SCRAPE-07, CRM-01..05, SEC-03)
+- Created TaskCreate tracker #10-15 (one per phase + "Ship MVP") to track autopilot progress
+  across this long-running build.
+- Started `/gsd-plan-phase 1`: no CONTEXT.md exists — chose "continue without context" (skip
+  discuss-phase) per the autopilot directive, chose "Research first" (recommended). Spawned
+  `gsd-phase-researcher` (agent `a586a5e877d47dbce`) for Phase 1 — covers Drizzle schema
+  design (jobs/leads/businesses, the upsert-without-resetting-CRM pattern), Neon serverless
+  driver setup, server-side-only secret handling in Next.js App Router, Google Cloud API key
+  restriction steps, and the pnpm bootstrap sequence for a brand-new repo (no `package.json`
+  exists yet). Committed `a25c0f1` ("docs(01-data-foundation-security): research phase
+  domain") — confirmed on disk, agent finishing up as this handoff is written.
+
+## Files changed (continued)
+- `.planning/research/SUMMARY.md` — new, commit `fd66b2d`.
+- `.planning/REQUIREMENTS.md` — new, 27 v1 requirements, commit `c40a69c`; traceability table
+  later overwritten by the roadmapper to match final 5-phase structure (part of `dd9f22a`).
+- `.planning/ROADMAP.md`, `.planning/STATE.md` — new, 5 phases, commit `dd9f22a`.
+- `.planning/phases/01-data-foundation-security/01-RESEARCH.md` — new, commit `a25c0f1`.
+
 ## Next steps
-1. Wait for `gsd-research-synthesizer` (agent `a4a385cea91c82325`) to finish writing
-   `.planning/research/SUMMARY.md` — verify it exists on disk (known #222 false-refusal risk:
-   agent may return the doc inline instead of writing it).
-2. Proceed to Step 7 (Define Requirements) → Step 8 (Roadmap creation via `gsd-roadmapper`),
-   incorporating the now-expanded Active requirements list in `PROJECT.md`.
-3. Reconcile the stale pre-pivot docs (`docs/decisions.md`, `docs/architecture.md`,
-   `.claude/rules/findleads-architecture.md`, `.claude/CLAUDE.md`) with `.planning/` as the new
-   source of truth — flagged in `PROJECT.md` Context, not yet done. `findleads-architecture.md`
-   in particular still describes plain "upsert leads" with no ToS caveat and no
-   businesses/leads split.
-4. Local `master` is 6 commits ahead of `origin/master` (LICENSE push was confirmed; nothing
-   since has been explicitly confirmed for push).
-5. After roadmap lands: `/gsd-plan-phase 1` to start execution planning — no code yet.
+1. Confirm `gsd-phase-researcher` (agent `a586a5e877d47dbce`) has formally returned (file is
+   already committed as of this handoff — likely just finishing up).
+2. Spawn `gsd-planner` for Phase 1, then `gsd-plan-checker` — standard plan-phase revision loop
+   (max 3 iterations per GSD workflow).
+3. `/gsd-execute-phase 1` → verify → ship, then repeat plan→execute→verify→ship for Phases 2-5
+   in order (each depends on the prior — see ROADMAP.md `Depends on:` fields).
+4. Reconcile the stale pre-pivot docs (`docs/decisions.md`, `docs/architecture.md`,
+   `.claude/rules/findleads-architecture.md`, `.claude/CLAUDE.md`) with `.planning/` — still
+   not done, lower priority than the build itself now.
+5. Local `master` is 11 commits ahead of `origin/master` (LICENSE push was the last confirmed
+   push) — will need a push decision once ship-worthy work exists.
+6. TaskCreate #10-15 tracks phase-by-phase progress — update as each phase completes.
 
 ## Files in this folder
 - `HANDOFF.md` — this file (curated digest)
