@@ -42,7 +42,13 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. Place content (name/address/phone/rating/website) persists durably in Postgres and survives across job runs, per the accepted ToS-risk decision in PROJECT.md
   4. The Places API key never appears in any client-side bundle or `NEXT_PUBLIC_*` variable — all Places calls are proxied through server-side Node API routes
   5. The Google Cloud API key is restricted to the Places API only in Cloud Console
-**Plans**: TBD
+**Plans**: 5 plans
+Plans:
+- [ ] 01-01-PLAN.md — Bootstrap Next.js scaffold + pnpm/lint/typecheck/test script surface (package-legitimacy checkpoint for server-only, vitest)
+- [ ] 01-02-PLAN.md — Resolve Neon DATABASE_URL/TEST_DATABASE_URL + lib/env.ts (SEC-01) + Google Cloud API key restriction (SEC-02)
+- [ ] 01-03-PLAN.md — jobs/leads/businesses Drizzle schema, Neon client, first migration applied to dev + test DBs (DATA-03)
+- [ ] 01-04-PLAN.md — Data Access Layer: upsertBusiness (CRM-preserving), insertLeadSnapshot, jobs CRUD (DATA-01, DATA-02)
+- [ ] 01-05-PLAN.md — Integration tests proving DATA-01/DATA-02/DATA-03 against a real Neon database
 
 ### Phase 2: Places API Scrape Client
 **Goal**: A field-masked, locale-aware Places API client reliably fetches and classifies business data for any category+location query.
@@ -102,7 +108,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Data Foundation & Security | 0/TBD | Not started | - |
+| 1. Data Foundation & Security | 0/5 | Not started | - |
 | 2. Places API Scrape Client | 0/TBD | Not started | - |
 | 3. Job Creation & Checkpointed Worker | 0/TBD | Not started | - |
 | 4. Job Monitoring, Resumability & Export | 0/TBD | Not started | - |
