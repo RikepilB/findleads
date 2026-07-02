@@ -22,14 +22,26 @@ Richard can actually reach out and close them.
 ### Active
 
 - [ ] Scrape Google Maps via Google Places API by category + free-text location (validated
-      against Toronto and Lima)
+      against Toronto and Lima), with `languageCode`/`regionCode` wired per market so Lima
+      isn't silently under-served by an English/Canada default
 - [ ] Classify each lead by web-presence tier — v1 ships tier 1 only: no `website` field
-      returned by Places API
+      returned by Places API. UI/export copy must say "no website found on Google," not "no
+      website" — the field's absence is a signal, not a verified fact
+- [ ] Filter out closed businesses using the Places API `business_status` field — free from
+      the same call already fetching `website`, folded into Phase 1 per research
 - [ ] Job execution: a DB-backed job row is the source of truth; Next.js `after()` runs the
-      scrape post-response; client polls `GET /api/jobs/:id` (~1s) for status/progress
-- [ ] Dedup leads per job: `unique(job_id, place_id)` — no cross-job global dedup in v1
-- [ ] Basic CRM: leads list view, freeform notes per lead, contacted/not-contacted status
-- [ ] CSV export of a completed job's leads
+      scrape as a checkpointed, resumable worker (one search call = one unit, progress
+      persisted after each unit); client polls `GET /api/jobs/:id` (~1s) for status/progress,
+      and a `partial` status triggers continuation on the next poll (atomic claim guard to
+      avoid duplicate continuations); stale `running` jobs auto-flip to `error` on read
+- [ ] Identity vs. sighting split: a `businesses` table keyed on `place_id` holds durable CRM
+      state (notes, contacted); `leads` stays a per-job scrape snapshot with
+      `unique(job_id, place_id)` as already designed — re-running a job must NOT reset
+      "contacted" status on a business already in the CRM
+- [ ] Basic CRM: leads list view (reads `businesses`), freeform notes per lead,
+      contacted/not-contacted status
+- [ ] CSV export of a completed job's leads, with formula-injection sanitization on any cell
+      starting with `=+-@` (ingesting untrusted place data)
 - [ ] No auth — single user (Richard), no login, no billing
 
 ### Out of Scope
@@ -84,11 +96,15 @@ Richard can actually reach out and close them.
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Google Places API only (no scraping) | ToS-safe, reliable, no proxy/IP-block risk | — Pending |
-| DB-backed job row + Next `after()` + polling, no queue | Simplest thing that works for two-market MVP validation | — Pending |
-| No auth/billing/outreach builder in v1 | Single user (Richard); fast validation over completeness | — Pending |
-| Web-presence tiering v1 = tier 1 only (missing website field) | Free from Places API response; tiers 2/3 need extra fetch+analysis work | — Pending |
-| v1 bundles basic CRM (notes, contacted status) with the scraper | Core to Richard's actual use case — scrape *and* manage, not just export | — Pending |
+| Google Places API only (no scraping) | Reliable, no proxy/IP-block risk. **Not fully ToS-safe as designed** — see next row | ✓ Confirmed with caveat |
+| Accept Places API "No Caching" ToS risk — store name/address/phone/rating/website durably in Postgres, not just `place_id` | Research found the persistence model breaches Google's "No Caching" clause (only `place_id` is exempt). Re-architecting to store only `place_id` + re-fetch display fields live costs an Enterprise-tier Place Details call per lead per page view. Richard chose to accept the contract-breach risk (possible API key revocation, not legal liability) for a personal, pre-revenue, single-user tool | ✓ Accepted risk — revisit before any public/paid launch |
+| DB-backed job row + Next `after()` + polling, no queue, **checkpointed/resumable worker** | Simplest thing that works for two-market MVP validation. Research found plain `after()` risks silent timeout on Vercel Hobby's non-configurable 300s ceiling with no error write — checkpointing (one search call per unit, `partial` status, lazy continuation on poll) fixes this within the same no-queue design | ✓ Adopted (research-recommended refinement) |
+| Identity/sighting split — `businesses` table (keyed `place_id`, holds CRM state) separate from per-job `leads` snapshot rows | Research found CRM fields living only on `leads` silently reset "contacted" status when a job re-runs over the same area — defeats the CRM's purpose. Additive to the locked `unique(job_id, place_id)` schema, not a redesign | ✓ Adopted (research-recommended fix) |
+| Fold `business_status` (closed-business filter) into Phase 1 | Free from the same Places API call already fetching `website` — near-zero-cost per Features research | ✓ Adopted |
+| Default deploy target: Vercel Hobby, ~250s worker safety window | Unblocks Phase 1 planning; the checkpointed worker design absorbs this uncertainty and upgrades to Pro (800s) cleanly if needed | ✓ Default (revisitable) |
+| No auth/billing/outreach builder in v1 | Single user (Richard); fast validation over completeness | ✓ Confirmed |
+| Web-presence tiering v1 = tier 1 only (missing website field) | Free from Places API response; tiers 2/3 need extra fetch+analysis work. Research: treat as signal not fact — UI copy says "no website found on Google" | ✓ Confirmed with copy caveat |
+| v1 bundles basic CRM (notes, contacted status) with the scraper | Core to Richard's actual use case — scrape *and* manage, not just export | ✓ Confirmed |
 | Repo open-sourced under MIT | Explicit request | ✓ Good |
 
 ## Evolution
