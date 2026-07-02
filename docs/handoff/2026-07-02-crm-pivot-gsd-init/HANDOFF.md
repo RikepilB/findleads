@@ -40,8 +40,29 @@ switched to full GSD project tracking (`.planning/`) and kicked off research.
 - `LICENSE` — new, MIT license text, Richard Pillaca copyright.
 - `.planning/config.json` — new, GSD workflow config (yolo/standard/parallel/adaptive, all
   quality-agents on).
-- `.planning/PROJECT.md` — new, full project context reflecting the CRM+tiering pivot.
+- `.planning/PROJECT.md` — new, full project context reflecting the CRM+tiering pivot; later
+  updated again with research-driven decisions (see below).
 - GitHub repo visibility: private → public (twice, second time intentional+pushed).
+- Merged concurrent-session branch `chore/claude-md-relocate-and-fill` into `master`
+  (fast-forward, commit `356639c`) — brought in a second session's CLAUDE.md relocation work
+  alongside this session's GSD init.
+- `.planning/research/{STACK,FEATURES,ARCHITECTURE,PITFALLS}.md` — new, 4 parallel
+  `gsd-project-researcher` agents completed. Key findings: Places API's `business_status`
+  field is a free Phase-1 addition (Features); Drizzle+`neon-http`, raw `fetch()` over the
+  Places SDK, `csv-stringify` w/ formula-injection sanitization, SWR (Stack); a real ToS
+  conflict — Places API "No Caching" clause only exempts `place_id`, the locked
+  store-everything-in-Postgres design breaches it (Pitfalls, Pitfall 1); `after()` silently
+  orphans job rows past Vercel Hobby's 300s ceiling unless checkpointed, and CRM `notes`/
+  `contacted` living only on per-job `leads` rows resets on re-scrape — needs a `businesses`
+  table split (Architecture).
+- `.planning/PROJECT.md` — edited again: Active requirements expanded (business_status filter,
+  checkpointed/resumable worker w/ partial status + atomic claim guard, businesses/leads
+  split, CSV formula-injection note, tier-1 UI-copy caveat, Lima locale params); Key Decisions
+  table updated with the ToS outcome and 3 adopted research refinements. Committed `2e64730`.
+- Closed out the old `superpowers:brainstorming` task list (#5-9, "Present design sections"
+  through "Invoke writing-plans skill") as superseded by the GSD requirements/roadmap flow.
+- Spawned `gsd-research-synthesizer` (agent `a4a385cea91c82325`) to write
+  `.planning/research/SUMMARY.md` — running as this handoff is written.
 
 ## Failed attempts
 - First `AskUserQuestion` asking "which part of Section 2 bugs you" (with 4 preset options)
@@ -50,14 +71,30 @@ switched to full GSD project tracking (`.planning/`) and kicked off research.
 - `gsd_run query config-new-project` called twice assuming the second call would overwrite —
   it's create-only, silently no-op'd. Caught via a `Read` of the actual file before trusting it.
 
+## Decision: accepted Places API ToS caching risk
+Research (Pitfalls, Pitfall 1) found the locked persistence model — storing name/address/
+phone/rating/website durably in Postgres — breaches Google's Places API "No Caching" clause
+(only `place_id` is exempt from storage restrictions without a separate Google agreement).
+Presented the fork via `AskUserQuestion`, framed accurately (contract-breach/API-key-revocation
+risk, not legal liability; the ToS-safe alternative costs an Enterprise-tier Place Details call
+per lead per page view). User chose to **accept the risk and store everything**, matching this
+personal single-user tool's "fast validation over completeness" philosophy — documented in
+`PROJECT.md` Key Decisions as "revisit before any public/paid launch."
+
 ## Next steps
-1. Wait for the 4 research agents (Stack/Features/Architecture/Pitfalls) to complete, then
-   spawn the `gsd-research-synthesizer` to produce `.planning/research/SUMMARY.md`.
-2. Proceed to Step 7 (Define Requirements) → Step 8 (Roadmap creation via `gsd-roadmapper`).
+1. Wait for `gsd-research-synthesizer` (agent `a4a385cea91c82325`) to finish writing
+   `.planning/research/SUMMARY.md` — verify it exists on disk (known #222 false-refusal risk:
+   agent may return the doc inline instead of writing it).
+2. Proceed to Step 7 (Define Requirements) → Step 8 (Roadmap creation via `gsd-roadmapper`),
+   incorporating the now-expanded Active requirements list in `PROJECT.md`.
 3. Reconcile the stale pre-pivot docs (`docs/decisions.md`, `docs/architecture.md`,
    `.claude/rules/findleads-architecture.md`, `.claude/CLAUDE.md`) with `.planning/` as the new
-   source of truth — flagged in `PROJECT.md` Context, not yet done.
-4. After roadmap lands: `/gsd-plan-phase 1` to start execution planning — no code yet.
+   source of truth — flagged in `PROJECT.md` Context, not yet done. `findleads-architecture.md`
+   in particular still describes plain "upsert leads" with no ToS caveat and no
+   businesses/leads split.
+4. Local `master` is 6 commits ahead of `origin/master` (LICENSE push was confirmed; nothing
+   since has been explicitly confirmed for push).
+5. After roadmap lands: `/gsd-plan-phase 1` to start execution planning — no code yet.
 
 ## Files in this folder
 - `HANDOFF.md` — this file (curated digest)

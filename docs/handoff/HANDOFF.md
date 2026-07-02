@@ -25,13 +25,21 @@ session. Solved tasks → one concrete one-liner (file / PR / command).
 
 Design pivoted from a plain scraper to **web-presence filtering (no-website businesses) + a
 lightweight CRM** as the core v1 hook — the earlier 2026-07-01 scraper-only design is
-superseded. Project now runs on full GSD tracking: `.planning/PROJECT.md` and
-`.planning/config.json` are committed; 4 parallel research agents (stack/features/architecture/
-pitfalls) are running to inform `REQUIREMENTS.md` and `ROADMAP.md` next. Repo is public on
-GitHub (`RikepilB/findleads`), MIT licensed. **No product code written yet.** The pre-pivot
-docs (`docs/decisions.md`, `docs/architecture.md`, `.claude/rules/findleads-architecture.md`,
-`.claude/CLAUDE.md`) are now stale and still need reconciling with `.planning/` as the source
-of truth.
+superseded. Project runs on full GSD tracking. All 4 domain research agents (stack/features/
+architecture/pitfalls) completed and surfaced a real Places API ToS conflict (the locked
+store-everything-in-Postgres design breaches the "No Caching" clause beyond `place_id`) —
+presented to the user, who chose to **accept the risk** for this personal single-user tool
+(revisit before any public/paid launch). Also adopted 3 research-recommended refinements into
+`PROJECT.md`: a `businesses`/`leads` identity-vs-sighting split (fixes "contacted" status
+resetting on re-scrape), a checkpointed/resumable `after()` worker (fixes silent timeout past
+Vercel Hobby's 300s ceiling), and folding the free `business_status` closed-business filter
+into Phase 1. `gsd-research-synthesizer` is writing `.planning/research/SUMMARY.md` next, then
+Requirements → Roadmap. Repo is public on GitHub (`RikepilB/findleads`), MIT licensed, `master`
+6 commits ahead of `origin/master` (not pushed beyond the earlier confirmed LICENSE push).
+**No product code written yet.** The pre-pivot docs (`docs/decisions.md`, `docs/architecture.md`,
+`.claude/rules/findleads-architecture.md`, `.claude/CLAUDE.md`) are now stale (still describe
+plain "upsert leads" with no ToS caveat) and still need reconciling with `.planning/` as the
+source of truth.
 
 ---
 
@@ -45,3 +53,8 @@ of truth.
   root-level `PROYECTOS/handoff.md` that predated this repo's own handoff tree.
 
 <!-- compact-handoff:auto-snapshot -->
+<!-- Latest auto-snapshot: docs/handoff/2026-07-02-crm-pivot-gsd-init/snapshot-193238.md -->
+## Latest auto snapshot — 2026-07-02T19:32:38.657Z
+- Session folder: `docs/handoff/2026-07-02-crm-pivot-gsd-init/`
+- Snapshot file: `docs/handoff/2026-07-02-crm-pivot-gsd-init/snapshot-193238.md`
+- Branch: master
