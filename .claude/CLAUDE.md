@@ -8,27 +8,39 @@ A lead-generation scraper (RawLeads-style) over the official **Google Places API
 Toronto and Lima, Peru as initial validation markets. Next.js full-stack (App Router), Node
 runtime API routes, Neon Postgres.
 
-## Current phase — design locked, no code yet
+## Current phase — GSD roadmap in execution
 
-This is a design/spec-only phase. Locked MVP decisions (from
-`docs/handoff/2026-07-01-mvp-design-brainstorm/HANDOFF.md`):
+**Superseded (2026-07-02):** the design pivoted from a plain scraper to web-presence filtering
++ a lightweight CRM as the core hook, and the project moved from the ad-hoc
+`docs/specs/`-plus-brainstorming flow (below) to full GSD tracking under `.planning/`. The
+"do not start implementation before a hand-written spec" gate that used to block this file is
+**lifted** — `.planning/PROJECT.md`, `.planning/REQUIREMENTS.md`, and `.planning/ROADMAP.md`
+are now the source of truth, and `.planning/phases/<NN>-*/`. `PLAN.md` files (produced by
+`/gsd-plan-phase`, one per roadmap phase) are the actual implementation plans. `docs/decisions.md`,
+`docs/architecture.md`, and `.claude/rules/findleads-architecture.md` still describe the
+pre-pivot design (plain "upsert leads", no ToS caveat, no `businesses`/`leads` split) and are
+stale — treat `.planning/` as authoritative wherever they disagree.
+
+Locked decisions carried forward from the original brainstorming session (still valid):
 - Google Places API only (official API, not scraping) — Instagram, general web search,
   LinkedIn, and email enrichment are all phase 2, not MVP.
 - Target locations: Toronto + Lima — a free-text location field, not a hardcoded enum.
 - Job execution: a DB-backed job row + client polling (~1s), using Next.js `after()` to run
-  the scrape post-response. No external queue (no BullMQ/pg-boss/Redis) in MVP.
+  the scrape post-response, now as a **checkpointed/resumable** worker (research finding — see
+  `.planning/research/ARCHITECTURE.md` Pitfall/Architecture sections). No external queue
+  (no BullMQ/pg-boss/Redis) in MVP.
 - No auth, no billing, no outreach builder in MVP — single user, no login.
 - Dedup: `unique(job_id, place_id)` within a job only — no cross-job global dedup in MVP.
 
-**Do not start implementation before:**
-1. `docs/specs/<date>-findleads-mvp-design.md` exists and covers the remaining open sections
-   (API routes, error handling, testing) from the brainstorming session.
-2. That spec has been self-reviewed (placeholders / contradictions / ambiguity / scope).
-3. The user has reviewed and approved the written spec.
-4. The `writing-plans` skill has produced an implementation plan.
+New decisions from GSD research (2026-07-02, see `.planning/PROJECT.md` Key Decisions):
+- Accepted the Places API "No Caching" ToS risk — store lead data durably in Postgres beyond
+  `place_id`, revisit before any public/paid launch.
+- `businesses` (keyed `place_id`, holds CRM state) split from `leads` (per-job scrape
+  snapshot) — re-scraping must never reset `notes`/`contacted`.
 
-Skipping straight to code was explicitly flagged as the mistake to avoid when this session's
-design work ended — see `.claude/rules/findleads-architecture.md` for the full design.
+Execution now proceeds phase-by-phase per `.planning/ROADMAP.md` via
+`/gsd-plan-phase N` → `/gsd-execute-phase N` → verify → ship, not via the old
+`writing-plans`/spec-doc flow.
 
 ## Git workflow
 

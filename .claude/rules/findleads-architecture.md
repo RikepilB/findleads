@@ -1,5 +1,12 @@
 # findleads — Architecture & Workflow
 
+> **STALE (2026-07-02):** this file predates the CRM-pivot + GSD adoption and describes the
+> pre-pivot design (plain "upsert leads", no ToS caveat, no `businesses`/`leads` split). It is
+> kept for historical context on the job-execution model, which is still broadly accurate.
+> `.planning/PROJECT.md`, `.planning/REQUIREMENTS.md`, `.planning/ROADMAP.md`, and
+> `.planning/phases/<NN>-*/*-RESEARCH.md` / `*-PLAN.md` are the current source of truth —
+> defer to those wherever this file disagrees. See `.claude/CLAUDE.md` for the summary.
+
 ## What this is
 
 A lead-generation scraper (RawLeads-style) over the official **Google Places API** — not
@@ -54,7 +61,14 @@ places. Don't build global dedup until asked; it's an explicit non-goal for now.
 - Integration: job creation + a **mocked** Places API (never hit the real API in tests).
 - Light E2E: create a job → see it complete → export CSV.
 
-## Do not build yet
+## Do not build yet (superseded)
+
+The spec-doc gate below is superseded by GSD's own planning flow — see the STALE banner at
+the top of this file. Current process: `/gsd-plan-phase N` produces
+`.planning/phases/<NN>-*/*-PLAN.md`, which is what `/gsd-execute-phase N` builds from.
+
+<details>
+<summary>Original (pre-GSD) gate, kept for history</summary>
 
 No code exists. Before writing implementation:
 1. Write `docs/specs/<date>-findleads-mvp-design.md` covering all of the above plus the
@@ -64,6 +78,8 @@ No code exists. Before writing implementation:
 3. Get user sign-off on the written spec.
 4. Run the `writing-plans` skill for an implementation plan — do not start coding directly
    from this file or from conversation memory.
+
+</details>
 
 ## Git workflow
 
