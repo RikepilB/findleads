@@ -21,18 +21,25 @@ session. Solved tasks → one concrete one-liner (file / PR / command).
 
 ---
 
-## Current state — 2026-07-01
+## Current state — 2026-07-02
 
-Not "no product decided" — a brainstorming session already locked in the MVP design (Google
-Maps/Places API leads scraper for Toronto + Lima, Next.js full-stack, Neon Postgres, DB-backed
-job polling, no auth/billing in MVP). See the session folder below for the full decision list.
-**No code written yet** and no permanent spec file exists — next step is writing
-`docs/specs/2026-07-01-findleads-mvp-design.md` and getting it reviewed before implementation.
+Design pivoted from a plain scraper to **web-presence filtering (no-website businesses) + a
+lightweight CRM** as the core v1 hook — the earlier 2026-07-01 scraper-only design is
+superseded. Project now runs on full GSD tracking: `.planning/PROJECT.md` and
+`.planning/config.json` are committed; 4 parallel research agents (stack/features/architecture/
+pitfalls) are running to inform `REQUIREMENTS.md` and `ROADMAP.md` next. Repo is public on
+GitHub (`RikepilB/findleads`), MIT licensed. **No product code written yet.** The pre-pivot
+docs (`docs/decisions.md`, `docs/architecture.md`, `.claude/rules/findleads-architecture.md`,
+`.claude/CLAUDE.md`) are now stale and still need reconciling with `.planning/` as the source
+of truth.
 
 ---
 
 ## Session index (append-only, newest first)
 
+- 2026-07-02-crm-pivot-gsd-init — pivoted design to web-presence filter + CRM, fixed an
+  unauthorized public push (made private then user explicitly open-sourced it under MIT),
+  initialized full `.planning/` GSD project, wrote `PROJECT.md`, kicked off domain research.
 - 2026-07-01-mvp-design-brainstorm — architecture/data-model brainstorming, several MVP
   decisions locked in, ended mid-design awaiting user approval on section 1. Migrated from a
   root-level `PROYECTOS/handoff.md` that predated this repo's own handoff tree.
