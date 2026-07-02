@@ -93,39 +93,44 @@ Explicitly excluded. Documented to prevent scope creep.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| DATA-01 | Phase 1 | Pending |
-| DATA-02 | Phase 1 | Pending |
-| DATA-03 | Phase 1 | Pending |
-| SCRAPE-01 | Phase 1 | Pending |
-| SCRAPE-02 | Phase 1 | Pending |
-| SCRAPE-03 | Phase 1 | Pending |
-| SCRAPE-04 | Phase 1 | Pending |
-| SCRAPE-05 | Phase 1 | Pending |
-| SCRAPE-06 | Phase 1 | Pending |
-| SCRAPE-07 | Phase 1 | Pending |
-| JOB-02 | Phase 1 | Pending |
-| JOB-03 | Phase 1 | Pending |
-| JOB-07 | Phase 1 | Pending |
-| SEC-01 | Phase 1 | Pending |
-| SEC-02 | Phase 1 | Pending |
-| JOB-01 | Phase 2 | Pending |
-| JOB-04 | Phase 2 | Pending |
-| JOB-05 | Phase 2 | Pending |
-| JOB-06 | Phase 2 | Pending |
-| EXPORT-01 | Phase 2 | Pending |
-| EXPORT-02 | Phase 2 | Pending |
-| CRM-01 | Phase 3 | Pending |
-| CRM-02 | Phase 3 | Pending |
-| CRM-03 | Phase 3 | Pending |
-| CRM-04 | Phase 3 | Pending |
-| CRM-05 | Phase 3 | Pending |
-| SEC-03 | Phase 3 | Pending |
+| DATA-01 | Phase 1: Data Foundation & Security | Pending |
+| DATA-02 | Phase 1: Data Foundation & Security | Pending |
+| DATA-03 | Phase 1: Data Foundation & Security | Pending |
+| SEC-01 | Phase 1: Data Foundation & Security | Pending |
+| SEC-02 | Phase 1: Data Foundation & Security | Pending |
+| SCRAPE-02 | Phase 2: Places API Scrape Client | Pending |
+| SCRAPE-03 | Phase 2: Places API Scrape Client | Pending |
+| SCRAPE-04 | Phase 2: Places API Scrape Client | Pending |
+| SCRAPE-05 | Phase 2: Places API Scrape Client | Pending |
+| SCRAPE-06 | Phase 2: Places API Scrape Client | Pending |
+| SCRAPE-01 | Phase 3: Job Creation & Checkpointed Worker | Pending |
+| JOB-01 | Phase 3: Job Creation & Checkpointed Worker | Pending |
+| JOB-02 | Phase 3: Job Creation & Checkpointed Worker | Pending |
+| JOB-03 | Phase 3: Job Creation & Checkpointed Worker | Pending |
+| JOB-07 | Phase 3: Job Creation & Checkpointed Worker | Pending |
+| JOB-04 | Phase 4: Job Monitoring, Resumability & Export | Pending |
+| JOB-05 | Phase 4: Job Monitoring, Resumability & Export | Pending |
+| JOB-06 | Phase 4: Job Monitoring, Resumability & Export | Pending |
+| EXPORT-01 | Phase 4: Job Monitoring, Resumability & Export | Pending |
+| EXPORT-02 | Phase 4: Job Monitoring, Resumability & Export | Pending |
+| SCRAPE-07 | Phase 5: CRM Leads Dashboard | Pending |
+| CRM-01 | Phase 5: CRM Leads Dashboard | Pending |
+| CRM-02 | Phase 5: CRM Leads Dashboard | Pending |
+| CRM-03 | Phase 5: CRM Leads Dashboard | Pending |
+| CRM-04 | Phase 5: CRM Leads Dashboard | Pending |
+| CRM-05 | Phase 5: CRM Leads Dashboard | Pending |
+| SEC-03 | Phase 5: CRM Leads Dashboard | Pending |
 
 **Coverage:**
 - v1 requirements: 27 total
 - Mapped to phases: 27
 - Unmapped: 0 ✓
 
+**Note:** SCRAPE-01 ("user can create a scrape job by category + free-text location") is
+satisfied at the API layer in Phase 3 (`POST /api/jobs`) — REQUIREMENTS.md has no separate
+job-creation-*UI* requirement, so any job-creation form is incidental Phase 5 scope rather than
+a tracked requirement of its own.
+
 ---
 *Requirements defined: 2026-07-02*
-*Last updated: 2026-07-02 after initial definition, derived from research SUMMARY.md and updated PROJECT.md*
+*Last updated: 2026-07-02 — traceability remapped from draft 3-phase split to the final 5-phase ROADMAP.md structure (Data Foundation → Places Client → Job Creation/Worker → Job Monitoring/Export → CRM UI)*
