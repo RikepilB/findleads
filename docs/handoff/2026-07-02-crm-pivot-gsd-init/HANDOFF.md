@@ -126,17 +126,61 @@ rest of the session.
 - `.planning/ROADMAP.md`, `.planning/STATE.md` — new, 5 phases, commit `dd9f22a`.
 - `.planning/phases/01-data-foundation-security/01-RESEARCH.md` — new, commit `a25c0f1`.
 
+## What was done (continued, execution started)
+- `gsd-planner` (agent `a08e58d6d6604a552`) produced Phase 1's plan: 5 waves, 1 plan each
+  (01-01 through 01-05, strictly sequential — `01-01`→`01-02`→`01-03`→`01-04`→`01-05`), plus
+  `01-SKELETON.md` (Walking Skeleton — first phase of a new project under MVP mode). Committed
+  `cdcaa96`.
+- `gsd-plan-checker` found 1 blocker (missing `01-VALIDATION.md` despite
+  `nyquist_validation: true` in config — I'd skipped GSD's own step 5.5 while hand-driving the
+  workflow) + 3 non-blocking warnings. Fixed the blocker directly: wrote
+  `01-VALIDATION.md` grounded in the actual plan/task structure rather than re-running the
+  planner. Committed `f28d747`.
+- Reconciled the stale pre-pivot instruction files while waiting on background agents (was
+  flagged repeatedly, finally actioned): `.claude/CLAUDE.md`'s "design-locked, no code yet /
+  do not implement before a hand-written spec" gate was about to actively contradict the
+  in-progress build, so replaced it with a note that `.planning/` is now the source of truth
+  and the old spec-doc gate is lifted. `.claude/rules/findleads-architecture.md` got a STALE
+  banner + its old "Do not build yet" section collapsed into a `<details>` history block.
+  Committed `575d0a3`.
+- Started `/gsd-execute-phase 1`: confirmed `branching_strategy: "none"` (stays on master, no
+  phase branch) and that all 5 waves are single-plan (no intra-wave parallelism needed).
+  Spawned `gsd-executor` (agent `ab0c1e67358ce40c6`) for Wave 1 (01-01: Next.js scaffold into
+  the already-populated repo root via sibling-temp-dir merge, pnpm scripts, Vitest). This is
+  the **first real code** written in this repo — running as this handoff is written.
+  - Pre-resolved 01-01's one `checkpoint:human-verify` gate (package-legitimacy flag on
+    `server-only`/`vitest`, both flagged `[SUS]` only by a "too-new" heuristic) — instructed
+    the executor to treat it as reviewed/approved since both are legitimate, well-known
+    packages (Next.js/Vercel team and Vite team respectively), rather than block on a human
+    who isn't present in this autonomous run.
+
+## Known upcoming blocker (not yet hit)
+Wave 2 (01-02) has a genuine **human-action checkpoint that cannot be automated**: SEC-02
+requires manually restricting the Google Cloud API key to Places API only in Cloud Console —
+a real browser/account action, not something executable from this session. Also unconfirmed:
+whether a Neon project/`DATABASE_URL` already exists for this project (01-02's Task 1 handles
+Neon provisioning via the `mcp__Neon__*` MCP tools, with a fallback to a human checkpoint if
+that's not viable). **When execution reaches Wave 2, if either of these can't be resolved
+autonomously, that's a legitimate stop-and-ask point** — not a "silently fake it" situation.
+
+## Files changed (continued)
+- `.planning/phases/01-data-foundation-security/01-SKELETON.md`, `01-01-PLAN.md` through
+  `01-05-PLAN.md` — new, commit `cdcaa96`.
+- `.planning/phases/01-data-foundation-security/01-VALIDATION.md` — new, commit `f28d747`.
+- `.claude/CLAUDE.md`, `.claude/rules/findleads-architecture.md` — edited (stale-doc
+  reconciliation), commit `575d0a3`.
+- First app code incoming from Wave 1 executor (not yet confirmed committed as of this
+  handoff write).
+
 ## Next steps
-1. Confirm `gsd-phase-researcher` (agent `a586a5e877d47dbce`) has formally returned (file is
-   already committed as of this handoff — likely just finishing up).
-2. Spawn `gsd-planner` for Phase 1, then `gsd-plan-checker` — standard plan-phase revision loop
-   (max 3 iterations per GSD workflow).
-3. `/gsd-execute-phase 1` → verify → ship, then repeat plan→execute→verify→ship for Phases 2-5
-   in order (each depends on the prior — see ROADMAP.md `Depends on:` fields).
-4. Reconcile the stale pre-pivot docs (`docs/decisions.md`, `docs/architecture.md`,
-   `.claude/rules/findleads-architecture.md`, `.claude/CLAUDE.md`) with `.planning/` — still
-   not done, lower priority than the build itself now.
-5. Local `master` is 11 commits ahead of `origin/master` (LICENSE push was the last confirmed
+1. Confirm Wave 1 (01-01) executor finished + committed; read its SUMMARY.md.
+2. Spawn Wave 2 (01-02) executor — watch for the SEC-02 human-action checkpoint and the Neon
+   provisioning step described above; surface to the user if genuinely blocked rather than
+   proceeding on an assumption.
+3. Waves 3-5 (01-03/04/05) are all `autonomous: true` — schema, DAL, integration tests.
+4. After all 5 waves: phase verification (`gsd-verifier`), then ship Phase 1, then repeat
+   plan→execute→verify→ship for Phases 2-5 in ROADMAP.md order.
+5. Local `master` is 14 commits ahead of `origin/master` (LICENSE push was the last confirmed
    push) — will need a push decision once ship-worthy work exists.
 6. TaskCreate #10-15 tracks phase-by-phase progress — update as each phase completes.
 

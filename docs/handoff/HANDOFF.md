@@ -33,16 +33,21 @@ any public/paid launch.
 
 **Autopilot mode active:** user directed (`/gsd-ship` redirected mid-command) to autonomously
 drive plan→execute→verify→ship across all 5 roadmap phases using recommended defaults, with
-check-ins only for genuine decision forks. Currently executing Phase 1 (Data Foundation &
-Security — Drizzle schema for `jobs`/`leads`/`businesses`, Neon setup, API key security);
-Phase 1 research is done (`01-RESEARCH.md`, commit `a25c0f1`), planner is next. TaskCreate
-#10-15 tracks phase-by-phase progress. Repo is public on GitHub (`RikepilB/findleads`), MIT
-licensed, `master` 11 commits ahead of `origin/master` (LICENSE push was the last confirmed
-push — no further push confirmed yet). **No product code written yet** — Phase 1 will produce
-the first real code (schema, `package.json`). The pre-pivot docs (`docs/decisions.md`,
-`docs/architecture.md`, `.claude/rules/findleads-architecture.md`, `.claude/CLAUDE.md`) are
-still stale and need reconciling with `.planning/` as source of truth — deprioritized behind
-the active build.
+check-ins only for genuine decision forks. Phase 1 (Data Foundation & Security) is planned
+(5 sequential single-plan waves + Walking Skeleton, plan-checker passed after one fixed
+blocker) and **execution has started** — Wave 1 (Next.js scaffold, first real code in this
+repo) is running. Stale pre-pivot docs (`.claude/CLAUDE.md`,
+`.claude/rules/findleads-architecture.md`) have been reconciled — `.planning/` is now
+explicitly the source of truth in both files. TaskCreate #10-15 tracks phase-by-phase
+progress. Repo is public on GitHub (`RikepilB/findleads`), MIT licensed, `master` 14 commits
+ahead of `origin/master` (LICENSE push was the last confirmed push — no further push confirmed
+yet).
+
+**Known upcoming blocker (not yet hit):** Phase 1's Wave 2 requires a genuine human action —
+restricting the Google Cloud API key to Places API only in Cloud Console — that cannot be
+automated from this session. Also unconfirmed whether a Neon `DATABASE_URL` already exists
+(Wave 2 attempts MCP-based provisioning first). If reached and unresolvable autonomously, stop
+and ask the user rather than fake it.
 
 ---
 
