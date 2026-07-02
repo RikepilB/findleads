@@ -376,7 +376,7 @@ export async function insertLeadSnapshot(jobId: string, place: {
 ```typescript
 // lib/db/schema.ts
 // Source: orm.drizzle.team/docs/indexes-constraints (array table-config form, verified current)
-import { pgTable, pgEnum, serial, uuid, text, numeric, integer, boolean, timestamp, unique } from 'drizzle-orm/pg-core'
+import { pgTable, pgEnum, serial, uuid, text, real, integer, boolean, timestamp, unique } from 'drizzle-orm/pg-core'
 
 export const jobStatusEnum = pgEnum('job_status', ['pending', 'running', 'partial', 'done', 'error'])
 
@@ -400,7 +400,7 @@ export const leads = pgTable('leads', {
   phone: text('phone'),
   address: text('address'),
   website: text('website'),
-  rating: numeric('rating'),
+  rating: real('rating'),
   reviewCount: integer('review_count'),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 }, (table) => [
@@ -414,7 +414,7 @@ export const businesses = pgTable('businesses', {
   phone: text('phone'),
   address: text('address'),
   website: text('website'),
-  rating: numeric('rating'),
+  rating: real('rating'),
   reviewCount: integer('review_count'),
   notes: text('notes'),
   contacted: boolean('contacted').notNull().default(false),
@@ -428,7 +428,11 @@ export const businesses = pgTable('businesses', {
 identifier is alphanumeric with **no maximum length**
 `[CITED: developers.google.com/maps/documentation/places/web-service/place-id]`. `jobs.id` is
 `uuid`, not `serial`, specifically because it's exposed unauthenticated in a polled URL (see
-Alternatives Considered above).
+Alternatives Considered above). `rating` is `real`, not `numeric`/`decimal` — Drizzle's `numeric`
+type infers as TypeScript `string` by default (precision-preserving), not `number`
+`[CITED: orm.drizzle.team/docs/column-types]`; `real`/`doublePrecision` infer as `number`, matching
+the `rating: number | null` parameter type used in Code Examples 1-2. Using `numeric` here would
+produce a type mismatch between the schema and the upsert/insert function signatures.
 
 ### 4. `lib/env.ts` — the concrete SEC-01 mechanism
 ```typescript
@@ -438,8 +442,10 @@ Alternatives Considered above).
 import 'server-only'
 import { z } from 'zod'
 
+// zod 4 prefers top-level format validators (z.url()) over the chained
+// z.string().url() form, which still works but is deprecated as of 4.x.
 const envSchema = z.object({
-  DATABASE_URL: z.string().url(),
+  DATABASE_URL: z.url(),
   PLACES_API_KEY: z.string().min(1),
 })
 
@@ -453,6 +459,14 @@ by Next.js's own documented rule, only `NEXT_PUBLIC_`-prefixed vars are inlined 
 bundle at build time
 `[CITED: nextjs.org/docs/app/guides/data-security]`. This module is the *only* place `process.env`
 is read directly in the codebase; every other module imports `env` from here.
+
+**Conscious tradeoff:** requiring `PLACES_API_KEY` in this same schema means *any* server-side
+import of `env` (including from `lib/db/*` code that this phase builds) throws until SEC-02's
+manual Cloud Console step has produced a key — even though no Places API call exists until Phase 2.
+This is an intentional choice (one schema, one fail-fast boundary, matches "validate required
+secrets at startup") rather than an accident, but the planner should sequence the "obtain a Places
+API key and put it in `.env`" step early in Phase 1's task list — before any DAL code that
+transitively imports `lib/env.ts` is exercised — not defer it to Phase 2.
 
 ### 5. Neon + Drizzle client setup (`neon-http`)
 ```typescript
