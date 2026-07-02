@@ -63,7 +63,7 @@
       },
       {
         "heading": "Success Metrics & Release Criteria",
-        "enabled": false,
+        "enabled": true,
         "source": "REQUIREMENTS.md ## Definition of Done || VERIFICATION.md ## Release Criteria",
         "fallback": "- Release when automated verification and required manual checks pass."
       },
