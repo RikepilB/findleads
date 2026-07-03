@@ -111,7 +111,11 @@ Plans:
   4. A completed job's leads can be exported to CSV, joined to current `businesses` CRM state
   5. CSV cells starting with `=+-@` are sanitized so the export can't trigger formula injection when opened in Excel/Sheets
 
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+
+- [ ] 04-01-PLAN.md — GET /api/jobs/:id: atomic claim + continuation (JOB-04), stale-job watchdog (JOB-05), zero-result-vs-error response shape (JOB-06)
+- [ ] 04-02-PLAN.md — CSV export: csv-stringify install (legitimacy checkpoint), leads/businesses join, formula-injection sanitization (EXPORT-01, EXPORT-02)
 
 ### Phase 5: CRM Leads Dashboard
 
@@ -139,7 +143,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 1. Data Foundation & Security | 5/5 | Complete    | 2026-07-03 |
 | 2. Places API Scrape Client | 4/4 | Complete    | 2026-07-03 |
 | 3. Job Creation & Checkpointed Worker | 3/3 | Complete    | 2026-07-03 |
-| 4. Job Monitoring, Resumability & Export | 0/TBD | Not started | - |
+| 4. Job Monitoring, Resumability & Export | 0/2 | Not started | - |
 | 5. CRM Leads Dashboard | 0/TBD | Not started | - |
 
 ---
