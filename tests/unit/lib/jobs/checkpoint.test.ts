@@ -3,7 +3,12 @@ import { initialCursor, SAFETY_WINDOW_MS, MAX_PAGES } from '@/lib/jobs/checkpoin
 
 describe('checkpoint', () => {
   it('initialCursor returns the starting cursor shape', () => {
-    expect(initialCursor()).toEqual({ pageToken: null, pagesFetched: 0, done: false })
+    expect(initialCursor()).toEqual({
+      pageToken: null,
+      pagesFetched: 0,
+      done: false,
+      capHit: false,
+    })
   })
 
   it('SAFETY_WINDOW_MS is exactly 250_000', () => {

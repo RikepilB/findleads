@@ -216,4 +216,59 @@ describe('runScrapeJob', () => {
 
     await expect(runScrapeJob('missing-job', { now: () => 0 })).rejects.toThrow('missing-job')
   })
+
+  it('flags resultCapHit=true on the final done write when the cap-genuinely-hit page also happens to contain a closed business (SCRAPE-07, Pitfall 1 Option B)', async () => {
+    // Job is already at pagesFetched=2 (MAX_PAGES - 1); this fetch will be
+    // the 3rd page (pagesFetched === MAX_PAGES). The real defaultFetchOnePage
+    // composition runs (no fetchOnePage override) so the raw pagination
+    // signal is computed BEFORE mapPlaceToLead's closed-business filter
+    // removes the CLOSED_PERMANENTLY place from `mapped`/`leadsFound`.
+    const savedCursor = { pageToken: 'token-3', pagesFetched: 2, done: false, capHit: false }
+    getJobMock.mockResolvedValue(makeJob({ cursor: savedCursor, leadsFound: 40 }))
+    searchTextPlacesMock.mockResolvedValue({
+      ...closedBusinessFixture,
+      nextPageToken: 'token-4',
+    })
+
+    await runScrapeJob('job-1', { now: () => 0 })
+
+    // Fixture has 3 places, 1 CLOSED_PERMANENTLY, correctly excluded by the
+    // real mapPlaceToLead — leadsFound only grows by 2, not 3.
+    const finalCall = updateJobProgressMock.mock.calls.at(-1)?.[1]
+    expect(finalCall).toMatchObject({
+      status: 'done',
+      leadsFound: 42,
+      cursor: null,
+      resultCapHit: true,
+    })
+  })
+
+  it('flags resultCapHit=false when pagination ends naturally (no nextPageToken) even at MAX_PAGES', async () => {
+    const savedCursor = { pageToken: 'token-3', pagesFetched: 2, done: false, capHit: false }
+    getJobMock.mockResolvedValue(makeJob({ cursor: savedCursor, leadsFound: 40 }))
+    searchTextPlacesMock.mockResolvedValue({
+      ...closedBusinessFixture,
+      nextPageToken: undefined,
+    })
+
+    await runScrapeJob('job-1', { now: () => 0 })
+
+    const finalCall = updateJobProgressMock.mock.calls.at(-1)?.[1]
+    expect(finalCall).toMatchObject({ status: 'done', resultCapHit: false })
+  })
+
+  it('preserves capHit=true across checkpoints once set, even after cursor is nulled on the final write', async () => {
+    getJobMock.mockResolvedValue(makeJob())
+    const page1Cursor = { pageToken: 'x', pagesFetched: 1, done: false, capHit: false }
+    const page2Cursor = { pageToken: null, pagesFetched: 2, done: true, capHit: true }
+    const fetchOnePage = vi
+      .fn()
+      .mockResolvedValueOnce({ mapped: [lead('a')], nextCursor: page1Cursor })
+      .mockResolvedValueOnce({ mapped: [lead('b')], nextCursor: page2Cursor })
+
+    await runScrapeJob('job-1', { now: () => 0, fetchOnePage })
+
+    const finalCall = updateJobProgressMock.mock.calls.at(-1)?.[1]
+    expect(finalCall).toMatchObject({ status: 'done', resultCapHit: true })
+  })
 })
