@@ -48,15 +48,19 @@ match the locale regex (JS `\b` is ASCII-only) — fixed via diacritic stripping
 would never fire on a real API error — fixed, regression-tested. **Lesson: verification
 passing doesn't mean a later phase can't surface a latent bug in already-shipped code.**
 
-**Phase 3 (Job Creation & Checkpointed Worker): 2/3 plans done.** 03-01 (checkpoint
-primitives, additive jobs-schema migration on both real Neon DBs) and 03-02 (runScrapeJob
-checkpointed worker loop, including a composition test exercising the real Places-client
-wiring) both executed clean, all tests green. **03-03 (`POST /api/jobs` route + integration
-proof) is the next and last plan** — paused deliberately at this clean, durable point rather
-than push further in a strained context window (a subagent itself flagged high context and
-recommended the pause).
+**Phase 3 (Job Creation & Checkpointed Worker): SHIPPED.** All 3 plans executed clean —
+checkpoint primitives + additive migration, the checkpointed `runScrapeJob` worker loop
+(including a composition test exercising the real Places-client wiring), and `POST /api/jobs`
++ a real-DB pipeline proof with a JOB-07 dedup-on-retry case. `gsd-verifier` scored 4/4.
 
-Full test suite: 49+ tests green across Phases 1-3 combined, typecheck/lint clean throughout.
+**Phase 4 (Job Monitoring, Resumability & Export): in progress.** Research done — confirmed
+by reading the real Phase 3 code that the atomic-claim continuation and watchdog both compose
+as simple `UPDATE ... WHERE ... RETURNING` queries against the already-shipped
+`runScrapeJob`/`jobs` schema, and that JOB-06 (zero-result vs error) needs no worker changes
+at all. Planning in progress now (explicitly asked the planner to produce `04-VALIDATION.md`
+upfront this time, since that's been a recurring catch-it-after gap in every prior phase).
+
+Full test suite: 61/61 tests green across Phases 1-3 combined, typecheck/lint clean throughout.
 Earlier: walked the user through Google Cloud project setup via Chrome automation, then
 handed the credential-restriction step to the user per their own request. Delivered a
 live-fetched cost breakdown (Enterprise-tier billing, $35/1000 calls after 1,000/month free,

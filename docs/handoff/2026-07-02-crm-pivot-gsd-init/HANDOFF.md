@@ -444,18 +444,38 @@ handoff plus commits are the recovery path — no need to re-derive plan state f
   than starting 03-03 in the same stretch; orchestrator agreed and stopped cleanly. This is a
   genuinely safe pause point — 03-01 and 03-02 are fully committed and durable.
 
+## PHASE 3 COMPLETE — shipped
+- 03-03 (`POST /api/jobs` route + real-DB pipeline proof incl. JOB-07 dedup-on-retry) executed
+  clean, commits `bf9f887`/`225e1fb`/`2d5099b`. Full suite: 14 files/61 tests green.
+- `gsd-verifier` scored 4/4, wrote `03-VERIFICATION.md` (commit `a4d0823`). Marked complete via
+  `phase.complete 3`, tracking commit `7d3cb53`.
+
+## PHASE 4 IN PROGRESS — Job Monitoring, Resumability & Export
+- Research done (`gsd-phase-researcher`, commit `c013d15`) — confirmed via reading the real
+  shipped code that the atomic-claim continuation composes directly with `runScrapeJob` (no
+  cursor-threading needed), JOB-06 (zero-result vs error) needs ZERO worker changes since
+  `runScrapeJob` already writes `status:'done'` regardless of lead count, watchdog is the same
+  atomic-UPDATE-with-RETURNING shape as the claim. Flagged `csv-stringify` as `[SUS]` per the
+  legitimacy scanner (same too-new false-positive pattern as `vitest`/`server-only` earlier).
+- Planning in progress (`gsd-planner`, agent producing `04-01-PLAN.md`+ and — explicitly
+  instructed this time — `04-VALIDATION.md` upfront, since that's been a recurring gap the
+  plan-checker had to catch and I had to hand-write in every prior phase). Still running as of
+  this handoff.
+
 ## Next steps (immediate)
-1. Spawn `gsd-executor` for plan `03-03` (`.planning/phases/03-job-creation-checkpointed-worker/
-   03-03-PLAN.md` — `app/api/jobs/route.ts` POST handler + real-test-DB integration proof +
-   JOB-07 dedup-on-retry test). Same pattern as 03-01/03-02.
-2. After 03-03: spawn `gsd-verifier` for Phase 3, mark complete via
-   `gsd-tools query phase.complete 3`, commit tracking files.
-3. Then plan Phase 4 (Job Monitoring, Resumability & Export) via `gsd-phase-researcher` →
-   `gsd-planner` → `gsd-plan-checker` (same pattern as Phases 1-3 — expect the recurring
-   missing-VALIDATION.md gap, fix directly rather than re-running planner).
-4. Then execute Phase 4, verify, ship, plan+execute Phase 5, verify, ship → MVP complete.
+1. Confirm Phase 4 planner finished, check `04-VALIDATION.md` actually landed this time (if
+   not, hand-write it same as Phases 1-3 — pattern is well-established now).
+2. Run `gsd-plan-checker` for Phase 4.
+3. Execute all Phase 4 plans sequentially (one `gsd-executor` per plan, same pattern
+   throughout), spawn `gsd-verifier`, mark complete, ship.
+4. Then research+plan+execute Phase 5 (CRM Leads Dashboard — the FINAL phase, first fully
+   user-visible UI) → verify → ship → **MVP complete**.
 5. Local `master` is far ahead of `origin/master` — push decision still deliberately deferred
    to a single batched confirm point, not per-phase.
+6. Session has hit "context critical" (75-76%) warnings multiple times this stretch, each
+   time recovering to a fresh window on next user message — pattern seems to be per-turn
+   context measurement resetting rather than a hard wall. Keep pausing at clean checkpoints
+   (after each plan/wave commits) rather than mid-task if warnings recur.
 
 ## Files in this folder
 - `HANDOFF.md` — this file (curated digest)
