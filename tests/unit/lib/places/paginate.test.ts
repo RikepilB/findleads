@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import { DEFAULT_PAGE_TOKEN_RETRY, fetchNextPage } from '@/lib/places/paginate'
+import { PlacesApiError } from '@/lib/places/client'
 
 describe('fetchNextPage', () => {
   it('waits before the first fetchPage call, not only between retries', async () => {
@@ -50,6 +51,26 @@ describe('fetchNextPage', () => {
     await expect(fetchNextPage(fetchPage, sleepStub)).rejects.toThrow(rateLimitError)
     expect(fetchPage).toHaveBeenCalledTimes(1)
     expect(sleepStub).toHaveBeenCalledTimes(1)
+  })
+
+  it('retries on a real PlacesApiError whose INVALID_REQUEST reason lives in the response body, not message alone', async () => {
+    // Regression test: PlacesApiError's constructor used to set `message` to
+    // just the status code — Google's actual error reason (e.g.
+    // "INVALID_REQUEST") only ever appears in the response body text, so a
+    // real token-not-yet-active failure from searchTextPlaces() would never
+    // have matched this retry check. See 03-RESEARCH.md Pitfall 5.
+    const sleepStub = vi.fn().mockResolvedValue(undefined)
+    const fetchPage = vi
+      .fn()
+      .mockRejectedValueOnce(
+        new PlacesApiError(400, '{"error":{"status":"INVALID_REQUEST","message":"token not active"}}'),
+      )
+      .mockResolvedValueOnce('page-2')
+
+    const result = await fetchNextPage(fetchPage, sleepStub)
+
+    expect(result).toBe('page-2')
+    expect(fetchPage).toHaveBeenCalledTimes(2)
   })
 
   it('honors a custom RetryConfig overriding DEFAULT_PAGE_TOKEN_RETRY', async () => {

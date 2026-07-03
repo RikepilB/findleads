@@ -32,12 +32,17 @@ export interface TextSearchParams {
 // Deliberately carries only `status` and response `body` text — never the
 // outbound request object, which holds the X-Goog-Api-Key header. Do not
 // extend this class to log the request/headers (T-02-03-02).
+//
+// `message` includes `body` so error-matching callers (e.g. paginate.ts's
+// token-not-yet-active retry check) can inspect `.message` alone — Google's
+// error reason (e.g. "INVALID_REQUEST") is only present in the response
+// body text, never in `status` by itself.
 export class PlacesApiError extends Error {
   constructor(
     public status: number,
     public body: string,
   ) {
-    super(`Places API request failed: ${status}`)
+    super(`Places API request failed: ${status}: ${body}`)
     this.name = 'PlacesApiError'
   }
 }
