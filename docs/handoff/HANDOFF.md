@@ -41,15 +41,19 @@ connection strings handed to the user to paste into `.env`/`.env.test` (Claude C
 structurally denied `.env*` read/write/reference by this repo's own permission config — a
 deliberate guardrail, applies to Bash literal-argument references too, not worked around).
 The Google Cloud Places API key restriction (SEC-02) still needs the user's manual action in
-Cloud Console. Waves 3-5 of Phase 1 are blocked until the user completes both — **while
-waiting, pivoted to Phase 2** (Places API Scrape Client): research done (complete,
-committed), planning in progress. One Phase 2 subagent hit an account-level **session
-limit** (not the earlier transient rate-limiting) but had already written good output before
-dying — recovered by verifying and committing directly rather than re-running. Stale
-pre-pivot docs (`.claude/CLAUDE.md`, `.claude/rules/findleads-architecture.md`) were
+Cloud Console — confirmed still pending. Waves 3-5 of Phase 1 stay blocked until both are
+done — **pivoted to Phase 2** (Places API Scrape Client) in the meantime, which has zero
+DB/live-secret dependency by design (fixture/stub-based testing). Phase 2 is now
+**near-complete**: 3 of 4 plans executed clean (schema+fixtures, locale+pagination,
+Places API client — all TDD RED/GREEN, all green on typecheck/lint/full-suite), the 4th
+(mapPlaceToLead) executing now. Caught and fixed a real bug along the way — accented "Perú"
+wasn't matching the locale-detection regex (JS `\b` is ASCII-only); fixed via diacritic
+stripping, tested, committed. One Phase 2 subagent hit an account-level **session limit**
+earlier (distinct from transient rate-limiting) but had already written good research output
+before dying — recovered by verifying and committing directly. Stale pre-pivot docs were
 reconciled earlier — `.planning/` is the source of truth. TaskCreate #10-15 tracks
 phase-by-phase progress. Repo is public on GitHub (`RikepilB/findleads`), MIT licensed,
-`master` ~20 commits ahead of `origin/master` (LICENSE push was the last confirmed push).
+`master` ~30 commits ahead of `origin/master` (LICENSE push was the last confirmed push).
 
 ---
 
