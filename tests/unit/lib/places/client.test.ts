@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { searchTextPlaces, PlacesApiError, FIELD_MASK } from '@/lib/places/client'
 import { mockFetchOnce } from '../../../helpers/mockFetch'
 import torontoFixture from '../../../fixtures/places/text-search-toronto-page1.json'
@@ -28,8 +28,8 @@ describe('searchTextPlaces', () => {
     expect(FIELD_MASK).toEqual(expect.stringContaining('places.websiteUri'))
     expect(FIELD_MASK).toEqual(expect.stringContaining('places.businessStatus'))
 
-    const [, requestInit] = fetchStub.mock.calls[0]
-    const headers = requestInit.headers as Record<string, string>
+    const [, requestInit] = vi.mocked(fetchStub).mock.calls[0]
+    const headers = requestInit!.headers as Record<string, string>
     expect(headers['X-Goog-FieldMask']).toEqual(expect.stringContaining('places.websiteUri'))
     expect(headers['X-Goog-FieldMask']).toEqual(expect.stringContaining('places.businessStatus'))
   })
@@ -45,8 +45,8 @@ describe('searchTextPlaces', () => {
     expect(result.places[0].displayName?.text).toBe('Restaurante El Mirador Limeño')
     expect(result.places[0].formattedAddress).toContain('Lima, Perú')
 
-    const [, requestInit] = fetchStub.mock.calls[0]
-    const body = JSON.parse(requestInit.body as string)
+    const [, requestInit] = vi.mocked(fetchStub).mock.calls[0]
+    const body = JSON.parse(requestInit!.body as string)
     expect(body.languageCode).toBe('es')
     expect(body.regionCode).toBe('PE')
   })
@@ -98,8 +98,8 @@ describe('searchTextPlaces', () => {
       fetchStub,
     )
 
-    const [, requestInit] = fetchStub.mock.calls[0]
-    const body = JSON.parse(requestInit.body as string)
+    const [, requestInit] = vi.mocked(fetchStub).mock.calls[0]
+    const body = JSON.parse(requestInit!.body as string)
     expect(body).not.toHaveProperty('pageToken')
     expect(body).not.toHaveProperty('pageSize')
   })
