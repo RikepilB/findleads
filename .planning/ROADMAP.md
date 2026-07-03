@@ -130,7 +130,14 @@ Plans:
   3. Richard can view job history showing status, target location/category, leads found, and `created_at` — including a "60+ results found, showing first 60 — refine your search" message when a job hit the Text Search cap
   4. Any UI displaying Places content, including the map-less leads table, shows Google Maps attribution
 
-**Plans**: TBD
+**Plans**: 4 plans
+Plans:
+
+- [ ] 05-01-PLAN.md — DAL (listBusinesses/updateBusinessNotes/setBusinessContacted/listJobs) + SCRAPE-07 resultCapHit additive migration
+- [ ] 05-02-PLAN.md — Shared layout: two-tab nav + Google Maps attribution
+- [ ] 05-03-PLAN.md — Leads page + notes/contacted Server Actions (CRM-01..04)
+- [ ] 05-04-PLAN.md — Job History page, job-creation form, swr-based status poller (CRM-05, SCRAPE-07)
+
 **UI hint**: yes
 
 ## Progress
@@ -144,7 +151,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 2. Places API Scrape Client | 4/4 | Complete    | 2026-07-03 |
 | 3. Job Creation & Checkpointed Worker | 3/3 | Complete    | 2026-07-03 |
 | 4. Job Monitoring, Resumability & Export | 2/2 | Complete    | 2026-07-03 |
-| 5. CRM Leads Dashboard | 0/TBD | Not started | - |
+| 5. CRM Leads Dashboard | 0/4 | Planned | - |
 
 ---
 *Roadmap created: 2026-07-02*
