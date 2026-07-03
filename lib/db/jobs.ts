@@ -1,5 +1,5 @@
 import 'server-only'
-import { and, eq, inArray, lt } from 'drizzle-orm'
+import { and, desc, eq, inArray, lt } from 'drizzle-orm'
 import { db } from '@/lib/db/client'
 import { jobs, type jobStatusEnum } from '@/lib/db/schema'
 import type { JobCursor } from '@/lib/jobs/checkpoint'
@@ -22,6 +22,11 @@ export async function createJob({
 export async function getJob(id: string) {
   const [row] = await db.select().from(jobs).where(eq(jobs.id, id))
   return row
+}
+
+// CRM-01..05: Job History page (Plan 05-04) reads every job, newest first.
+export function listJobs() {
+  return db.select().from(jobs).orderBy(desc(jobs.createdAt))
 }
 
 export async function updateJobProgress(

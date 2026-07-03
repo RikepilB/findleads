@@ -1,4 +1,5 @@
 import 'server-only'
+import { desc, eq } from 'drizzle-orm'
 import { db } from '@/lib/db/client'
 import { businesses } from '@/lib/db/schema'
 
@@ -42,4 +43,28 @@ export async function upsertBusiness(place: {
         // existing value untouched on conflict — this omission IS DATA-01.
       },
     })
+}
+
+// CRM-01..05: reads/writes for the Leads dashboard (Plan 05-03). A business
+// with `website: null` is the tier-1 signal (no separate tier column) —
+// callers derive tier from that field at read time.
+export function listBusinesses() {
+  return db.select().from(businesses).orderBy(desc(businesses.updatedAt))
+}
+
+// CRM-04: Drizzle does not auto-bump a `.defaultNow()` column on UPDATE
+// (only on INSERT) — `updatedAt` must be set explicitly in the same `.set()`
+// call, same discipline as `upsertBusiness`'s onConflictDoUpdate above.
+export async function updateBusinessNotes(id: number, notes: string): Promise<void> {
+  await db
+    .update(businesses)
+    .set({ notes, updatedAt: new Date() })
+    .where(eq(businesses.id, id))
+}
+
+export async function setBusinessContacted(id: number, contacted: boolean): Promise<void> {
+  await db
+    .update(businesses)
+    .set({ contacted, updatedAt: new Date() })
+    .where(eq(businesses.id, id))
 }
