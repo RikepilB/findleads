@@ -544,6 +544,36 @@ handoff plus commits are the recovery path — no need to re-derive plan state f
 - `gsd-tools query phase.complete 5` → `is_last_phase: true`, `next_phase: null`. Committed
   ROADMAP.md/STATE.md updates (`8166a5c`). **All 5 phases, 27 requirements, MVP roadmap done.**
 
+## MANUAL QA PASS (2026-07-03, production build, real browser + real Places API)
+Advisor flagged that 103/103 tests + typecheck + lint + build is code-level evidence, not
+feature-level — the CRM-01 bug proved a clean test suite can still hide a real break. Ran
+`next build && PORT=3001 next start`, walked the golden path via Claude-in-Chrome:
+- `/jobs` and `/leads` both render real DB data correctly in production mode.
+- Contacted toggle and notes autosave-on-blur both verified live (click/type/blur in a real
+  browser) AND confirmed persisted across a full page reload (real Server Action → DB round
+  trip, not just client state).
+- Created a fresh real scrape (locksmith / Lima, Peru, 57 leads) — confirmed the new leads
+  appeared on `/leads` immediately with zero unrelated edit, which is the actual CRM-01 fix
+  working end-to-end (117 rows = 60 prior + 57 new).
+- Confirmed SCRAPE-07 live: this job's `leadsFound=57` (under 60) still triggered the "60+
+  results found" message, because `resultCapHit` is computed pre-filter — direct proof the
+  Option B fix works, not just unit-tested.
+- Verified CSV export via curl (avoided a real browser download without asking first):
+  correct data, UTF-8 diacritics intact ("CERRAJERÍA"), and formula-injection sanitization
+  correctly prefixed `+51...` phone numbers with `'` (a leading `+` is an OWASP CSV-injection
+  trigger character).
+- One red herring: the `JobStatusPoller` badge appeared stuck on "pending" after the job had
+  actually completed server-side. Root cause: `document.hidden: true` in the automation tab
+  (SWR's default `refreshWhenHidden: false` pauses polling when the document reports hidden,
+  regardless of `hasFocus`). Confirmed via a manual reload that the data was correct all along
+  — this is a browser-automation-tab-visibility artifact, not an app bug. Noting for the
+  record, not fixing: a real user backgrounding the tab mid-scrape would see the poller pause
+  too, then catch up via SWR's default `revalidateOnFocus` when they switch back — standard,
+  expected polling UX, not a defect.
+
+**Conclusion: code-verified AND now feature-verified via a real production-mode walkthrough.**
+No further gaps found. MVP is genuinely done, not just green-on-paper.
+
 ## Next steps (immediate)
 1. **Raise the deferred `origin/master` push decision with the user** — local `master` is far
    ahead of `origin/master` (only the early LICENSE commit was ever explicitly confirmed for

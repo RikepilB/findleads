@@ -34,6 +34,13 @@ revalidate the page. Invisible in dev/tests, only visible via `next build`'s rou
 same-session (one line, commit `1d9b12d`), re-verified green (103/103 tests, typecheck, lint,
 build), `05-VERIFICATION.md` updated to `passed`, 7/7.
 
+**Then manually walked the golden path** in a real production build (`next start` + Chrome
+automation) since tests alone had already missed one real bug — confirmed leads/jobs render,
+contacted/notes persist across reload, a fresh live scrape's new leads appear on `/leads`
+immediately (the actual CRM-01 fix working), SCRAPE-07's cap message renders correctly off
+`resultCapHit` even when `leadsFound<60`, and CSV export produces correct sanitized UTF-8 data.
+No further gaps found — MVP is feature-verified, not just green-on-paper.
+
 Autopilot mode active throughout (user's own standing authorization: recommended choices, full
 autonomy, stop only for irreversible/detrimental changes). All secrets set up (Neon + Google
 Cloud Places API key, restricted, SEC-02 user-confirmed). Places API "No Caching" ToS risk
