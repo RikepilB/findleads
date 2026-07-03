@@ -215,20 +215,49 @@ autonomously, that's a legitimate stop-and-ask point** — not a "silently fake 
   `test` — NOT reflected in any repo file (connection strings live only in the user's own
   `.env`/`.env.test`, never committed, never written by Claude Code).
 
+## What was done (continued — Phase 2 research + session-limit handling)
+- Phase 2 researcher hit an actual **account session-limit** ("You've hit your session limit ·
+  resets 8:20pm America/Santiago") partway through — distinct from the earlier transient
+  server-side rate limits. It had already written a complete, high-quality
+  `02-RESEARCH.md` before dying (5 pure `lib/places/*` modules — client/locale/paginate/
+  schema/mapPlaceToLead — full code examples, fixture-based test strategy since no live
+  Places API key exists yet, 4 pitfalls incl. a subtle one Google's docs don't say directly:
+  `businessStatus` is *omitted*, not set, when unknown — filtering must use an exclusion set,
+  not an allowlist). Verified it was actually complete before trusting it, then committed
+  directly (`3d18563`) — no re-run needed.
+- Tested whether the session-limit was still blocking by spawning the Phase 2 `gsd-planner`
+  next (agent `a1b216edfa98ef751`) rather than assuming — it queued and started running
+  normally, suggesting the limit was either subagent-specific or already easing. Chose to
+  keep going rather than blind-wait until the stated 8:20pm reset, but agreed with self to
+  back off substantially (not respawn-hammer) if it also dies.
+- Discovered mid-session: any Bash command that references `.env` as a **literal argument**
+  gets denied by this repo's permission config (not just `Read`/`Write` tool calls on `.env*`
+  paths — confirmed this applies to me, the orchestrator, too, not just subagents). Cannot
+  check `.env`/`.env.test` existence/contents directly from the orchestrator either; must
+  let an executor attempt Wave 3 and report back instead of probing myself.
+
+## Files changed (continued)
+- `.planning/phases/02-places-api-scrape-client/02-RESEARCH.md` — new, commit `3d18563`.
+
 ## Next steps
-1. **Waiting on user**: paste `DATABASE_URL`/`TEST_DATABASE_URL` into `.env`/`.env.test`
+1. **Still waiting on user**: paste `DATABASE_URL`/`TEST_DATABASE_URL` into `.env`/`.env.test`
    (values already given to them in-conversation), restrict the GCP Places API key to
    Places API (New) only, add `PLACES_API_KEY=` to `.env`.
-2. Once done: resume Phase 1 — Wave 3 (01-03: schema/migration) is blocked on `DATABASE_URL`
-   existing (imports `lib/env.ts` transitively, throws at import time otherwise); Waves 4-5
-   follow. Then phase verification (`gsd-verifier`) → ship Phase 1.
-3. Phase 2 research (agent `aa0b1f3636adeb603`) running in parallel — once done, plan Phase 2
-   (can start even before Phase 1's secrets land, since it's schema/API-client design work).
-4. Repeat plan→execute→verify→ship for Phases 3-5 in ROADMAP.md order.
-5. Local `master` is ~19 commits ahead of `origin/master` (LICENSE push was the last confirmed
+2. Phase 2 planner (agent `a1b216edfa98ef751`) running — check completion, then plan-checker,
+   then execute→verify→ship for Phase 2 (fully buildable now, no dependency on Phase 1's
+   secrets per its own research's Environment Availability section).
+3. Periodically re-attempt Phase 1 Wave 3 (01-03) via a fresh executor to detect if the user
+   has finished env setup — don't probe `.env` files directly (denied), let the executor's
+   own attempt (which legitimately needs to import `lib/env.ts`) surface whether secrets
+   exist yet.
+4. If any agent spawn hits the account session-limit again, do not respawn-hammer — back off
+   substantially (the stated reset was ~8:20pm America/Santiago, though exact local-vs-that-tz
+   offset couldn't be reliably computed from this sandbox's clock).
+5. Repeat plan→execute→verify→ship for Phases 3-5 in ROADMAP.md order after 1-2 land.
+6. Local `master` is ~20 commits ahead of `origin/master` (LICENSE push was the last confirmed
    push) — will need a push decision once ship-worthy work exists.
-6. TaskCreate #10-15 tracks phase-by-phase progress (#10 Phase 1 metadata: wave1 done, wave2
-   blocked_on_user_env_setup; #11 Phase 2 now in_progress for research).
+7. TaskCreate #10-15 tracks phase-by-phase progress (#10 Phase 1: wave1 done, wave2
+   blocked_on_user_env_setup; #11 Phase 2: in_progress, research done, planning in progress).
 
 ## Files in this folder
 - `HANDOFF.md` — this file (curated digest)

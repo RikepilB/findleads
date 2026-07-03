@@ -38,15 +38,18 @@ deaths via targeted resume, not restart). Wave 2 built the SEC-01 code mechanism
 (`lib/env.ts` + tests) but is **blocked on real secrets**: Neon project `findleads`
 (`polished-wildflower-97333280`, dev+test branches) was created with user approval and
 connection strings handed to the user to paste into `.env`/`.env.test` (Claude Code is
-structurally denied `.env*` read/write by this repo's own permission config — a deliberate
-guardrail, not worked around). The Google Cloud Places API key restriction (SEC-02) still
-needs the user's manual action in Cloud Console — genuinely un-automatable. Waves 3-5 of
-Phase 1 are blocked until the user completes both. **While waiting, pivoted to Phase 2**
-(Places API Scrape Client) research, which doesn't need live secrets to plan. Stale pre-pivot
-docs (`.claude/CLAUDE.md`, `.claude/rules/findleads-architecture.md`) were reconciled earlier
-— `.planning/` is the source of truth. TaskCreate #10-15 tracks phase-by-phase progress. Repo
-is public on GitHub (`RikepilB/findleads`), MIT licensed, `master` ~19 commits ahead of
-`origin/master` (LICENSE push was the last confirmed push).
+structurally denied `.env*` read/write/reference by this repo's own permission config — a
+deliberate guardrail, applies to Bash literal-argument references too, not worked around).
+The Google Cloud Places API key restriction (SEC-02) still needs the user's manual action in
+Cloud Console. Waves 3-5 of Phase 1 are blocked until the user completes both — **while
+waiting, pivoted to Phase 2** (Places API Scrape Client): research done (complete,
+committed), planning in progress. One Phase 2 subagent hit an account-level **session
+limit** (not the earlier transient rate-limiting) but had already written good output before
+dying — recovered by verifying and committing directly rather than re-running. Stale
+pre-pivot docs (`.claude/CLAUDE.md`, `.claude/rules/findleads-architecture.md`) were
+reconciled earlier — `.planning/` is the source of truth. TaskCreate #10-15 tracks
+phase-by-phase progress. Repo is public on GitHub (`RikepilB/findleads`), MIT licensed,
+`master` ~20 commits ahead of `origin/master` (LICENSE push was the last confirmed push).
 
 ---
 
