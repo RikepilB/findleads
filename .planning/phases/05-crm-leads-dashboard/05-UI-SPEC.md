@@ -115,22 +115,26 @@ for plain body text, table borders, or as a background fill outside these elemen
 | Notes save feedback | Autosave on blur; show inline "Saved" text (12px, gray-500) next to the field for ~2s after a successful `PATCH`, "Save failed — try again" (red-700) on error |
 | Contacted toggle labels | "Contacted" / "Not contacted" — toggle switch, not a checkbox, to read clearly in a dense table |
 | Destructive confirmation | Not applicable — no destructive actions in this phase (see Assumptions & Flags #4) |
-| Google attribution (SEC-03) | "Powered by Google" — see Attribution Requirement section below |
+| Google attribution (SEC-03) | "Google Maps" — see Attribution Requirement section below |
 
 ---
 
 ## Attribution Requirement (SEC-03)
 
-Per Google Maps Platform's attribution requirements, any UI displaying Places API-sourced
-content must show Google attribution, even with no map rendered. Contract:
+Per Google Maps Platform's attribution requirements (confirmed against the official
+`developers.google.com/maps/documentation/places/web-service/policies` page during Phase 5
+domain research — corrects an earlier draft of this spec that used non-standard copy),
+any UI displaying Places API-sourced content must show Google attribution, even with no map
+rendered. Contract:
 
-- Text: **"Powered by Google"**, 12px, gray-500, un-styled as a link (no need to link out for
-  v1 — plain text attribution satisfies the requirement when no interactive map is shown).
-- Placement: in the persistent app layout (e.g. `app/layout.tsx` footer or a slim bar under the
-  top nav), visible on **every** page — Leads list and Job History both display Places-derived
-  content (business names/addresses on the leads table; category/location on job rows), so a
-  single global placement is safer than adding it per-view and risking one view shipping
-  without it.
+- Text: **"Google Maps"** (the official required attribution string — NOT "Powered by
+  Google"), 12px, gray-500, un-styled as a link (no need to link out for v1 — plain text
+  attribution satisfies the requirement when no interactive map is shown).
+- Placement: adjacent to each table displaying Places-sourced content (Leads table and Job
+  History table), not solely in a distant global footer — a single global placement risks
+  reading as detached from the specific content it's attributing. A persistent app-layout
+  placement (e.g. a slim bar under the top nav, visible on every page) satisfies this as long
+  as it's visually associated with the content area, not buried at the bottom of a long page.
 - Do not modify, recolor, or shrink below 12px. Do not place behind a collapsed menu.
 
 ---
