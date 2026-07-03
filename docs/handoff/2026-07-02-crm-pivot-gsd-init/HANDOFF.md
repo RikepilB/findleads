@@ -591,7 +591,15 @@ wiping the dev DB or burning API calls fishing for a zero-result query) — thos
 code-read-verified only, per `05-VERIFICATION.md`. MVP is genuinely done on the golden path,
 not just green-on-paper; the untested-live paths are low-risk conditional renders, not gaps.
 
-## Next steps (immediate)
+## PUSHED (2026-07-03)
+User replied "ship" when asked. Pushed `master` -> `origin/master`, fast-forward,
+`7b2ae8c..0c04f17` (131 commits). `RikepilB/findleads` on GitHub now has the full MVP.
+Two cleanup questions still asked, not yet answered: (1) kill orphaned `node.exe` PID 55248
+on port 3000, (2) clean up manual-QA test data in the dev DB (3 test jobs + 1 contacted/notes
+edit). Not acting on either without an explicit yes — both are easily reversible/low-stakes
+but still confirm-first per the session's own established pattern.
+
+## Next steps (immediate) — superseded by PUSHED above, kept for history
 1. **Raise the deferred `origin/master` push decision with the user** — local `master` is far
    ahead of `origin/master` (only the early LICENSE commit was ever explicitly confirmed for
    push). This was always deliberately deferred to a single batched confirm point once the MVP

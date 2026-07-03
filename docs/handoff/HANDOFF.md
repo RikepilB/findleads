@@ -51,14 +51,18 @@ autonomy, stop only for irreversible/detrimental changes). All secrets set up (N
 Cloud Places API key, restricted, SEC-02 user-confirmed). Places API "No Caching" ToS risk
 knowingly accepted for this personal tool (revisit before public launch).
 
-**Open, not yet decided:** repo is public on GitHub (`RikepilB/findleads`), MIT licensed.
-`master` far ahead of `origin/master` (only the early LICENSE commit was ever explicitly
-confirmed for push) — deliberately deferred to a single batched confirm point until the MVP
-shipped; now that it has, this needs to be raised with the user, not pushed unilaterally. What
-"Ship MVP" (TaskCreate #15, now in_progress) means beyond the phase-completion bookkeeping
-already done — push? a deploy target? a walkthrough? — is also genuinely open; ask, don't assume.
+**Pushed.** User said "ship" — pushed `master` to `origin/master` (131 commits, fast-forward,
+`7b2ae8c..0c04f17`). Repo `RikepilB/findleads` on GitHub now has the complete MVP.
 
-TaskCreate #10-14 all completed, #15 in_progress. Full detail: this session's own
+**Still open (asked user, awaiting answer):**
+1. An orphaned `node.exe` on port 3000 (PID 55248, likely a zombie dev server from an earlier
+   executor's live testing) — offered to kill it, not done unilaterally.
+2. Real test data + Places API spend left in the dev DB from manual QA (locksmith/Lima 57
+   leads, underwater-basket-weaving 45, pottery-classes 60, one contacted+notes edit on
+   "Petite Thuet") — offered to clean up, not done unilaterally.
+
+TaskCreate #10-14 all completed, #15 ("Ship MVP") in_progress — pending the two cleanup
+answers above before it can close. Full detail: this session's own
 `2026-07-02-crm-pivot-gsd-init/HANDOFF.md` (append-only log of the whole build).
 
 ---
