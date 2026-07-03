@@ -416,9 +416,26 @@ autonomously, that's a legitimate stop-and-ask point** — not a "silently fake 
    valid before starting (not just trust the user's confirmation blindly).
 
 ## Context note
-Session context is tight (~69% used as of this handoff). If a compaction/pause hits mid-Wave-3,
-this handoff plus the running executor's own commits are the recovery path — no need to
-re-derive plan state from the transcript.
+Session context is tight (~71% used as of this handoff). If a compaction/pause hits, this
+handoff plus commits are the recovery path — no need to re-derive plan state from transcript.
+
+## PHASE 1 COMPLETE — shipped
+- Waves 3/4/5 all executed clean after user finished secrets: 03 (schema+client+migration,
+  real round-trip against BOTH dev and test Neon, commits `d4359b3`/`e15600b`), 04 (DAL —
+  jobs.ts/businesses.ts/leads.ts, commits `704f01c`/`1a14176`), 05 (integration tests, real
+  Neon, commits `696ae25`/`a9ce29e`). Full suite: **9 files, 43 tests, all pass** (Phases 1+2
+  combined), typecheck/lint clean.
+- `gsd-verifier` scored 4/5 (SEC-02 — the live Google Cloud Console key restriction — can't be
+  inspected from code, session record was ambiguous since I stopped before the final Save).
+  Asked the user directly via `AskUserQuestion`; they confirmed "Yes, restricted and saved."
+  Updated `01-VERIFICATION.md` to 5/5 `status: passed` with that confirmation recorded,
+  committed `dd31349`.
+- Marked Phase 1 complete (`gsd-tools query phase.complete 1`), tracking commit `ecb0b6c`.
+  TaskCreate #10 marked completed.
+- **Next: Phase 3 execution** (already fully planned — 3 plans: 03-01 checkpoint/query-comp/
+  migration, 03-02 runScrapeJob worker, 03-03 POST /api/jobs + integration proof). This is the
+  first phase that composes Phase 1's DB layer with Phase 2's Places client — real secrets now
+  exist for it to run against.
 
 ## Files in this folder
 - `HANDOFF.md` — this file (curated digest)

@@ -63,17 +63,19 @@ false positive (wanted a fix+test that already existed from the Phase 2 bugfix a
 checker missed checking the test file and trusted research text written before that fix
 landed) — resolved by correcting the stale research doc instead of adding a redundant task.
 
-**User has now finished ALL secrets setup** (Neon + Google Cloud Places API key, both
-confirmed by the user) — **Phase 1 is unblocked.** Wave 3 (schema/Drizzle/first migration
-against real Neon) is executing now; Waves 4-5 (DAL, integration tests) queued next, then
-Phase 1 verify+ship, then Phase 3 execution (already fully planned: 3 plans ready). Earlier:
-walked the user through Google Cloud project setup via Chrome automation (project
-`findleads-501305`, enabled Places API (New) specifically — not the legacy API), then handed
-the credential-restriction step to the user themselves per their request to keep secrets
-handling in their own hands. Delivered a live-fetched cost breakdown (Enterprise-tier
-billing, $35/1000 calls after 1,000/month free, ~$0/month at MVP scale). **Context ~69% used
-this session — a pause/compaction is likely soon; this handoff carries full state, no need to
-re-derive from transcript.** Stopped manufacturing
+**Phase 1 (Data Foundation & Security) is SHIPPED.** All 5 waves executed against real Neon
+Postgres (dev + test branches) after the user finished secrets setup — schema, Drizzle
+client, DAL (`lib/db/{jobs,businesses,leads}.ts`), integration tests. 43/43 tests pass across
+Phases 1+2 combined. `gsd-verifier` scored 5/5 (SEC-02's live Cloud Console key restriction
+was confirmed directly by the user after the verifier correctly flagged it as unresolvable
+from code alone). Marked complete and shipped. **Now executing Phase 3** (Job Creation &
+Checkpointed Worker — already fully planned, 3 plans) — first phase composing Phase 1's DB
+layer with Phase 2's Places client. Earlier: walked the user through Google Cloud project
+setup via Chrome automation (project `findleads-501305`, Places API (New) specifically), then
+handed the credential-restriction step to the user per their own request. Delivered a
+live-fetched cost breakdown (Enterprise-tier, $35/1000 after 1,000/month free, ~$0/month at
+MVP scale). **Context ~71% used this session — a pause/compaction is likely soon; this
+handoff carries full state.** Stopped manufacturing
 further speculative Phase 4/5 research since it would compound drift risk on top of
 unexecuted Phase 3 interfaces for diminishing value — waiting for the user instead. Stale
 pre-pivot docs were reconciled earlier — `.planning/` is the source of truth. TaskCreate
