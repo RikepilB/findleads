@@ -520,19 +520,43 @@ handoff plus commits are the recovery path — no need to re-derive plan state f
   and 05-04 (Job History page + swr poller, CRM-05/SCRAPE-07 UI) executing in parallel.
   05-03 has Server Actions committed (`e70061e`/`a89ff81`) so far.
 
+## Next steps (immediate) — superseded, see MVP COMPLETE update below
+
+## MVP COMPLETE (2026-07-03)
+- Wave 2 finished: 05-03 (Leads page + Server Actions, CRM-01..04) and 05-04 (Job History
+  page + swr poller, CRM-05/SCRAPE-07) both shipped, 103/103 tests green. Both parallel
+  agents shared one git index (no worktree isolation) and one commit (`c94d9cd`) ended up
+  blending files from both plans — sanity-checked directly (all 8 expected files present,
+  correct content, clean tree) before proceeding; cosmetic commit-attribution issue only,
+  no data loss, not rewritten.
+- `gsd-verifier` ran, used its `advisor` call effectively: caught a real gap — `CRM-01`
+  (Leads list) was FAILING in production because `app/leads/page.tsx` had no
+  `export const dynamic = 'force-dynamic'` (its sibling `/jobs` had this fix, `/leads` didn't).
+  `pnpm build`'s route table showed `/leads` as `○ (Static)`; grep confirmed nothing in the
+  scrape pipeline calls `revalidatePath('/leads')` — only the notes/contacted Server Actions
+  do. Net effect: a freshly completed scrape's new leads would never appear on `/leads` in a
+  production deploy until an unrelated edit fired elsewhere, and on a first-ever scrape there's
+  nothing yet to edit. Invisible in `pnpm dev` and the test suite — only visible via `next build`.
+- Fixed directly (one line, matching `/jobs`'s existing pattern), commit `1d9b12d`. Re-ran
+  `pnpm build` (confirmed `/leads` now `ƒ (Dynamic)`), full suite (103/103), typecheck, lint —
+  all green. Updated `05-VERIFICATION.md` to `status: passed`, 7/7, with the gap + fix + recheck
+  documented in frontmatter (commit `f94b853`).
+- `gsd-tools query phase.complete 5` → `is_last_phase: true`, `next_phase: null`. Committed
+  ROADMAP.md/STATE.md updates (`8166a5c`). **All 5 phases, 27 requirements, MVP roadmap done.**
+
 ## Next steps (immediate)
-1. Confirm both Wave 2 executors (05-03, 05-04) finish — check git log/SUMMARY.md files;
-   respawn a targeted continuation (not full restart) if either dies mid-stream.
-2. Spawn `gsd-verifier` for Phase 5 (goal-backward against ROADMAP.md success criteria + all
-   7 requirement IDs: SCRAPE-07, CRM-01..05, SEC-03).
-3. If verifier passes: `gsd-tools query phase.complete 5`, commit tracking files
-   (ROADMAP.md/STATE.md/REQUIREMENTS.md).
-4. **This is the last phase — once shipped, the MVP is complete.** No Phase 6 to plan.
-5. Local `master` is far ahead of `origin/master` — push decision still deliberately deferred
-   to a single batched confirm point, not per-phase. Raise this with the user once MVP ships;
-   don't push unilaterally.
-6. Remind user to run `/export docs/handoff/2026-07-02-crm-pivot-gsd-init/transcript.md` —
-   still not done as of this update.
+1. **Raise the deferred `origin/master` push decision with the user** — local `master` is far
+   ahead of `origin/master` (only the early LICENSE commit was ever explicitly confirmed for
+   push). This was always deliberately deferred to a single batched confirm point once the MVP
+   shipped, not auto-pushed per phase. Do not push unilaterally — ask first.
+2. Remind user to run `/export docs/handoff/2026-07-02-crm-pivot-gsd-init/transcript.md` —
+   still not done as of this update (user did run a bare `/export` once, which landed a file
+   at the repo root — `2026-07-03-154438-...txt` — not in this session's own handoff folder;
+   worth pointing out so they can move/re-run it if they want it archived properly).
+3. TaskCreate #15 ("Ship MVP") is in_progress — what "ship" means beyond phase-completion
+   bookkeeping (already done) is genuinely open: likely candidates are the push decision above,
+   a production deploy target (Vercel?), and/or a final user walkthrough of the running app.
+   Ask the user rather than assuming.
 
 ## Files in this folder
 - `HANDOFF.md` — this file (curated digest)
