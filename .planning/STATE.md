@@ -4,16 +4,16 @@ milestone: v1.0
 milestone_name: milestone
 current_phase: 5
 current_phase_name: CRM Leads Dashboard
-status: planning
-stopped_at: Completed 05-01-PLAN.md
-last_updated: "2026-07-03T20:02:14.708Z"
+status: executing
+stopped_at: Completed 05-03-PLAN.md
+last_updated: "2026-07-03T20:17:46.540Z"
 last_activity: 2026-07-03
-last_activity_desc: Phase 4 complete, transitioned to Phase 5
+last_activity_desc: Completed 05-03-PLAN.md (Leads page + Server Actions, CRM-01..04)
 progress:
   total_phases: 5
   completed_phases: 4
   total_plans: 18
-  completed_plans: 16
+  completed_plans: 17
   percent: 80
 ---
 
@@ -29,11 +29,11 @@ See: .planning/PROJECT.md (updated 2026-07-02)
 ## Current Position
 
 Phase: 5 of 5 (CRM Leads Dashboard)
-Plan: Not started
-Status: Ready to plan
-Last activity: 2026-07-03 — Phase 4 complete, transitioned to Phase 5
+Plan: 4 of 4
+Status: Ready to execute
+Last activity: 2026-07-03 — Completed 05-03-PLAN.md (Leads page + Server Actions, CRM-01..04)
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [█████████░] 94%
 
 ## Performance Metrics
 
@@ -60,6 +60,7 @@ Progress: [░░░░░░░░░░] 0%
 *Updated after each plan completion*
 | Phase 05 P02 | 15 | 2 tasks | 2 files |
 | Phase 05 P01 | 15 | 2 tasks | 11 files |
+| Phase 05 P03 | 25min | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -80,6 +81,8 @@ Recent decisions affecting current work:
 
 - [Phase 05]: Skipped active-tab highlighting to avoid a use-client boundary on the root layout; static two-link nav satisfies UI-SPEC's two-view requirement
 - [Phase 05]: SCRAPE-07 fix: capHit computed from raw pagesFetched/nextPageToken before mapPlaceToLead's closed-business filter, carried forward monotonically through checkpoints, persisted on final done write as jobs.resultCapHit
+- [Phase 05]: z.coerce.boolean() coerces the string 'false' to true (Boolean('false') is truthy) -- use z.enum(['true','false']).transform(v => v === 'true') for any boolean traveling through a FormData/string boundary
+- [Phase 05]: Server Actions resolving to a value (e.g. { ok, error }) cannot be assigned directly to a form's action prop (React types require void|Promise<void>) -- wrap via useActionState from a small Client Component
 
 ### Pending Todos
 
@@ -110,8 +113,8 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-07-03T20:02:10.130Z
-Stopped at: Completed 05-01-PLAN.md
+Last session: 2026-07-03T20:17:46.532Z
+Stopped at: Completed 05-03-PLAN.md
 final 5-phase mapping.
 Resume file: 
 None

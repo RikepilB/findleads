@@ -35,10 +35,10 @@ Requirements for initial release. Each maps to a roadmap phase.
 
 ### CRM
 
-- [ ] **CRM-01**: Leads list view reads from `businesses`, showing tier-1 status, contacted flag, and notes
-- [ ] **CRM-02**: User can add/edit freeform notes per business
-- [ ] **CRM-03**: User can toggle contacted/not-contacted status per business
-- [ ] **CRM-04**: Notes/contacted-status changes are timestamped (`updated_at`) so staleness is visible
+- [x] **CRM-01**: Leads list view reads from `businesses`, showing tier-1 status, contacted flag, and notes
+- [x] **CRM-02**: User can add/edit freeform notes per business
+- [x] **CRM-03**: User can toggle contacted/not-contacted status per business
+- [x] **CRM-04**: Notes/contacted-status changes are timestamped (`updated_at`) so staleness is visible
 - [ ] **CRM-05**: Job history/run list view shows job status, target location/category, leads found, created_at
 
 ### Export
@@ -114,10 +114,10 @@ Explicitly excluded. Documented to prevent scope creep.
 | EXPORT-01 | Phase 4: Job Monitoring, Resumability & Export | Complete |
 | EXPORT-02 | Phase 4: Job Monitoring, Resumability & Export | Complete |
 | SCRAPE-07 | Phase 5: CRM Leads Dashboard (05-04, pending) | Pending |
-| CRM-01 | Phase 5: CRM Leads Dashboard (05-03, pending) | Pending |
-| CRM-02 | Phase 5: CRM Leads Dashboard (05-03, pending) | Pending |
-| CRM-03 | Phase 5: CRM Leads Dashboard (05-03, pending) | Pending |
-| CRM-04 | Phase 5: CRM Leads Dashboard (05-03, pending) | Pending |
+| CRM-01 | Phase 5: CRM Leads Dashboard (05-03, pending) | Complete |
+| CRM-02 | Phase 5: CRM Leads Dashboard (05-03, pending) | Complete |
+| CRM-03 | Phase 5: CRM Leads Dashboard (05-03, pending) | Complete |
+| CRM-04 | Phase 5: CRM Leads Dashboard (05-03, pending) | Complete |
 | CRM-05 | Phase 5: CRM Leads Dashboard (05-04, pending) | Pending |
 | SEC-03 | Phase 5: CRM Leads Dashboard | Complete |
 
