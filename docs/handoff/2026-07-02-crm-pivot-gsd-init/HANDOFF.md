@@ -351,19 +351,61 @@ autonomously, that's a legitimate stop-and-ask point** — not a "silently fake 
 - `.planning/phases/03-job-creation-checkpointed-worker/03-RESEARCH.md` (Pitfall 5 correction),
   `03-VALIDATION.md` (new) — commit `d71ddc9`.
 
+## What was done (continued — Google Cloud setup via Chrome automation, then handed to user)
+- User asked to use `/chrome` to walk through Google Cloud Platform setup for the Places API
+  key (SEC-02), following a TL;DR guide they pasted. Used `mcp__claude-in-chrome__*` tools:
+  - Created a dedicated Google Cloud project **findleads** (project ID `findleads-501305`,
+    org `ridi-pillaca-org`) rather than reusing the generic "My First Project" — cleaner
+    isolation for restricting a key later.
+  - Enabled **Places API (New)** specifically (service name `places.googleapis.com`) — NOT
+    the legacy "Places API" (`places-backend.googleapis.com`), which the pasted guide's
+    generic search would have surfaced first. Confirmed by checking `lib/places/client.ts`'s
+    actual `TEXT_SEARCH_URL` before enabling, since findleads' code targets the New API
+    specifically.
+  - Google auto-generated an unrestricted API key ("Maps Platform API Key," default scoped to
+    all 35 enabled Maps Platform APIs). Renamed it to "findleads Places API key" and started
+    narrowing its API restriction to Places API (New) only (unchecked ~30 of 35 APIs, one
+    "Places API (New)" left checked) — this is exactly SEC-02's requirement.
+  - **User interrupted to take over**: "for apis and secrets let me handle... so we keep
+    security and confidentiality." Stopped immediately — did NOT click the final OK/Save on
+    the key restriction, left the browser in the in-progress-but-unsaved state, and gave the
+    user the exact 4 remaining manual steps (confirm only Places API (New) checked → OK →
+    Save → copy key into `.env`) rather than finishing it myself. Correct call per the global
+    guardrail on user-initiated credential/secret handling — didn't push back, just handed
+    off cleanly.
+  - User separately confirmed they already pasted the Neon `DATABASE_URL`/`TEST_DATABASE_URL`
+    into `.env`/`.env.test` themselves — only `PLACES_API_KEY` is still missing.
+- User asked for a future cost/free-tier evaluation for the Places API. Fetched **current**
+  pricing directly from `developers.google.com`/`mapsplatform.google.com` (not memory/stale
+  research) rather than trusting the project's own `PITFALLS.md` figures at face value:
+  confirmed `websiteUri`/`internationalPhoneNumber`/`rating`/`userRatingCount` are all
+  Enterprise-tier fields (so the whole field-masked call bills Enterprise), 1,000 free
+  Enterprise calls/month, $35/1000 calls at the lowest volume tier after that (down to $2.63/
+  1000 at 5M+), and the account's own $410.03/55-day trial credit. Gave the user a plain
+  cost table — for MVP-scale usage (few jobs/week, ≤3 pages each), realistically $0/month.
+- **⚠ Context warning fired at 67% used during this exchange** — flagging here per the hook's
+  own instruction to avoid starting new complex work and let the user know to expect a pause/
+  compaction soon.
+
+## Files changed (continued)
+- None in the repo this exchange — this was pure Google Cloud Console browser work (no local
+  file changes) plus a research/cost-eval answer given directly in chat, not written to disk.
+
 ## Next steps
-1. **Still waiting on user**: paste `DATABASE_URL`/`TEST_DATABASE_URL` into `.env`/`.env.test`,
-   restrict the GCP Places API key, add `PLACES_API_KEY=` to `.env`. This is now the ONLY
-   thing blocking further MVP progress — Phases 1 (partial), 2 (shipped), and 3 (fully
-   planned) are all otherwise ready.
-2. Once unblocked: resume Phase 1 Waves 3-5 (schema, DAL, integration tests) → verify → ship,
-   then execute Phase 3's 3 plans → verify → ship, then plan+execute Phases 4-5 in order.
+1. **Still waiting on user** (now explicitly their own action, not mine): finish restricting
+   the "findleads Places API key" to Places API (New) only in the open Chrome tab (or from
+   scratch if they navigate away — steps are in the last chat message), then paste
+   `PLACES_API_KEY=` into `.env`. Neon secrets are confirmed already done by the user.
+2. Once `PLACES_API_KEY` lands: resume Phase 1 Waves 3-5 (schema, DAL, integration tests) →
+   verify → ship, then execute Phase 3's 3 plans → verify → ship, then plan+execute Phases 4-5.
 3. Local `master` is ~38 commits ahead of `origin/master` (LICENSE push was the last confirmed
    push) — will need a push decision once ship-worthy work exists (deliberately not
    auto-pushing per phase — visible external action, batching for a deliberate confirm).
 4. TaskCreate #10-15 tracks phase-by-phase progress (#10 Phase 1: wave1 done, waves 2-5
-   blocked_on_user_env_setup; #11 Phase 2: completed; #12 Phase 3: planned_and_checked,
-   awaiting Phase 1 unblock).
+   blocked_on_user_env_setup [Neon done by user, GCP key in progress by user]; #11 Phase 2:
+   completed; #12 Phase 3: planned_and_checked, awaiting Phase 1 unblock).
+5. Given the 67%-context warning, expect a compaction soon — this handoff should carry full
+   context forward; no need to re-derive anything above from the raw transcript.
 
 ## Files in this folder
 - `HANDOFF.md` — this file (curated digest)
