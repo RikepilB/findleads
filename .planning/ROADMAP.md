@@ -28,7 +28,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 2: Places API Scrape Client** - Field-masked, locale-aware search with tier-1 classification and closed-business filtering (completed 2026-07-03)
 - [x] **Phase 3: Job Creation & Checkpointed Worker** - Submit a scrape request; a resumable worker runs it safely within the platform time limit (completed 2026-07-03)
 - [x] **Phase 4: Job Monitoring, Resumability & Export** - Poll jobs to completion (auto-resume, honest error/zero-result states) and export CSV (completed 2026-07-03)
-- [ ] **Phase 5: CRM Leads Dashboard** - Review leads, manage notes/contacted status, and view job history with attribution
+- [x] **Phase 5: CRM Leads Dashboard** - Review leads, manage notes/contacted status, and view job history with attribution (completed 2026-07-03)
 
 ## Phase Details
 
@@ -130,13 +130,13 @@ Plans:
   3. Richard can view job history showing status, target location/category, leads found, and `created_at` — including a "60+ results found, showing first 60 — refine your search" message when a job hit the Text Search cap
   4. Any UI displaying Places content, including the map-less leads table, shows Google Maps attribution
 
-**Plans**: 3/4 plans executed
+**Plans**: 4/4 plans complete
 Plans:
 
 - [x] 05-01-PLAN.md — DAL (listBusinesses/updateBusinessNotes/setBusinessContacted/listJobs) + SCRAPE-07 resultCapHit additive migration
 - [x] 05-02-PLAN.md — Shared layout: two-tab nav + Google Maps attribution
 - [x] 05-03-PLAN.md — Leads page + notes/contacted Server Actions (CRM-01..04)
-- [ ] 05-04-PLAN.md — Job History page, job-creation form, swr-based status poller (CRM-05, SCRAPE-07)
+- [x] 05-04-PLAN.md — Job History page, job-creation form, swr-based status poller (CRM-05, SCRAPE-07)
 
 **UI hint**: yes
 
@@ -151,7 +151,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 2. Places API Scrape Client | 4/4 | Complete    | 2026-07-03 |
 | 3. Job Creation & Checkpointed Worker | 3/3 | Complete    | 2026-07-03 |
 | 4. Job Monitoring, Resumability & Export | 2/2 | Complete    | 2026-07-03 |
-| 5. CRM Leads Dashboard | 3/4 | In Progress|  |
+| 5. CRM Leads Dashboard | 4/4 | Complete   | 2026-07-03 |
 
 ---
 *Roadmap created: 2026-07-02*

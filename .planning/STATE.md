@@ -4,17 +4,17 @@ milestone: v1.0
 milestone_name: milestone
 current_phase: 5
 current_phase_name: CRM Leads Dashboard
-status: executing
+status: verifying
 stopped_at: Completed 05-03-PLAN.md
-last_updated: "2026-07-03T20:17:46.540Z"
+last_updated: "2026-07-03T20:22:14.719Z"
 last_activity: 2026-07-03
 last_activity_desc: Completed 05-03-PLAN.md (Leads page + Server Actions, CRM-01..04)
 progress:
   total_phases: 5
-  completed_phases: 4
+  completed_phases: 5
   total_plans: 18
-  completed_plans: 17
-  percent: 80
+  completed_plans: 18
+  percent: 100
 ---
 
 # Project State
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-07-02)
 
 Phase: 5 of 5 (CRM Leads Dashboard)
 Plan: 4 of 4
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-07-03 — Completed 05-03-PLAN.md (Leads page + Server Actions, CRM-01..04)
 
 Progress: [█████████░] 94%
@@ -61,6 +61,7 @@ Progress: [█████████░] 94%
 | Phase 05 P02 | 15 | 2 tasks | 2 files |
 | Phase 05 P01 | 15 | 2 tasks | 11 files |
 | Phase 05 P03 | 25min | 2 tasks | 7 files |
+| Phase 05 P04 | 25min | 3 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -83,6 +84,9 @@ Recent decisions affecting current work:
 - [Phase 05]: SCRAPE-07 fix: capHit computed from raw pagesFetched/nextPageToken before mapPlaceToLead's closed-business filter, carried forward monotonically through checkpoints, persisted on final done write as jobs.resultCapHit
 - [Phase 05]: z.coerce.boolean() coerces the string 'false' to true (Boolean('false') is truthy) -- use z.enum(['true','false']).transform(v => v === 'true') for any boolean traveling through a FormData/string boundary
 - [Phase 05]: Server Actions resolving to a value (e.g. { ok, error }) cannot be assigned directly to a form's action prop (React types require void|Promise<void>) -- wrap via useActionState from a small Client Component
+- [Phase 05-04]: Approved swr@2.4.2 checkpoint after independent npm/downloads verification (github.com/vercel/swr, 12.2M weekly downloads)
+- [Phase 05-04]: isTerminalStatus split into its own directive-free module so it is unit-testable without pulling swr through Vitest's react-server condition
+- [Phase 05-04]: app/jobs/page.tsx uses export const dynamic = 'force-dynamic' since it reads live DB state directly and must never be statically prerendered
 
 ### Pending Todos
 
@@ -113,7 +117,7 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-07-03T20:17:46.532Z
+Last session: 2026-07-03T20:21:46.337Z
 Stopped at: Completed 05-03-PLAN.md
 final 5-phase mapping.
 Resume file: 

@@ -15,7 +15,7 @@ Requirements for initial release. Each maps to a roadmap phase.
 - [x] **SCRAPE-04**: Scrape excludes closed businesses using the `business_status` field (`CLOSED_PERMANENTLY`/`CLOSED_TEMPORARILY`)
 - [x] **SCRAPE-05**: Each lead is classified tier-1 ("no website found on Google") when `websiteUri` is absent — UI/export copy states it as a signal, not a verified fact
 - [x] **SCRAPE-06**: Text Search pagination retries `nextPageToken` with backoff (~2-5s) instead of assuming immediate availability
-- [ ] **SCRAPE-07**: UI surfaces explicit messaging when the 60-result Text Search cap is hit ("60+ results found, showing first 60 — refine your search")
+- [x] **SCRAPE-07**: UI surfaces explicit messaging when the 60-result Text Search cap is hit ("60+ results found, showing first 60 — refine your search")
 
 ### Job Execution
 
@@ -39,7 +39,7 @@ Requirements for initial release. Each maps to a roadmap phase.
 - [x] **CRM-02**: User can add/edit freeform notes per business
 - [x] **CRM-03**: User can toggle contacted/not-contacted status per business
 - [x] **CRM-04**: Notes/contacted-status changes are timestamped (`updated_at`) so staleness is visible
-- [ ] **CRM-05**: Job history/run list view shows job status, target location/category, leads found, created_at
+- [x] **CRM-05**: Job history/run list view shows job status, target location/category, leads found, created_at
 
 ### Export
 
@@ -113,12 +113,12 @@ Explicitly excluded. Documented to prevent scope creep.
 | JOB-06 | Phase 4: Job Monitoring, Resumability & Export | Complete |
 | EXPORT-01 | Phase 4: Job Monitoring, Resumability & Export | Complete |
 | EXPORT-02 | Phase 4: Job Monitoring, Resumability & Export | Complete |
-| SCRAPE-07 | Phase 5: CRM Leads Dashboard (05-04, pending) | Pending |
+| SCRAPE-07 | Phase 5: CRM Leads Dashboard (05-04, pending) | Complete |
 | CRM-01 | Phase 5: CRM Leads Dashboard (05-03, pending) | Complete |
 | CRM-02 | Phase 5: CRM Leads Dashboard (05-03, pending) | Complete |
 | CRM-03 | Phase 5: CRM Leads Dashboard (05-03, pending) | Complete |
 | CRM-04 | Phase 5: CRM Leads Dashboard (05-03, pending) | Complete |
-| CRM-05 | Phase 5: CRM Leads Dashboard (05-04, pending) | Pending |
+| CRM-05 | Phase 5: CRM Leads Dashboard (05-04, pending) | Complete |
 | SEC-03 | Phase 5: CRM Leads Dashboard | Complete |
 
 **Coverage:**
