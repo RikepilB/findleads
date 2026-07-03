@@ -36,6 +36,11 @@ export async function updateJobProgress(
     leadsFound: number
     cursor: JobCursor | null
     errorReason?: string | null
+    // SCRAPE-07: only passed on the final `status: 'done'` write. Omitted on
+    // the non-final 'running'/'partial'/'error' calls, in which case the
+    // column is left untouched by this `.set()` (schema default `false`
+    // covers the very first row before any write).
+    resultCapHit?: boolean
   },
 ): Promise<void> {
   await db
@@ -46,6 +51,7 @@ export async function updateJobProgress(
       cursor: params.cursor,
       errorReason: params.errorReason ?? null,
       updatedAt: new Date(),
+      ...(params.resultCapHit !== undefined ? { resultCapHit: params.resultCapHit } : {}),
     })
     .where(eq(jobs.id, jobId))
 }

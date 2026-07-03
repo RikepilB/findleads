@@ -1,0 +1,1 @@
+ALTER TABLE "jobs" ADD COLUMN "result_cap_hit" boolean DEFAULT false NOT NULL;

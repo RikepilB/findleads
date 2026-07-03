@@ -2,10 +2,15 @@ export interface JobCursor {
   pageToken: string | null
   pagesFetched: number
   done: boolean
+  // SCRAPE-07: true once any page during this job's run genuinely exhausted
+  // MAX_PAGES with a truthy nextPageToken — monotonic within a run (once
+  // true, stays true across subsequent checkpoints), independent of
+  // closed-business filtering applied downstream.
+  capHit: boolean
 }
 
 export function initialCursor(): JobCursor {
-  return { pageToken: null, pagesFetched: 0, done: false }
+  return { pageToken: null, pagesFetched: 0, done: false, capHit: false }
 }
 
 // ~250s, leaving headroom under Vercel Hobby's non-configurable 300s ceiling

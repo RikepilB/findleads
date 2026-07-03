@@ -37,12 +37,18 @@ async function defaultFetchOnePage(
   // retry/backoff wrapper (SCRAPE-06), unchanged.
   const response = cursor.pageToken ? await fetchNextPage(doFetch) : await doFetch()
 
+  const pagesFetched = cursor.pagesFetched + 1
+  // SCRAPE-07 (Pitfall 1 Option B): computed from the RAW response — page
+  // count and nextPageToken — before mapPlaceToLead's closed-business filter
+  // runs below. This is the only point the worker can distinguish "genuinely
+  // exhausted the cap" from "closed-business filtering happened to drop
+  // leadsFound below 60"; once true it stays true for the rest of the run.
+  const capHit = pagesFetched >= MAX_PAGES && Boolean(response.nextPageToken)
+  const hasMore = Boolean(response.nextPageToken) && pagesFetched < MAX_PAGES
+
   const mapped = response.places
     .map(mapPlaceToLead)
     .filter((lead): lead is MappedLead => lead !== null)
-
-  const pagesFetched = cursor.pagesFetched + 1
-  const hasMore = Boolean(response.nextPageToken) && pagesFetched < MAX_PAGES
 
   return {
     mapped,
@@ -50,6 +56,7 @@ async function defaultFetchOnePage(
       pageToken: hasMore ? (response.nextPageToken ?? null) : null,
       pagesFetched,
       done: !hasMore,
+      capHit: cursor.capHit || capHit,
     },
   }
 }
@@ -110,7 +117,12 @@ export async function runScrapeJob(
       await updateJobProgress(jobId, { status: 'running', leadsFound, cursor })
     }
 
-    await updateJobProgress(jobId, { status: 'done', leadsFound, cursor: null })
+    await updateJobProgress(jobId, {
+      status: 'done',
+      leadsFound,
+      cursor: null,
+      resultCapHit: cursor.capHit,
+    })
   } catch (err) {
     // See Pitfall 1: this is the only place an error inside after() can be
     // surfaced at all — no HTTP response exists to attach it to.

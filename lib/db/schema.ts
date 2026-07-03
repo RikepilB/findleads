@@ -15,6 +15,10 @@ export const jobs = pgTable('jobs', {
   leadsFound: integer('leads_found').notNull().default(0),
   cursor: jsonb('cursor').$type<JobCursor>(),
   errorReason: text('error_reason'),
+  // Added by Phase 5 (additive migration) — SCRAPE-07: true when the worker
+  // genuinely exhausted the 3-page/60-result Text Search cap, computed from
+  // raw pagination signal BEFORE closed-business filtering can hide it.
+  resultCapHit: boolean('result_cap_hit').notNull().default(false),
 })
 
 export const leads = pgTable('leads', {

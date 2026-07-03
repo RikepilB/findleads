@@ -27,7 +27,7 @@ const MAPPED_LEADS: MappedLead[] = (torontoFixture.places as RawPlace[])
 async function stubFetchOnePage(): Promise<{ mapped: MappedLead[]; nextCursor: JobCursor }> {
   return {
     mapped: MAPPED_LEADS,
-    nextCursor: { pageToken: null, pagesFetched: 1, done: true },
+    nextCursor: { pageToken: null, pagesFetched: 1, done: true, capHit: false },
   }
 }
 
