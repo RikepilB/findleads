@@ -18,6 +18,10 @@ describe('inferLocale', () => {
     expect(inferLocale('restaurants in Lima')).toEqual({ languageCode: 'es', regionCode: 'PE' })
   })
 
+  it('resolves an accented "Perú" free-text location to es/PE', () => {
+    expect(inferLocale('Arequipa, Perú')).toEqual({ languageCode: 'es', regionCode: 'PE' })
+  })
+
   it('falls back to the en/CA default for an unmatched market', () => {
     expect(inferLocale('Vancouver')).toEqual({ languageCode: 'en', regionCode: 'CA' })
   })
