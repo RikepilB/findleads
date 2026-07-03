@@ -1,0 +1,42 @@
+{
+  "places": [
+    {
+      "id": "ChIJT_toronto_place_1",
+      "displayName": { "text": "Maple Leaf Diner", "languageCode": "en" },
+      "formattedAddress": "123 Queen St W, Toronto, ON M5H 2M9, Canada",
+      "internationalPhoneNumber": "+1 416-555-0101",
+      "websiteUri": "https://mapleleafdiner.example.com",
+      "rating": 4.3,
+      "userRatingCount": 218,
+      "businessStatus": "OPERATIONAL"
+    },
+    {
+      "id": "ChIJT_toronto_place_2",
+      "displayName": { "text": "Harbourfront Coffee Co.", "languageCode": "en" },
+      "formattedAddress": "45 Queens Quay W, Toronto, ON M5J 2H2, Canada",
+      "internationalPhoneNumber": "+1 416-555-0102",
+      "rating": 4.6,
+      "userRatingCount": 89,
+      "businessStatus": "OPERATIONAL"
+    },
+    {
+      "id": "ChIJT_toronto_place_3",
+      "displayName": { "text": "Kensington Market Barbers", "languageCode": "en" },
+      "formattedAddress": "12 Baldwin St, Toronto, ON M5T 1L1, Canada",
+      "internationalPhoneNumber": "+1 416-555-0103",
+      "websiteUri": "https://kensingtonbarbers.example.com",
+      "rating": 4.8,
+      "userRatingCount": 156,
+      "businessStatus": "OPERATIONAL"
+    },
+    {
+      "id": "ChIJT_toronto_place_4",
+      "displayName": { "text": "Distillery District Bakery", "languageCode": "en" },
+      "formattedAddress": "55 Mill St, Toronto, ON M5A 3C4, Canada",
+      "rating": 4.1,
+      "userRatingCount": 302,
+      "businessStatus": "OPERATIONAL"
+    }
+  ],
+  "nextPageToken": "toronto-page-2-token"
+}

@@ -1,0 +1,31 @@
+{
+  "places": [
+    {
+      "id": "ChIJT_status_place_operational",
+      "displayName": { "text": "Open For Business Cafe", "languageCode": "en" },
+      "formattedAddress": "10 King St E, Toronto, ON, Canada",
+      "internationalPhoneNumber": "+1 416-555-0201",
+      "websiteUri": "https://openforbusiness.example.com",
+      "rating": 4.2,
+      "userRatingCount": 75,
+      "businessStatus": "OPERATIONAL"
+    },
+    {
+      "id": "ChIJT_status_place_closed_permanently",
+      "displayName": { "text": "Shuttered Hardware Store", "languageCode": "en" },
+      "formattedAddress": "88 Dundas St W, Toronto, ON, Canada",
+      "internationalPhoneNumber": "+1 416-555-0202",
+      "rating": 3.5,
+      "userRatingCount": 40,
+      "businessStatus": "CLOSED_PERMANENTLY"
+    },
+    {
+      "id": "ChIJT_status_place_unknown_status",
+      "displayName": { "text": "Unclassified Status Bakery", "languageCode": "en" },
+      "formattedAddress": "5 Spadina Ave, Toronto, ON, Canada",
+      "internationalPhoneNumber": "+1 416-555-0203",
+      "rating": 4.0,
+      "userRatingCount": 22
+    }
+  ]
+}

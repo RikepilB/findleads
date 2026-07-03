@@ -1,0 +1,42 @@
+{
+  "places": [
+    {
+      "id": "ChIJT_lima_place_1",
+      "displayName": { "text": "Restaurante El Mirador Limeño", "languageCode": "es" },
+      "formattedAddress": "Av. Larco 345, Miraflores, Lima, Perú",
+      "internationalPhoneNumber": "+51 1 555 0101",
+      "websiteUri": "https://elmiradorlimeno.example.com",
+      "rating": 4.5,
+      "userRatingCount": 412,
+      "businessStatus": "OPERATIONAL"
+    },
+    {
+      "id": "ChIJT_lima_place_2",
+      "displayName": { "text": "Panadería San Isidro", "languageCode": "es" },
+      "formattedAddress": "Calle Los Nogales 210, San Isidro, Lima, Perú",
+      "internationalPhoneNumber": "+51 1 555 0102",
+      "rating": 4.4,
+      "userRatingCount": 97,
+      "businessStatus": "OPERATIONAL"
+    },
+    {
+      "id": "ChIJT_lima_place_3",
+      "displayName": { "text": "Barbería Barranco Clásica", "languageCode": "es" },
+      "formattedAddress": "Jirón Grau 88, Barranco, Lima, Perú",
+      "internationalPhoneNumber": "+51 1 555 0103",
+      "websiteUri": "https://barberiabarranco.example.com",
+      "rating": 4.7,
+      "userRatingCount": 63,
+      "businessStatus": "OPERATIONAL"
+    },
+    {
+      "id": "ChIJT_lima_place_4",
+      "displayName": { "text": "Ferretería Los Olivos", "languageCode": "es" },
+      "formattedAddress": "Av. Universitaria 1520, Los Olivos, Lima, Perú",
+      "rating": 4.0,
+      "userRatingCount": 145,
+      "businessStatus": "OPERATIONAL"
+    }
+  ],
+  "nextPageToken": "lima-page-2-token"
+}
