@@ -10,11 +10,11 @@ Requirements for initial release. Each maps to a roadmap phase.
 ### Scrape (Places API integration)
 
 - [ ] **SCRAPE-01**: User can create a scrape job by category + free-text location, validated against Toronto and Lima
-- [ ] **SCRAPE-02**: Every scrape request field-masks `websiteUri` and `business_status` on the same call (no separate Place Details lookup per result)
-- [ ] **SCRAPE-03**: Scrape requests wire `languageCode`/`regionCode` per target market so Lima isn't silently under-served by an English/Canada default
-- [ ] **SCRAPE-04**: Scrape excludes closed businesses using the `business_status` field (`CLOSED_PERMANENTLY`/`CLOSED_TEMPORARILY`)
-- [ ] **SCRAPE-05**: Each lead is classified tier-1 ("no website found on Google") when `websiteUri` is absent — UI/export copy states it as a signal, not a verified fact
-- [ ] **SCRAPE-06**: Text Search pagination retries `nextPageToken` with backoff (~2-5s) instead of assuming immediate availability
+- [x] **SCRAPE-02**: Every scrape request field-masks `websiteUri` and `business_status` on the same call (no separate Place Details lookup per result)
+- [x] **SCRAPE-03**: Scrape requests wire `languageCode`/`regionCode` per target market so Lima isn't silently under-served by an English/Canada default
+- [x] **SCRAPE-04**: Scrape excludes closed businesses using the `business_status` field (`CLOSED_PERMANENTLY`/`CLOSED_TEMPORARILY`)
+- [x] **SCRAPE-05**: Each lead is classified tier-1 ("no website found on Google") when `websiteUri` is absent — UI/export copy states it as a signal, not a verified fact
+- [x] **SCRAPE-06**: Text Search pagination retries `nextPageToken` with backoff (~2-5s) instead of assuming immediate availability
 - [ ] **SCRAPE-07**: UI surfaces explicit messaging when the 60-result Text Search cap is hit ("60+ results found, showing first 60 — refine your search")
 
 ### Job Execution
@@ -98,11 +98,11 @@ Explicitly excluded. Documented to prevent scope creep.
 | DATA-03 | Phase 1: Data Foundation & Security | Pending |
 | SEC-01 | Phase 1: Data Foundation & Security | Pending |
 | SEC-02 | Phase 1: Data Foundation & Security | Pending |
-| SCRAPE-02 | Phase 2: Places API Scrape Client | Pending |
-| SCRAPE-03 | Phase 2: Places API Scrape Client | Pending |
-| SCRAPE-04 | Phase 2: Places API Scrape Client | Pending |
-| SCRAPE-05 | Phase 2: Places API Scrape Client | Pending |
-| SCRAPE-06 | Phase 2: Places API Scrape Client | Pending |
+| SCRAPE-02 | Phase 2: Places API Scrape Client | Complete |
+| SCRAPE-03 | Phase 2: Places API Scrape Client | Complete |
+| SCRAPE-04 | Phase 2: Places API Scrape Client | Complete |
+| SCRAPE-05 | Phase 2: Places API Scrape Client | Complete |
+| SCRAPE-06 | Phase 2: Places API Scrape Client | Complete |
 | SCRAPE-01 | Phase 3: Job Creation & Checkpointed Worker | Pending |
 | JOB-01 | Phase 3: Job Creation & Checkpointed Worker | Pending |
 | JOB-02 | Phase 3: Job Creation & Checkpointed Worker | Pending |
@@ -122,6 +122,7 @@ Explicitly excluded. Documented to prevent scope creep.
 | SEC-03 | Phase 5: CRM Leads Dashboard | Pending |
 
 **Coverage:**
+
 - v1 requirements: 27 total
 - Mapped to phases: 27
 - Unmapped: 0 ✓
