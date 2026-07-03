@@ -1,22 +1,23 @@
 ---
 phase: 01-data-foundation-security
 verified: 2026-07-03T03:15:00Z
-status: human_needed
-score: 4/5 must-haves verified
+status: passed
+score: 5/5 must-haves verified
 behavior_unverified: 0
 overrides_applied: 0
 human_verification:
-  - test: "Confirm the Google Cloud Places API key restriction (SEC-02) was actually saved in Cloud Console — run the completion check from 01-RESEARCH.md's gcp_key_restriction section: (1) positive check — a real Places Text Search call with PLACES_API_KEY succeeds; (2) negative check — the same key against the Geocoding API returns REQUEST_DENIED / API_KEY_SERVICE_BLOCKED."
-    expected: "Positive call returns a places array; negative call is denied — proving the key is scoped to Places API (New) only, not left unrestricted."
-    why_human: "Live Google Cloud Console configuration cannot be inspected or reproduced from the codebase. The session record itself is ambiguous: docs/handoff/2026-07-02-crm-pivot-gsd-init/HANDOFF.md documents the agent narrowing the key restriction via Chrome automation but explicitly NOT clicking the final Save — the user interrupted ('let me handle... for apis and secrets') and took over the last 4 steps themselves. A later handoff entry (docs/handoff/HANDOFF.md, commit 4a72b99) says 'User has now finished ALL secrets setup (Neon + Google Cloud Places API key, both confirmed by the user)' — but that statement is about secret *presence* (a valid PLACES_API_KEY unblocking lib/env.ts's fail-fast parse and Wave 3 execution), not about the restriction being saved. The restriction never gated Phase 1 code execution, so 'Phase 1 unblocked' provides no signal either way on whether Save was actually clicked. This executor is also correctly denied Read/Write on .env* by .claude/settings.json, so the live curl completion check cannot be run without human involvement."
+  - test: "Confirm the Google Cloud Places API key restriction (SEC-02) was actually saved in Cloud Console."
+    expected: "Only Places API (New) selected under API restrictions, Save clicked."
+    why_human: "Live Google Cloud Console configuration cannot be inspected or reproduced from the codebase; the session's own record was ambiguous (agent narrowed the restriction via Chrome automation but the user took over before the final Save)."
+    result: "User explicitly confirmed via AskUserQuestion (2026-07-03) that the restriction was completed and saved in Cloud Console — 'Yes, restricted and saved.' Resolves the ambiguity the automated session record left open."
 ---
 
 # Phase 1: Data Foundation & Security Verification Report
 
 **Phase Goal:** The database schema and API key security model exist so every later scrape, job, and CRM feature has durable, secure storage to build on.
 **Verified:** 2026-07-03T03:15:00Z
-**Status:** human_needed
-**Re-verification:** No — initial verification
+**Status:** passed
+**Re-verification:** No — initial verification (SEC-02 human confirmation added post-verification, see frontmatter)
 
 ## Goal Achievement
 
@@ -28,9 +29,9 @@ human_verification:
 | 2 | A `leads` row is written per job scrape event with `unique(job_id, place_id)`, kept separate from `businesses` so CRM state and per-job snapshots never collide | ✓ VERIFIED | `lib/db/schema.ts` line 28-30: `unique('leads_job_id_place_id_unique').on(table.jobId, table.placeId)`. `lib/db/leads.ts` `insertLeadSnapshot` uses `onConflictDoNothing({ target: [leads.jobId, leads.placeId] })`. `tests/integration/db/leads.test.ts` (real Neon test DB) proves: (a) duplicate insert is a no-op leaving exactly one row, (b) dedup is scoped to the exact pair not a global collapse, (c) `leads`⋈`businesses` join by `placeId` works for CRM display — all three passed against the live test database. |
 | 3 | Place content (name/address/phone/rating/website) persists durably in Postgres and survives across job runs, per the accepted ToS-risk decision in PROJECT.md | ✓ VERIFIED | `tests/integration/db/businesses.test.ts` "persists place content and is readable after upsert (DATA-03)" writes a full place payload via `upsertBusiness` and reads every field back via a direct `db.select()` against the real Neon test DB — passed. `drizzle/0000_lethal_whizzer.sql` migration confirmed applied to both dev and test Neon databases per 01-03-SUMMARY.md's `information_schema.tables` check. |
 | 4 | The Places API key never appears in any client-side bundle or `NEXT_PUBLIC_*` variable — all Places calls are proxied through server-side Node API routes | ✓ VERIFIED | `grep -rn "NEXT_PUBLIC" lib/ app/` → zero matches. `PLACES_API_KEY` is read exclusively in `lib/env.ts` (`import 'server-only'` line 1) and consumed only in `lib/places/client.ts`, which itself starts with `import 'server-only'` (line 3) — the module holding the key is structurally blocked from ever being bundled into a Client Component. No `app/` files contain `"use client"` yet (no UI exists in Phase 1), so there is no client-side surface at all currently. |
-| 5 | The Google Cloud API key is restricted to the Places API only in Cloud Console | ? UNCERTAIN — routed to human verification | This is a live external Console setting, not inspectable from the codebase. Session record is ambiguous — see `human_verification` item above. Not marked FAILED (there is real, partial evidence of progress toward the restriction) and not marked VERIFIED (the one detailed account shows the final Save was explicitly left undone and handed to the user, and no later record confirms the Save was actually clicked). |
+| 5 | The Google Cloud API key is restricted to the Places API only in Cloud Console | ✓ VERIFIED (human-confirmed) | Live Console setting, not inspectable from the codebase. Session record was ambiguous (agent narrowed the restriction, user took over before final Save) — resolved by explicit user confirmation via AskUserQuestion: "Yes, restricted and saved." See `human_verification` in frontmatter. |
 
-**Score:** 4/5 truths verified (0 present-but-behavior-unverified)
+**Score:** 5/5 truths verified (0 present-but-behavior-unverified)
 
 ### Required Artifacts
 
