@@ -90,7 +90,12 @@ Plans:
   3. A long-running job stops cleanly near the ~250s safety-window threshold and marks itself `partial` with a saved, resumable cursor instead of silently dying past Vercel's ceiling
   4. Leads collected within a single job are deduped via `unique(job_id, place_id)`
 
-**Plans**: TBD
+**Plans**: 3 plans
+Plans:
+
+- [ ] 03-01-PLAN.md — checkpoint.ts/buildTextQuery.ts + additive jobs schema (leads_found/cursor/error_reason) + updateJobProgress (JOB-02, JOB-03 substrate)
+- [ ] 03-02-PLAN.md — runScrapeJob checkpointed worker loop (JOB-02, JOB-03, JOB-07)
+- [ ] 03-03-PLAN.md — POST /api/jobs route + real-DB integration proof (SCRAPE-01, JOB-01, JOB-07)
 
 ### Phase 4: Job Monitoring, Resumability & Export
 
@@ -133,7 +138,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 |-------|----------------|--------|-----------|
 | 1. Data Foundation & Security | 0/5 | Not started | - |
 | 2. Places API Scrape Client | 4/4 | Complete    | 2026-07-03 |
-| 3. Job Creation & Checkpointed Worker | 0/TBD | Not started | - |
+| 3. Job Creation & Checkpointed Worker | 0/3 | Not started | - |
 | 4. Job Monitoring, Resumability & Export | 0/TBD | Not started | - |
 | 5. CRM Leads Dashboard | 0/TBD | Not started | - |
 
