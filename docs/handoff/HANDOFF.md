@@ -39,7 +39,10 @@ automation) since tests alone had already missed one real bug — confirmed lead
 contacted/notes persist across reload, a fresh live scrape's new leads appear on `/leads`
 immediately (the actual CRM-01 fix working), SCRAPE-07's cap message renders correctly off
 `resultCapHit` even when `leadsFound<60`, and CSV export produces correct sanitized UTF-8 data.
-No further gaps found — MVP is feature-verified, not just green-on-paper.
+Found and fixed a **second** real gap this way: the job poller's status badge updated live but
+`leadsFound`/Export CSV stayed stale until reload — fixed with a `router.refresh()` call on
+terminal transition (commit `b1037b3`), re-tested live, confirmed working. No further gaps
+found after re-testing — MVP is feature-verified, not just green-on-paper.
 
 Autopilot mode active throughout (user's own standing authorization: recommended choices, full
 autonomy, stop only for irreversible/detrimental changes). All secrets set up (Neon + Google

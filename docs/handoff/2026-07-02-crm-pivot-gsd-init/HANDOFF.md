@@ -562,17 +562,30 @@ feature-level — the CRM-01 bug proved a clean test suite can still hide a real
   correct data, UTF-8 diacritics intact ("CERRAJERÍA"), and formula-injection sanitization
   correctly prefixed `+51...` phone numbers with `'` (a leading `+` is an OWASP CSV-injection
   trigger character).
-- One red herring: the `JobStatusPoller` badge appeared stuck on "pending" after the job had
-  actually completed server-side. Root cause: `document.hidden: true` in the automation tab
-  (SWR's default `refreshWhenHidden: false` pauses polling when the document reports hidden,
-  regardless of `hasFocus`). Confirmed via a manual reload that the data was correct all along
-  — this is a browser-automation-tab-visibility artifact, not an app bug. Noting for the
-  record, not fixing: a real user backgrounding the tab mid-scrape would see the poller pause
-  too, then catch up via SWR's default `revalidateOnFocus` when they switch back — standard,
-  expected polling UX, not a defect.
+- One red herring, resolved definitively rather than assumed: the `JobStatusPoller` badge
+  appeared stuck on "pending" after the job had completed server-side. Root cause:
+  `document.hidden: true` in the automation tab (SWR's default `refreshWhenHidden: false`
+  pauses polling when the document reports hidden). Ran a discriminating test per advisor's
+  suggestion — forced `document.visibilityState`/`hidden` to report visible immediately after
+  submitting a fresh job, then watched network traffic: 2 distinct `GET /api/jobs/[id]`
+  requests fired before the job reached `done` and polling correctly stopped. Confirms the
+  poller's interval logic genuinely works; it was purely paused by the tab-visibility artifact,
+  not a latent bug. Not fixing — real users backgrounding the tab get SWR's default
+  `revalidateOnFocus` catch-up, standard polling UX.
+- **Second real gap found via the same walkthrough, this one fixed:** even with the poller
+  confirmed working, the status *badge* updates from SWR's own client state, but
+  `leadsFound`/`resultCapHit`/the Export CSV link are server-rendered from the initial `rows`
+  array in `app/jobs/page.tsx` — nothing refreshed them when the poller detected completion.
+  A user watching a job go from `running` to `done` in real time would see the badge flip but
+  the leads count stay "0" and no Export CSV link appear until an unrelated page reload. Fixed
+  in `app/jobs/JobStatusPoller.tsx`: calls `router.refresh()` once when the poller observes a
+  terminal transition (mirrors `JobForm.tsx`'s existing pattern), commit `b1037b3`. Rebuilt,
+  re-tested live end-to-end: a fresh "pottery classes" job's row updated `leadsFound=60` and
+  showed a working Export CSV link automatically, with zero manual reload.
 
-**Conclusion: code-verified AND now feature-verified via a real production-mode walkthrough.**
-No further gaps found. MVP is genuinely done, not just green-on-paper.
+**Conclusion: code-verified AND now feature-verified via a real production-mode walkthrough,**
+including a second real bug found and fixed live (not just inferred from code review). No
+further gaps found after re-testing. MVP is genuinely done, not just green-on-paper.
 
 ## Next steps (immediate)
 1. **Raise the deferred `origin/master` push decision with the user** — local `master` is far
