@@ -2,6 +2,12 @@ import { listBusinesses } from '@/lib/db/businesses'
 import ContactedToggle from './ContactedToggle'
 import NotesField from './NotesField'
 
+// This page reads live DB state directly (listBusinesses) and no code path
+// revalidates it after a scrape completes (only notes/contacted edits do) —
+// it must never be statically prerendered at build time (newly scraped
+// leads would never appear until an unrelated edit fired elsewhere).
+export const dynamic = 'force-dynamic'
+
 export default async function LeadsPage() {
   const rows = await listBusinesses()
 
