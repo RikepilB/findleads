@@ -619,11 +619,18 @@ but still confirm-first per the session's own established pattern.
   Barcelona/London/Buenos Aires/Santiago if wanted.
 - Wrote a current-UI usage guide inline in chat (jobs/leads pages, what's not built yet).
 - Invoked `superpowers:brainstorming` for the UI/UX improvement-plan ask (real design decision,
-  not a quick fix) — asked Q1 (personal tool vs. others-will-use-it). Awaiting answer.
+  not a quick fix) — asked Q1 (personal tool vs. others-will-use-it).
 - User ran `/handoff-to-issues` mid-brainstorm: harvested the two "still open" cleanup items
   (orphaned port-3000 process, dev-DB test data) into 2 proposed GitHub issues, `chore` label,
   deduped against the repo's 1 existing open issue (#1, stale/unrelated). Presented proposal
-  table, awaiting the single confirm before creating (skill's own gate — no issues created yet).
+  table, still awaiting the single confirm before creating (skill's own gate — asked twice now).
+- Q1 answered: international ambition, real intent to sell as a service to specific freelancer
+  clients or distribute online — not staying purely personal. This raises the UX bar; flagged
+  the tension with PROJECT.md's current "functional, not polished SaaS" framing without editing
+  that doc yet. Asked Q2 — scope this round as (A) focused visual/UX polish on the existing 2
+  pages only (recommended: tighter, no new features, still single-user) vs (B) broader pass
+  also laying sellability groundwork (branding/onboarding) before the core UX is locked.
+  Awaiting answer.
 
 ## Files in this folder
 - `HANDOFF.md` — this file (curated digest)

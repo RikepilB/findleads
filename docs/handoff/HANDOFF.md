@@ -68,13 +68,20 @@ knowingly accepted for this personal tool (revisit before public launch).
   extend if the user names which cities (Barcelona/London/Buenos Aires/Santiago mentioned).
 - User asked for (a) a usage guide for the current UI and (b) a UI/UX improvement plan —
   gave (a) inline in chat. For (b), invoked `superpowers:brainstorming` per its mandatory
-  skill-check rule (this is a real design decision, not a quick fix) — asked Q1 (personal-tool
-  vs. others-will-use-it, since that changes how much polish is worth it), **awaiting answer**.
+  skill-check rule (this is a real design decision, not a quick fix).
 - User then ran `/handoff-to-issues` mid-brainstorm — harvested the 2 "still open" items above
   from this file into 2 proposed GitHub issues (both `chore` label, `RikepilB/findleads`),
   deduped against the repo's one existing open issue (#1 "Write the MVP design spec", stale/
-  unrelated, not touched). Presented the proposal table, **awaiting the single required confirm
-  before creating anything** (per that skill's Step 3 — no issues created yet).
+  unrelated, not touched). Presented the proposal table, **still awaiting the single required
+  confirm before creating anything** (asked twice now, per that skill's Step 3).
+- Brainstorming Q1 answered: this is meant to go **international**, with real ambition to
+  become a **sellable service** (specific freelancer clients, or distributed online) — not
+  just a personal tool. Raises the UX bar significantly; flagged that this changes the framing
+  PROJECT.md currently has ("functional, not polished SaaS") but haven't touched that doc yet.
+  Asked Q2: scope this round as (A) focused visual/UX polish on the existing 2 pages only (no
+  new features, still single-user — my recommendation, tighter/faster), or (B) broader pass
+  that also lays sellability groundwork (branding hooks, onboarding copy) before the core UX
+  is locked. **Awaiting answer.**
 
 TaskCreate #10-14 all completed, #15 ("Ship MVP") in_progress — pending the two cleanup
 answers above before it can close. Full detail: this session's own
