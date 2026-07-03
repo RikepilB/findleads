@@ -61,7 +61,12 @@ Plans:
   3. Businesses with `business_status` of `CLOSED_PERMANENTLY` or `CLOSED_TEMPORARILY` are excluded from results
   4. Leads missing `websiteUri` are classified tier-1 with copy stating "no website found on Google" — framed as a signal, not a verified fact
   5. Text Search pagination retries `nextPageToken` with backoff (~2-5s) instead of assuming immediate availability
-**Plans**: TBD
+**Plans**: 4 plans
+Plans:
+- [ ] 02-01-PLAN.md — Places API response schema (Zod), test fixtures, mockFetch helper, vitest.config.ts DATABASE_URL fallback fix
+- [ ] 02-02-PLAN.md — Locale inference (SCRAPE-03) + nextPageToken retry/backoff (SCRAPE-06)
+- [ ] 02-03-PLAN.md — searchTextPlaces() field-masked Text Search client (SCRAPE-02)
+- [ ] 02-04-PLAN.md — mapPlaceToLead(): closed-business filter (SCRAPE-04) + tier-1 classification (SCRAPE-05)
 
 ### Phase 3: Job Creation & Checkpointed Worker
 **Goal**: Richard can submit a category+location scrape request and the system runs it as a safe, resumable background job.
@@ -109,7 +114,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Data Foundation & Security | 0/5 | Not started | - |
-| 2. Places API Scrape Client | 0/TBD | Not started | - |
+| 2. Places API Scrape Client | 0/4 | Not started | - |
 | 3. Job Creation & Checkpointed Worker | 0/TBD | Not started | - |
 | 4. Job Monitoring, Resumability & Export | 0/TBD | Not started | - |
 | 5. CRM Leads Dashboard | 0/TBD | Not started | - |
