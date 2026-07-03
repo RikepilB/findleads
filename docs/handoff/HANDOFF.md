@@ -56,14 +56,22 @@ together. Both fixed with regression tests, all green. **Lesson: verification pa
 mean a later phase can't still surface a latent bug in already-shipped code — worth fixing on
 sight, not deferring.**
 
-Now on **Phase 3 (Job Creation & Checkpointed Worker)**: research done, planning in progress.
-Phase 3 execution is correctly held blocked pending the same user setup (its worker imports
-Phase 1's not-yet-built DB layer) — but planning proceeds now against Phase 1's *locked
-interface* so execution is instant-ready once unblocked. Stale pre-pivot docs were reconciled
-earlier — `.planning/` is the source of truth. TaskCreate #10-15 tracks phase-by-phase
-progress. Repo is public on GitHub (`RikepilB/findleads`), MIT licensed, `master` ~35 commits
-ahead of `origin/master` (LICENSE push was the last confirmed push; not auto-pushing further
-work — treating that as a deliberate batched confirm point).
+**Phase 3 (Job Creation & Checkpointed Worker) is now fully planned and plan-checked** —
+3 plans, execution-ready the instant the user unblocks Phase 1. Plan-checker's one real
+finding (missing `03-VALIDATION.md`) was fixed the same way as before; its other finding was a
+false positive (wanted a fix+test that already existed from the Phase 2 bugfix above — the
+checker missed checking the test file and trusted research text written before that fix
+landed) — resolved by correcting the stale research doc instead of adding a redundant task.
+
+**Everything that can be done without the user's action is now done.** Phase 1 (partial),
+Phase 2 (shipped), Phase 3 (fully planned) — the ONLY remaining blocker for the whole MVP is
+the user finishing Neon `.env`/`.env.test` + Google Cloud key setup. Stopped manufacturing
+further speculative Phase 4/5 research since it would compound drift risk on top of
+unexecuted Phase 3 interfaces for diminishing value — waiting for the user instead. Stale
+pre-pivot docs were reconciled earlier — `.planning/` is the source of truth. TaskCreate
+#10-15 tracks phase-by-phase progress. Repo is public on GitHub (`RikepilB/findleads`), MIT
+licensed, `master` ~38 commits ahead of `origin/master` (LICENSE push was the last confirmed
+push; not auto-pushing further work — treating that as a deliberate batched confirm point).
 
 ---
 

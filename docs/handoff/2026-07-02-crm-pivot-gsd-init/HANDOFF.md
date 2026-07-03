@@ -320,22 +320,50 @@ autonomously, that's a legitimate stop-and-ask point** — not a "silently fake 
   `bebfebd`.
 - `lib/places/client.ts`, `tests/unit/lib/places/paginate.test.ts` — bugfix, commit `4ab1a23`.
 
+## What was done (continued — Phase 3 fully planned and checked)
+- Phase 3 planner (3 plans: 03-01 checkpoint/query-composition/migration, 03-02 the
+  `runScrapeJob` worker loop, 03-03 `POST /api/jobs` + integration proof) self-corrected twice
+  via advisor review mid-planning — caught that `checkpoint.ts` must exist before
+  `schema.ts`/`jobs.ts` typecheck (reordered), and that all originally-planned tests injected
+  `fetchOnePage` so the real Places-composition glue would never execute in any test (added a
+  dedicated composition test). Committed `ce2ac38`.
+- Plan-checker found 2 blockers + 1 warning. One was real (missing `03-VALIDATION.md`, same
+  recurring gap — fixed the same way as Phase 1/2). **The other was a false positive worth
+  remembering**: it wanted a task to fix the Pitfall 5 bug (`PlacesApiError.message` vs
+  `.body`) and add a regression test — both already existed (I fixed this directly right after
+  the Phase 3 *researcher* first surfaced it, commit `4ab1a23`, before the planner even ran).
+  The checker's mistake: it read `lib/places/client.ts` directly and confirmed the fix WAS
+  present, but never checked `paginate.test.ts` for the regression test, and flagged the gap
+  based on `03-RESEARCH.md`'s own text — which was written by the researcher *before* my fix
+  landed, so it still described the bug as open. Verified the test exists (`grep`), then fixed
+  the real issue: corrected `03-RESEARCH.md`'s Pitfall 5 section, Open Question 3, and the
+  Wave 0 gaps line to state the fix is already resolved, rather than adding a redundant task.
+  Committed `d71ddc9` (also includes the new `03-VALIDATION.md`).
+- **Phase 3 is now fully planned, checked, and validated — execution-ready the instant the
+  user finishes env setup.** No more autonomous progress is possible without that: Phase 4/5
+  depend on Phase 3's interfaces, and researching further ahead of unexecuted Phase 3 code
+  risks compounding drift for diminishing value. Chose to stop manufacturing speculative work
+  and report clear status instead.
+
+## Files changed (continued)
+- `.planning/phases/03-job-creation-checkpointed-worker/03-01-PLAN.md` through `03-03-PLAN.md`,
+  `.planning/ROADMAP.md` (Phase 3 plan list filled in) — new/edited, commit `ce2ac38`.
+- `.planning/phases/03-job-creation-checkpointed-worker/03-RESEARCH.md` (Pitfall 5 correction),
+  `03-VALIDATION.md` (new) — commit `d71ddc9`.
+
 ## Next steps
 1. **Still waiting on user**: paste `DATABASE_URL`/`TEST_DATABASE_URL` into `.env`/`.env.test`,
-   restrict the GCP Places API key, add `PLACES_API_KEY=` to `.env`. Confirmed still not done
-   as of this handoff (re-checked once, not polling repeatedly).
-2. Confirm Phase 3 planner (agent `a69e7126e030f6788`) finished, run plan-checker.
-3. Do NOT execute Phase 3 (or resume Phase 1 Waves 3-5) until the user confirms env setup —
-   both are correctly held blocked, not faked. Keep planning ahead (Phase 4/5 research once
-   Phase 3 plan lands) so everything is execution-ready the instant Phase 1 unblocks.
-4. Once unblocked: resume Phase 1 Waves 3-5 → verify → ship, then execute Phase 3 → verify →
-   ship, then Phases 4-5 in order.
-5. Local `master` is ~35 commits ahead of `origin/master` (LICENSE push was the last confirmed
+   restrict the GCP Places API key, add `PLACES_API_KEY=` to `.env`. This is now the ONLY
+   thing blocking further MVP progress — Phases 1 (partial), 2 (shipped), and 3 (fully
+   planned) are all otherwise ready.
+2. Once unblocked: resume Phase 1 Waves 3-5 (schema, DAL, integration tests) → verify → ship,
+   then execute Phase 3's 3 plans → verify → ship, then plan+execute Phases 4-5 in order.
+3. Local `master` is ~38 commits ahead of `origin/master` (LICENSE push was the last confirmed
    push) — will need a push decision once ship-worthy work exists (deliberately not
-   auto-pushing per phase).
-6. TaskCreate #10-15 tracks phase-by-phase progress (#10 Phase 1: wave1 done, waves 2-5
-   blocked_on_user_env_setup; #11 Phase 2: completed; #12 Phase 3: research done, planning in
-   progress).
+   auto-pushing per phase — visible external action, batching for a deliberate confirm).
+4. TaskCreate #10-15 tracks phase-by-phase progress (#10 Phase 1: wave1 done, waves 2-5
+   blocked_on_user_env_setup; #11 Phase 2: completed; #12 Phase 3: planned_and_checked,
+   awaiting Phase 1 unblock).
 
 ## Files in this folder
 - `HANDOFF.md` — this file (curated digest)
