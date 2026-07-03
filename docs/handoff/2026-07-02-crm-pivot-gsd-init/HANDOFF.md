@@ -491,18 +491,48 @@ handoff plus commits are the recovery path — no need to re-derive plan state f
   worker code, the exact Google attribution text/logo requirement (SEC-03), and a component-
   testing strategy for this Vitest-only stack (no React Testing Library yet).
 
+## Next steps (immediate) — superseded, see update below
+
+## UPDATE — Phase 5 planned + executing (2026-07-03, later same day)
+- Domain research (`05-RESEARCH.md`, commit `51fad19`) landed. Key findings folded into
+  planning: SCRAPE-07's `leads_found>=60` heuristic has a false-negative mode (closed-business
+  filtering can hide a genuine cap-hit) — fix is an additive `resultCapHit` boolean computed
+  from the raw pagination signal before filtering (Option B); a client-side poller is required
+  or Phase 4's JOB-04/JOB-05 continuation+watchdog go dormant for unwatched jobs; `swr` flagged
+  `[SUS]` by the package-legitimacy scanner (same too-new false-positive as prior phases).
+  Also caught and fixed a factual error in `05-UI-SPEC.md`: attribution copy corrected from
+  "Powered by Google" to the official "Google Maps" string (commit `2c2ee2d`).
+- `gsd-planner` died once mid-stream (transient API error, nothing written) — respawned as a
+  fresh retry (not continuation) with explicit "commit as you go" instruction. Retry succeeded:
+  4 plans (05-01..05-04, 2 waves) + `05-VALIDATION.md` produced, all committed incrementally.
+- `gsd-plan-checker` found 1 blocker (05-04's `swr` checkpoint task missing `<name>`/`<action>`,
+  failed `verify.plan-structure`) + 1 warning (UI-SPEC still described the superseded SCRAPE-07
+  heuristic). Both fixed directly (small, mechanical) — commit `716c335`.
+- **Wave 1 executed and shipped:** 05-01 (DAL: `listBusinesses`/`updateBusinessNotes`/
+  `setBusinessContacted`/`listJobs` + `jobs.resultCapHit` column/migration `0002`, worker
+  computes cap-hit before closed-business filtering) and 05-02 (two-tab nav in
+  `app/layout.tsx` + `components/GoogleAttribution.tsx`, correct copy). Both green,
+  98/98 tests passing after 05-01. 05-01 caught its own mistake mid-run: a `requirements
+  mark-complete` call would have falsely marked CRM-01..05/SCRAPE-07 done before the UI plans
+  (05-03/05-04) that actually deliver them had run — reverted, `REQUIREMENTS.md` correctly
+  still shows them Pending.
+- **Wave 2 in progress** (as of this update): 05-03 (Leads page + Server Actions, CRM-01..04)
+  and 05-04 (Job History page + swr poller, CRM-05/SCRAPE-07 UI) executing in parallel.
+  05-03 has Server Actions committed (`e70061e`/`a89ff81`) so far.
+
 ## Next steps (immediate)
-1. Confirm Phase 5 domain research finished, committed.
-2. Plan Phase 5 (`gsd-planner` + `gsd-plan-checker`) — explicitly ask for `05-VALIDATION.md`
-   upfront again, same instruction that got Phase 4 to a zero-blocker plan-check.
-3. Execute all Phase 5 plans sequentially, spawn `gsd-verifier`, mark complete, ship.
+1. Confirm both Wave 2 executors (05-03, 05-04) finish — check git log/SUMMARY.md files;
+   respawn a targeted continuation (not full restart) if either dies mid-stream.
+2. Spawn `gsd-verifier` for Phase 5 (goal-backward against ROADMAP.md success criteria + all
+   7 requirement IDs: SCRAPE-07, CRM-01..05, SEC-03).
+3. If verifier passes: `gsd-tools query phase.complete 5`, commit tracking files
+   (ROADMAP.md/STATE.md/REQUIREMENTS.md).
 4. **This is the last phase — once shipped, the MVP is complete.** No Phase 6 to plan.
 5. Local `master` is far ahead of `origin/master` — push decision still deliberately deferred
-   to a single batched confirm point, not per-phase. Will need this decision once MVP ships.
-6. Session has repeatedly hit "context critical" (75-81%) warnings this stretch, each time
-   recovering to a fresh window on the next user message — pattern is per-turn context
-   measurement resetting, not a hard wall. Keep pausing at clean checkpoints (after each
-   plan/wave commits) rather than mid-task if warnings recur.
+   to a single batched confirm point, not per-phase. Raise this with the user once MVP ships;
+   don't push unilaterally.
+6. Remind user to run `/export docs/handoff/2026-07-02-crm-pivot-gsd-init/transcript.md` —
+   still not done as of this update.
 
 ## Files in this folder
 - `HANDOFF.md` — this file (curated digest)

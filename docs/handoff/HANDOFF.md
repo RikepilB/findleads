@@ -21,59 +21,33 @@ session. Solved tasks → one concrete one-liner (file / PR / command).
 
 ---
 
-## Current state — 2026-07-02
+## Current state — 2026-07-03
 
-Design pivoted from a plain scraper to **web-presence filtering (no-website businesses) + a
-lightweight CRM** as the core v1 hook. Full GSD planning pipeline is now complete: research (4
-domain agents + synthesis) → `REQUIREMENTS.md` (27 v1 requirements) → `ROADMAP.md` (5 phases,
-Vertical MVP mode, 100% requirement coverage). A real Places API ToS conflict was surfaced by
-research (storing full lead data beyond `place_id` breaches the "No Caching" clause) —
-presented to the user, who chose to **accept the risk** for this personal tool, revisit before
-any public/paid launch.
+**Phases 1-4: SHIPPED** (schema/DAL/security; Places API client; checkpointed job worker;
+monitoring/resumability/CSV export). See prior entry below for per-phase detail — unchanged.
 
-**Autopilot mode active** (user confirmed via `/goal`: recommended choices + full autonomy,
-stop only for irreversible/detrimental changes). All secrets are now set up (Neon
-`findleads` project `polished-wildflower-97333280`, dev+test branches; Google Cloud project
-`findleads-501305` with Places API (New) enabled and the key restricted — SEC-02 confirmed
-directly by the user).
+**Phase 5 (CRM Leads Dashboard) — FINAL PHASE — Wave 2 executing.** UI-SPEC approved 6/6
+(Tailwind-only, no shadcn). Domain research found SCRAPE-07's cap-detection heuristic had a
+false-negative mode — fixed via an additive `jobs.resultCapHit` column computed pre-filter
+(Option B); also found a client poller is required or Phase 4's JOB-04/JOB-05 continuation/
+watchdog go dormant for unwatched jobs. Planner died once mid-stream (nothing lost, respawned
+clean), then produced 4 plans across 2 waves + `05-VALIDATION.md`. `gsd-plan-checker` found and
+fixed 1 blocker (malformed checkpoint task XML) + 1 stale-doc warning. **Wave 1 shipped**: DAL
+functions + `resultCapHit` fix (05-01), shared nav + Google attribution component (05-02) —
+98/98 tests green. **Wave 2 in progress**: Leads page/Server Actions (05-03) and Job History
+page/swr poller (05-04) executing in parallel now. Once both land + `gsd-verifier` passes +
+`phase.complete 5` runs — **the MVP is complete**, no Phase 6.
 
-**Phase 1 (Data Foundation & Security): SHIPPED.** All 5 waves executed against real Neon
-Postgres — schema, Drizzle client, DAL (`lib/db/{jobs,businesses,leads}.ts`), integration
-tests. `gsd-verifier` scored 5/5. Marked complete.
+Autopilot mode active throughout (user's own standing authorization: recommended choices, full
+autonomy, stop only for irreversible/detrimental changes). All secrets set up (Neon + Google
+Cloud Places API key, restricted, SEC-02 user-confirmed). Places API "No Caching" ToS risk
+knowingly accepted for this personal tool (revisit before public launch).
 
-**Phase 2 (Places API Scrape Client): SHIPPED.** All 4 plans executed, verified independently
-by `gsd-verifier`. Two real bugs caught and fixed along the way: (1) accented "Perú" didn't
-match the locale regex (JS `\b` is ASCII-only) — fixed via diacritic stripping; (2)
-`PlacesApiError.message` didn't include the response body, so the pagination-retry matcher
-would never fire on a real API error — fixed, regression-tested. **Lesson: verification
-passing doesn't mean a later phase can't surface a latent bug in already-shipped code.**
-
-**Phase 3 (Job Creation & Checkpointed Worker): SHIPPED.** All 3 plans executed clean —
-checkpoint primitives + additive migration, the checkpointed `runScrapeJob` worker loop
-(including a composition test exercising the real Places-client wiring), and `POST /api/jobs`
-+ a real-DB pipeline proof with a JOB-07 dedup-on-retry case. `gsd-verifier` scored 4/4.
-
-**Phase 4 (Job Monitoring, Resumability & Export): SHIPPED.** Watchdog + atomic-claim
-continuation (`GET /api/jobs/[id]`) and CSV export (`GET /api/jobs/[id]/export`, formula-
-injection sanitized) both executed clean. `gsd-verifier` scored 5/5. Asking the planner to
-produce `04-VALIDATION.md` upfront (instead of leaving it for the checker to catch) got this
-phase through plan-check with **zero blockers** — first phase to do so cleanly.
-
-**Phase 5 (CRM Leads Dashboard) — FINAL PHASE — in progress.** First UI phase: ran
-`/gsd-ui-phase 5` first (config requires it), UI-SPEC approved 6/6 dimensions (Tailwind-only,
-no shadcn, reuses default Geist fonts). Domain research running now for the Server Actions/
-pages/SEC-03 attribution details. Once this phase plans, executes, verifies, and ships — the
-MVP is complete.
-
-Full test suite: 83/83 tests green across Phases 1-4 combined, typecheck/lint clean throughout.
-Earlier: walked the user through Google Cloud project setup via Chrome automation, then
-handed the credential-restriction step to the user per their own request. Delivered a
-live-fetched cost breakdown (Enterprise-tier billing, $35/1000 calls after 1,000/month free,
-~$0/month at MVP scale). Stale pre-pivot docs were reconciled earlier — `.planning/` is the
-source of truth. TaskCreate #10-15 tracks phase-by-phase progress. Repo is public on GitHub
-(`RikepilB/findleads`), MIT
-licensed, `master` ~38 commits ahead of `origin/master` (LICENSE push was the last confirmed
-push; not auto-pushing further work — treating that as a deliberate batched confirm point).
+Repo is public on GitHub (`RikepilB/findleads`), MIT licensed. `master` far ahead of
+`origin/master` — push deliberately deferred to a single batched confirm point once the MVP
+ships, not auto-pushed per phase. TaskCreate #10-15 tracks phase-by-phase progress
+(#14 in_progress, #15 "Ship MVP" pending). Full detail: this session's own
+`2026-07-02-crm-pivot-gsd-init/HANDOFF.md` (append-only log of the whole build).
 
 ---
 
@@ -87,8 +61,8 @@ push; not auto-pushing further work — treating that as a deliberate batched co
   root-level `PROYECTOS/handoff.md` that predated this repo's own handoff tree.
 
 <!-- compact-handoff:auto-snapshot -->
-<!-- Latest auto-snapshot: docs/handoff/2026-07-02-crm-pivot-gsd-init/snapshot-193238.md -->
-## Latest auto snapshot — 2026-07-02T19:32:38.657Z
+<!-- Latest auto-snapshot: docs/handoff/2026-07-02-crm-pivot-gsd-init/snapshot-193941.md -->
+## Latest auto snapshot — 2026-07-03T19:39:41.758Z
 - Session folder: `docs/handoff/2026-07-02-crm-pivot-gsd-init/`
-- Snapshot file: `docs/handoff/2026-07-02-crm-pivot-gsd-init/snapshot-193238.md`
+- Snapshot file: `docs/handoff/2026-07-02-crm-pivot-gsd-init/snapshot-193941.md`
 - Branch: master
