@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { isTerminalStatus } from '@/app/jobs/JobStatusPoller'
+import { isTerminalStatus } from '@/app/jobs/isTerminalStatus'
 
 describe('isTerminalStatus', () => {
   it('returns true for done', () => {
