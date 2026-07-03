@@ -24,7 +24,7 @@ end-to-end.
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Data Foundation & Security** - Durable `businesses`/`leads` schema and secured Places API key handling
+- [x] **Phase 1: Data Foundation & Security** - Durable `businesses`/`leads` schema and secured Places API key handling (completed 2026-07-03)
 - [x] **Phase 2: Places API Scrape Client** - Field-masked, locale-aware search with tier-1 classification and closed-business filtering (completed 2026-07-03)
 - [ ] **Phase 3: Job Creation & Checkpointed Worker** - Submit a scrape request; a resumable worker runs it safely within the platform time limit
 - [ ] **Phase 4: Job Monitoring, Resumability & Export** - Poll jobs to completion (auto-resume, honest error/zero-result states) and export CSV
@@ -49,11 +49,11 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans**: 5 plans
 Plans:
 
-- [ ] 01-01-PLAN.md — Bootstrap Next.js scaffold + pnpm/lint/typecheck/test script surface (package-legitimacy checkpoint for server-only, vitest)
-- [ ] 01-02-PLAN.md — Resolve Neon DATABASE_URL/TEST_DATABASE_URL + lib/env.ts (SEC-01) + Google Cloud API key restriction (SEC-02)
-- [ ] 01-03-PLAN.md — jobs/leads/businesses Drizzle schema, Neon client, first migration applied to dev + test DBs (DATA-03)
-- [ ] 01-04-PLAN.md — Data Access Layer: upsertBusiness (CRM-preserving), insertLeadSnapshot, jobs CRUD (DATA-01, DATA-02)
-- [ ] 01-05-PLAN.md — Integration tests proving DATA-01/DATA-02/DATA-03 against a real Neon database
+- [x] 01-01-PLAN.md — Bootstrap Next.js scaffold + pnpm/lint/typecheck/test script surface (package-legitimacy checkpoint for server-only, vitest)
+- [x] 01-02-PLAN.md — Resolve Neon DATABASE_URL/TEST_DATABASE_URL + lib/env.ts (SEC-01) + Google Cloud API key restriction (SEC-02)
+- [x] 01-03-PLAN.md — jobs/leads/businesses Drizzle schema, Neon client, first migration applied to dev + test DBs (DATA-03)
+- [x] 01-04-PLAN.md — Data Access Layer: upsertBusiness (CRM-preserving), insertLeadSnapshot, jobs CRUD (DATA-01, DATA-02)
+- [x] 01-05-PLAN.md — Integration tests proving DATA-01/DATA-02/DATA-03 against a real Neon database
 
 ### Phase 2: Places API Scrape Client
 
@@ -136,7 +136,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Data Foundation & Security | 0/5 | Not started | - |
+| 1. Data Foundation & Security | 5/5 | Complete    | 2026-07-03 |
 | 2. Places API Scrape Client | 4/4 | Complete    | 2026-07-03 |
 | 3. Job Creation & Checkpointed Worker | 0/3 | Not started | - |
 | 4. Job Monitoring, Resumability & Export | 0/TBD | Not started | - |

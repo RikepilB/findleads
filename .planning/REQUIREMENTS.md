@@ -29,9 +29,9 @@ Requirements for initial release. Each maps to a roadmap phase.
 
 ### Data Model
 
-- [ ] **DATA-01**: A `businesses` table keyed on `place_id` holds durable CRM state (notes, contacted, first_seen_at, last_seen_at) and is upserted on every sighting
-- [ ] **DATA-02**: A `leads` table stays a per-job scrape snapshot/audit row (`unique(job_id, place_id)`), joined to `businesses` for CRM display and CSV export
-- [ ] **DATA-03**: Places content (name/address/phone/rating/website) is stored durably per the accepted ToS-risk decision — documented in PROJECT.md as a known tradeoff to revisit before any public/paid launch
+- [x] **DATA-01**: A `businesses` table keyed on `place_id` holds durable CRM state (notes, contacted, first_seen_at, last_seen_at) and is upserted on every sighting
+- [x] **DATA-02**: A `leads` table stays a per-job scrape snapshot/audit row (`unique(job_id, place_id)`), joined to `businesses` for CRM display and CSV export
+- [x] **DATA-03**: Places content (name/address/phone/rating/website) is stored durably per the accepted ToS-risk decision — documented in PROJECT.md as a known tradeoff to revisit before any public/paid launch
 
 ### CRM
 
@@ -48,8 +48,8 @@ Requirements for initial release. Each maps to a roadmap phase.
 
 ### Security
 
-- [ ] **SEC-01**: Places API key is stored server-side only (never `NEXT_PUBLIC_*`); all Places calls are proxied through Node API routes
-- [ ] **SEC-02**: The Google Cloud API key is restricted to the Places API only in Cloud Console
+- [x] **SEC-01**: Places API key is stored server-side only (never `NEXT_PUBLIC_*`); all Places calls are proxied through Node API routes
+- [x] **SEC-02**: The Google Cloud API key is restricted to the Places API only in Cloud Console
 - [ ] **SEC-03**: Google Maps attribution is shown on any UI displaying Places content, including the map-less leads table
 
 ## v2 Requirements
@@ -93,11 +93,11 @@ Explicitly excluded. Documented to prevent scope creep.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| DATA-01 | Phase 1: Data Foundation & Security | Pending |
-| DATA-02 | Phase 1: Data Foundation & Security | Pending |
-| DATA-03 | Phase 1: Data Foundation & Security | Pending |
-| SEC-01 | Phase 1: Data Foundation & Security | Pending |
-| SEC-02 | Phase 1: Data Foundation & Security | Pending |
+| DATA-01 | Phase 1: Data Foundation & Security | Complete |
+| DATA-02 | Phase 1: Data Foundation & Security | Complete |
+| DATA-03 | Phase 1: Data Foundation & Security | Complete |
+| SEC-01 | Phase 1: Data Foundation & Security | Complete |
+| SEC-02 | Phase 1: Data Foundation & Security | Complete |
 | SCRAPE-02 | Phase 2: Places API Scrape Client | Complete |
 | SCRAPE-03 | Phase 2: Places API Scrape Client | Complete |
 | SCRAPE-04 | Phase 2: Places API Scrape Client | Complete |
