@@ -50,7 +50,7 @@ Requirements for initial release. Each maps to a roadmap phase.
 
 - [x] **SEC-01**: Places API key is stored server-side only (never `NEXT_PUBLIC_*`); all Places calls are proxied through Node API routes
 - [x] **SEC-02**: The Google Cloud API key is restricted to the Places API only in Cloud Console
-- [ ] **SEC-03**: Google Maps attribution is shown on any UI displaying Places content, including the map-less leads table
+- [x] **SEC-03**: Google Maps attribution is shown on any UI displaying Places content, including the map-less leads table
 
 ## v2 Requirements
 
@@ -119,7 +119,7 @@ Explicitly excluded. Documented to prevent scope creep.
 | CRM-03 | Phase 5: CRM Leads Dashboard | Pending |
 | CRM-04 | Phase 5: CRM Leads Dashboard | Pending |
 | CRM-05 | Phase 5: CRM Leads Dashboard | Pending |
-| SEC-03 | Phase 5: CRM Leads Dashboard | Pending |
+| SEC-03 | Phase 5: CRM Leads Dashboard | Complete |
 
 **Coverage:**
 
