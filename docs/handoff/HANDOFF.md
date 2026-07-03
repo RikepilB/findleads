@@ -61,6 +61,21 @@ knowingly accepted for this personal tool (revisit before public launch).
    leads, underwater-basket-weaving 45, pottery-classes 60, one contacted+notes edit on
    "Petite Thuet") — offered to clean up, not done unilaterally.
 
+**Post-ship work now in flight (2026-07-03, same day, after push):**
+- User confirmed the location field is free-text and works for any city already (Toronto/Lima
+  are just the two validated markets) — flagged that `lib/places/locale.ts` only has
+  language/region hints for those two, everything else falls back to `en`/`CA`; offered to
+  extend if the user names which cities (Barcelona/London/Buenos Aires/Santiago mentioned).
+- User asked for (a) a usage guide for the current UI and (b) a UI/UX improvement plan —
+  gave (a) inline in chat. For (b), invoked `superpowers:brainstorming` per its mandatory
+  skill-check rule (this is a real design decision, not a quick fix) — asked Q1 (personal-tool
+  vs. others-will-use-it, since that changes how much polish is worth it), **awaiting answer**.
+- User then ran `/handoff-to-issues` mid-brainstorm — harvested the 2 "still open" items above
+  from this file into 2 proposed GitHub issues (both `chore` label, `RikepilB/findleads`),
+  deduped against the repo's one existing open issue (#1 "Write the MVP design spec", stale/
+  unrelated, not touched). Presented the proposal table, **awaiting the single required confirm
+  before creating anything** (per that skill's Step 3 — no issues created yet).
+
 TaskCreate #10-14 all completed, #15 ("Ship MVP") in_progress — pending the two cleanup
 answers above before it can close. Full detail: this session's own
 `2026-07-02-crm-pivot-gsd-init/HANDOFF.md` (append-only log of the whole build).
