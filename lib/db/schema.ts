@@ -1,4 +1,5 @@
-import { pgTable, pgEnum, serial, uuid, text, real, integer, boolean, timestamp, unique } from 'drizzle-orm/pg-core'
+import { pgTable, pgEnum, serial, uuid, text, real, integer, boolean, timestamp, unique, jsonb } from 'drizzle-orm/pg-core'
+import type { JobCursor } from '@/lib/jobs/checkpoint'
 
 export const jobStatusEnum = pgEnum('job_status', ['pending', 'running', 'partial', 'done', 'error'])
 
@@ -9,9 +10,11 @@ export const jobs = pgTable('jobs', {
   location: text('location').notNull(),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
-  // leads_found / cursor / error_reason columns are added by Phase 3 via an
-  // additive migration once the checkpointed worker needs them — not in
-  // this phase's scope (JOB-* requirements belong to Phase 3, not Phase 1).
+  // Added by Phase 3 (additive migration) for the checkpointed worker:
+  // progress count, resumable pagination cursor, and a safe error reason.
+  leadsFound: integer('leads_found').notNull().default(0),
+  cursor: jsonb('cursor').$type<JobCursor>(),
+  errorReason: text('error_reason'),
 })
 
 export const leads = pgTable('leads', {
