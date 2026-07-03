@@ -2,7 +2,12 @@ import { afterEach, describe, expect, it } from 'vitest'
 import { eq } from 'drizzle-orm'
 import { db } from '@/lib/db/client'
 import { businesses } from '@/lib/db/schema'
-import { upsertBusiness } from '@/lib/db/businesses'
+import {
+  upsertBusiness,
+  listBusinesses,
+  updateBusinessNotes,
+  setBusinessContacted,
+} from '@/lib/db/businesses'
 
 // Integration tests — run against the real, isolated test Neon database
 // (vitest.config.ts injects TEST_DATABASE_URL as DATABASE_URL for the test
@@ -81,5 +86,80 @@ describe('businesses upsert (DATA-01, DATA-03)', () => {
     expect(after.notes).toBe('Called, interested')
     expect(after.contacted).toBe(true)
     expect(after.firstSeenAt.getTime()).toBe(initial.firstSeenAt.getTime())
+  })
+})
+
+describe('listBusinesses/updateBusinessNotes/setBusinessContacted (CRM-01..05)', () => {
+  afterEach(cleanup)
+
+  it('listBusinesses returns every business ordered by updatedAt descending, with website null/not-null distinguishing tier', async () => {
+    await upsertBusiness({
+      placeId: PLACE_ID,
+      businessName: 'Tier One (no website)',
+      phone: null,
+      address: null,
+      website: null,
+      rating: null,
+      reviewCount: null,
+    })
+
+    const rows = await listBusinesses()
+    const row = rows.find((r) => r.placeId === PLACE_ID)
+
+    expect(row).toBeDefined()
+    expect(row?.website).toBeNull()
+    // Ordered by updatedAt desc — our freshly-upserted row should be first
+    // among rows with the same or older updatedAt.
+    expect(rows[0].updatedAt.getTime()).toBeGreaterThanOrEqual(rows.at(-1)!.updatedAt.getTime())
+  })
+
+  it('updateBusinessNotes persists notes and bumps updatedAt on every call (CRM-04, Pitfall 3)', async () => {
+    await upsertBusiness({
+      placeId: PLACE_ID,
+      businessName: 'Notes Target',
+      phone: null,
+      address: null,
+      website: null,
+      rating: null,
+      reviewCount: null,
+    })
+    const [initial] = await db.select().from(businesses).where(eq(businesses.placeId, PLACE_ID))
+
+    await updateBusinessNotes(initial.id, 'First note')
+    const [afterFirst] = await db.select().from(businesses).where(eq(businesses.placeId, PLACE_ID))
+    expect(afterFirst.notes).toBe('First note')
+    expect(afterFirst.updatedAt.getTime()).toBeGreaterThan(initial.updatedAt.getTime())
+
+    await new Promise((r) => setTimeout(r, 5))
+    await updateBusinessNotes(initial.id, 'Second note')
+    const [afterSecond] = await db.select().from(businesses).where(eq(businesses.placeId, PLACE_ID))
+    expect(afterSecond.notes).toBe('Second note')
+    expect(afterSecond.updatedAt.getTime()).toBeGreaterThan(afterFirst.updatedAt.getTime())
+
+    // Untouched columns.
+    expect(afterSecond.businessName).toBe('Notes Target')
+    expect(afterSecond.website).toBeNull()
+  })
+
+  it('setBusinessContacted persists contacted and bumps updatedAt, without touching other columns (CRM-04)', async () => {
+    await upsertBusiness({
+      placeId: PLACE_ID,
+      businessName: 'Contacted Target',
+      phone: null,
+      address: null,
+      website: 'https://example.com',
+      rating: null,
+      reviewCount: null,
+    })
+    const [initial] = await db.select().from(businesses).where(eq(businesses.placeId, PLACE_ID))
+
+    await setBusinessContacted(initial.id, true)
+    const [after] = await db.select().from(businesses).where(eq(businesses.placeId, PLACE_ID))
+
+    expect(after.contacted).toBe(true)
+    expect(after.updatedAt.getTime()).toBeGreaterThan(initial.updatedAt.getTime())
+    expect(after.businessName).toBe('Contacted Target')
+    expect(after.website).toBe('https://example.com')
+    expect(after.notes).toBeNull()
   })
 })
