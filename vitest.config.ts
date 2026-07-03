@@ -27,7 +27,17 @@ export default defineConfig({
   test: {
     environment: 'node',
     env: {
-      DATABASE_URL: process.env.TEST_DATABASE_URL,
+      // Falls back to a syntactically valid Postgres URL when
+      // TEST_DATABASE_URL is unset (no .env.test provisioned yet — see
+      // 01-02-SUMMARY.md). Without this fallback, Vitest's `test.env`
+      // assigns `undefined` to process.env.DATABASE_URL, which Node's
+      // process.env setter coerces to the literal string "undefined";
+      // z.url().parse("undefined") then throws at module-load time for
+      // any test that transitively imports lib/env.ts (e.g.
+      // lib/places/client.ts in Plan 02-03). Keep this additive — do not
+      // replace TEST_DATABASE_URL outright — so Plan 01-05's real-database
+      // integration-test path is unaffected once .env.test exists.
+      DATABASE_URL: process.env.TEST_DATABASE_URL || 'postgresql://user:pass@localhost:5432/testdb',
       PLACES_API_KEY: 'vitest-placeholder-not-a-real-key',
     },
   },
