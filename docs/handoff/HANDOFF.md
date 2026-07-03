@@ -53,14 +53,19 @@ checkpoint primitives + additive migration, the checkpointed `runScrapeJob` work
 (including a composition test exercising the real Places-client wiring), and `POST /api/jobs`
 + a real-DB pipeline proof with a JOB-07 dedup-on-retry case. `gsd-verifier` scored 4/4.
 
-**Phase 4 (Job Monitoring, Resumability & Export): in progress.** Research done — confirmed
-by reading the real Phase 3 code that the atomic-claim continuation and watchdog both compose
-as simple `UPDATE ... WHERE ... RETURNING` queries against the already-shipped
-`runScrapeJob`/`jobs` schema, and that JOB-06 (zero-result vs error) needs no worker changes
-at all. Planning in progress now (explicitly asked the planner to produce `04-VALIDATION.md`
-upfront this time, since that's been a recurring catch-it-after gap in every prior phase).
+**Phase 4 (Job Monitoring, Resumability & Export): SHIPPED.** Watchdog + atomic-claim
+continuation (`GET /api/jobs/[id]`) and CSV export (`GET /api/jobs/[id]/export`, formula-
+injection sanitized) both executed clean. `gsd-verifier` scored 5/5. Asking the planner to
+produce `04-VALIDATION.md` upfront (instead of leaving it for the checker to catch) got this
+phase through plan-check with **zero blockers** — first phase to do so cleanly.
 
-Full test suite: 61/61 tests green across Phases 1-3 combined, typecheck/lint clean throughout.
+**Phase 5 (CRM Leads Dashboard) — FINAL PHASE — in progress.** First UI phase: ran
+`/gsd-ui-phase 5` first (config requires it), UI-SPEC approved 6/6 dimensions (Tailwind-only,
+no shadcn, reuses default Geist fonts). Domain research running now for the Server Actions/
+pages/SEC-03 attribution details. Once this phase plans, executes, verifies, and ships — the
+MVP is complete.
+
+Full test suite: 83/83 tests green across Phases 1-4 combined, typecheck/lint clean throughout.
 Earlier: walked the user through Google Cloud project setup via Chrome automation, then
 handed the credential-restriction step to the user per their own request. Delivered a
 live-fetched cost breakdown (Enterprise-tier billing, $35/1000 calls after 1,000/month free,

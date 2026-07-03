@@ -462,20 +462,47 @@ handoff plus commits are the recovery path — no need to re-derive plan state f
   plan-checker had to catch and I had to hand-write in every prior phase). Still running as of
   this handoff.
 
+## PHASE 4 COMPLETE — shipped
+- 04-01 (watchdog `WATCHDOG_MS`, `claimPartialJob`/`flagStaleJob`, `GET /api/jobs/[id]` route)
+  and 04-02 (CSV export: `sanitize.ts`, `export.ts`, `GET /api/jobs/[id]/export`, `csv-stringify`
+  legitimacy checkpoint approved same as `vitest`/`server-only` pattern) both executed clean.
+  Full suite: 83/83 tests, 20 files, typecheck/lint clean.
+- `gsd-plan-checker` for Phase 4 passed with **zero blockers** — first phase to clear cleanly,
+  because I explicitly instructed the planner to produce `04-VALIDATION.md` upfront instead of
+  letting the checker catch it after the fact (recurring gap in Phases 1-3, finally closed).
+- `gsd-verifier` scored 5/5, wrote `04-VERIFICATION.md` (commit `7e5b10c`). Marked complete via
+  `phase.complete 4`, tracking commit `a867371`.
+
+## PHASE 5 IN PROGRESS — CRM Leads Dashboard (FINAL PHASE)
+- This is the first UI phase (`UI hint: yes` in ROADMAP, `ui_phase`/`ui_safety_gate` both true
+  in config) — ran `/gsd-ui-phase 5` before domain research/planning, per the config gate.
+- `gsd-ui-researcher` wrote `05-UI-SPEC.md` (commit `e6667dc`) — Tailwind v4 utilities only, no
+  shadcn (explicitly flagged as an assumption, confirmed accurate against `package.json`),
+  reuses the untouched Geist Sans/Mono from `app/layout.tsx`. Defined spacing/typography/color
+  contracts, 13 copywriting elements (CTAs, empty/zero-result/error/cap-hit states, tier-1
+  copy, attribution). Derived the SCRAPE-07 "hit 60-result cap" UI trigger heuristic
+  (`leads_found >= 60 && status === 'done'`) directly from reading `lib/jobs/checkpoint.ts`'s
+  `MAX_PAGES = 3`.
+- `gsd-ui-checker` reviewed all 6 dimensions (copywriting/visuals/color/typography/spacing/
+  registry-safety) — **APPROVED, no blockers.**
+- Domain research (`gsd-phase-researcher`) running now — covers the Server Actions/DAL
+  additions needed for CRM-02/03/04 (notes/contacted mutations), `app/leads/page.tsx` +
+  `app/jobs/page.tsx` structure, confirming/correcting the SCRAPE-07 heuristic against real
+  worker code, the exact Google attribution text/logo requirement (SEC-03), and a component-
+  testing strategy for this Vitest-only stack (no React Testing Library yet).
+
 ## Next steps (immediate)
-1. Confirm Phase 4 planner finished, check `04-VALIDATION.md` actually landed this time (if
-   not, hand-write it same as Phases 1-3 — pattern is well-established now).
-2. Run `gsd-plan-checker` for Phase 4.
-3. Execute all Phase 4 plans sequentially (one `gsd-executor` per plan, same pattern
-   throughout), spawn `gsd-verifier`, mark complete, ship.
-4. Then research+plan+execute Phase 5 (CRM Leads Dashboard — the FINAL phase, first fully
-   user-visible UI) → verify → ship → **MVP complete**.
+1. Confirm Phase 5 domain research finished, committed.
+2. Plan Phase 5 (`gsd-planner` + `gsd-plan-checker`) — explicitly ask for `05-VALIDATION.md`
+   upfront again, same instruction that got Phase 4 to a zero-blocker plan-check.
+3. Execute all Phase 5 plans sequentially, spawn `gsd-verifier`, mark complete, ship.
+4. **This is the last phase — once shipped, the MVP is complete.** No Phase 6 to plan.
 5. Local `master` is far ahead of `origin/master` — push decision still deliberately deferred
-   to a single batched confirm point, not per-phase.
-6. Session has hit "context critical" (75-76%) warnings multiple times this stretch, each
-   time recovering to a fresh window on next user message — pattern seems to be per-turn
-   context measurement resetting rather than a hard wall. Keep pausing at clean checkpoints
-   (after each plan/wave commits) rather than mid-task if warnings recur.
+   to a single batched confirm point, not per-phase. Will need this decision once MVP ships.
+6. Session has repeatedly hit "context critical" (75-81%) warnings this stretch, each time
+   recovering to a fresh window on the next user message — pattern is per-turn context
+   measurement resetting, not a hard wall. Keep pausing at clean checkpoints (after each
+   plan/wave commits) rather than mid-task if warnings recur.
 
 ## Files in this folder
 - `HANDOFF.md` — this file (curated digest)
