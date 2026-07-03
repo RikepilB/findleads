@@ -25,7 +25,8 @@ describe('mapPlaceToLead', () => {
   })
 
   it('includes a business whose businessStatus is entirely absent (Pitfall 3 regression)', () => {
-    const { businessStatus: _businessStatus, ...rest } = basePlace
+    const { businessStatus, ...rest } = basePlace
+    expect(businessStatus).toBeDefined() // sanity-check the fixture actually had one to drop
     const place = rest as RawPlace
     const result = mapPlaceToLead(place)
     expect(result).not.toBeNull()
@@ -37,7 +38,8 @@ describe('mapPlaceToLead', () => {
   })
 
   it('classifies tier-1 with exact tierReason copy when websiteUri is absent', () => {
-    const { websiteUri: _websiteUri, ...rest } = basePlace
+    const { websiteUri, ...rest } = basePlace
+    expect(websiteUri).toBeDefined() // sanity-check the fixture actually had one to drop
     const place = rest as RawPlace
     const result = mapPlaceToLead(place)
     expect(result?.tier).toBe('tier-1')
