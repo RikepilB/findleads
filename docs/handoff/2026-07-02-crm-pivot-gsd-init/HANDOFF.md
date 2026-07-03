@@ -406,6 +406,9 @@ autonomously, that's a legitimate stop-and-ask point** — not a "silently fake 
    completed; #12 Phase 3: planned_and_checked, awaiting Phase 1 unblock).
 5. Given the 67%-context warning, expect a compaction soon — this handoff should carry full
    context forward; no need to re-derive anything above from the raw transcript.
+6. User confirmed they have the Places API key ready, asked for the exact `.env` line syntax.
+   Answered: `PLACES_API_KEY=<key>` (no quotes, no spaces around `=`), same file as
+   `DATABASE_URL`. Waiting on user to confirm it's saved before resuming Phase 1.
 
 ## Files in this folder
 - `HANDOFF.md` — this file (curated digest)
