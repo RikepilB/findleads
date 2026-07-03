@@ -10,6 +10,13 @@ gap_resolution:
   fix_commit: "1d9b12d"
   fix: "Added `export const dynamic = 'force-dynamic'` to app/leads/page.tsx, matching app/jobs/page.tsx's existing fix for the identical live-DB-read pattern."
   reverified: "pnpm build route table now lists /leads as 'ƒ (Dynamic)' (was '○ (Static)'); full suite re-run 23 files/103 tests passing, typecheck clean, lint clean, applied directly after this report — see body for original gap analysis, kept for record."
+addendum:
+  found_via: "manual production-build walkthrough (next build && next start + browser automation), after this report was written"
+  gap: "JobStatusPoller's status badge updated live via SWR client state, but leadsFound/resultCapHit/Export CSV link are server-rendered from the initial rows array in app/jobs/page.tsx — they stayed stale until an unrelated page reload after the badge flipped to a terminal status."
+  fix_commit: "b1037b3"
+  fix: "JobStatusPoller calls router.refresh() once when it observes a terminal status transition, mirroring JobForm.tsx's existing pattern."
+  reverified: "Live end-to-end: created a real job, watched it reach done, confirmed leadsFound and a working Export CSV link appeared automatically with zero manual reload. Full suite re-run 103/103, typecheck/lint/build clean."
+  scope_note: "Golden path (create -> poll -> done -> leads render -> notes/contacted persist -> SCRAPE-07 message -> CSV export) is live-verified. Error/empty-list/JOB-06 zero-result render paths remain code-read-verified only, not exercised live."
 ---
 
 # Phase 5: CRM Leads Dashboard Verification Report

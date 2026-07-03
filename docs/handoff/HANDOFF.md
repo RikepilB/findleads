@@ -41,8 +41,10 @@ immediately (the actual CRM-01 fix working), SCRAPE-07's cap message renders cor
 `resultCapHit` even when `leadsFound<60`, and CSV export produces correct sanitized UTF-8 data.
 Found and fixed a **second** real gap this way: the job poller's status badge updated live but
 `leadsFound`/Export CSV stayed stale until reload — fixed with a `router.refresh()` call on
-terminal transition (commit `b1037b3`), re-tested live, confirmed working. No further gaps
-found after re-testing — MVP is feature-verified, not just green-on-paper.
+terminal transition (commit `b1037b3`), re-tested live, confirmed working. Golden path is
+live-verified; error/empty/JOB-06 zero-result render paths remain code-read-verified only
+(low-risk conditional renders, not worth burning API calls to force live) — MVP is genuinely
+done on the golden path, not just green-on-paper.
 
 Autopilot mode active throughout (user's own standing authorization: recommended choices, full
 autonomy, stop only for irreversible/detrimental changes). All secrets set up (Neon + Google

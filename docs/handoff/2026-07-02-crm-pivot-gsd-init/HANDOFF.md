@@ -583,9 +583,13 @@ feature-level — the CRM-01 bug proved a clean test suite can still hide a real
   re-tested live end-to-end: a fresh "pottery classes" job's row updated `leadsFound=60` and
   showed a working Export CSV link automatically, with zero manual reload.
 
-**Conclusion: code-verified AND now feature-verified via a real production-mode walkthrough,**
-including a second real bug found and fixed live (not just inferred from code review). No
-further gaps found after re-testing. MVP is genuinely done, not just green-on-paper.
+**Conclusion: code-verified AND golden-path feature-verified live** (create job → poll → done →
+leads render → notes/contacted persist across reload → SCRAPE-07 message → CSV export),
+including a second real bug found and fixed live (not just inferred from code review). The
+error / empty-list / JOB-06 zero-result render paths were NOT exercised live (would require
+wiping the dev DB or burning API calls fishing for a zero-result query) — those remain
+code-read-verified only, per `05-VERIFICATION.md`. MVP is genuinely done on the golden path,
+not just green-on-paper; the untested-live paths are low-risk conditional renders, not gaps.
 
 ## Next steps (immediate)
 1. **Raise the deferred `origin/master` push decision with the user** — local `master` is far
