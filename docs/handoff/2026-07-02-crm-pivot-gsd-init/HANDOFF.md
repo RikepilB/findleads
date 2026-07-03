@@ -432,10 +432,30 @@ handoff plus commits are the recovery path — no need to re-derive plan state f
   committed `dd31349`.
 - Marked Phase 1 complete (`gsd-tools query phase.complete 1`), tracking commit `ecb0b6c`.
   TaskCreate #10 marked completed.
-- **Next: Phase 3 execution** (already fully planned — 3 plans: 03-01 checkpoint/query-comp/
-  migration, 03-02 runScrapeJob worker, 03-03 POST /api/jobs + integration proof). This is the
-  first phase that composes Phase 1's DB layer with Phase 2's Places client — real secrets now
-  exist for it to run against.
+- **Phase 3 in progress**: 03-01 done (checkpoint.ts, buildTextQuery.ts, jobs schema extended
+  with leads_found/cursor/error_reason via additive migration applied to both real Neon DBs,
+  updateJobProgress DAL — commits `7f9efe2`..`def7adb`). 03-02 done (runScrapeJob checkpointed
+  worker loop, including the composition test exercising real `defaultFetchOnePage` wiring per
+  the plan's own advisor-review-driven design — commits `14c0ad5`, `2e721a3`). Full suite green
+  throughout (49/49 tests after 03-01; 03-02's own executor didn't report the post-03-02 count
+  but confirmed no regressions).
+- **03-03 (POST /api/jobs + integration proof) NOT started yet** — last plan in Phase 3. The
+  03-02 executor's own subagent flagged high context (73%) and recommended pausing here rather
+  than starting 03-03 in the same stretch; orchestrator agreed and stopped cleanly. This is a
+  genuinely safe pause point — 03-01 and 03-02 are fully committed and durable.
+
+## Next steps (immediate)
+1. Spawn `gsd-executor` for plan `03-03` (`.planning/phases/03-job-creation-checkpointed-worker/
+   03-03-PLAN.md` — `app/api/jobs/route.ts` POST handler + real-test-DB integration proof +
+   JOB-07 dedup-on-retry test). Same pattern as 03-01/03-02.
+2. After 03-03: spawn `gsd-verifier` for Phase 3, mark complete via
+   `gsd-tools query phase.complete 3`, commit tracking files.
+3. Then plan Phase 4 (Job Monitoring, Resumability & Export) via `gsd-phase-researcher` →
+   `gsd-planner` → `gsd-plan-checker` (same pattern as Phases 1-3 — expect the recurring
+   missing-VALIDATION.md gap, fix directly rather than re-running planner).
+4. Then execute Phase 4, verify, ship, plan+execute Phase 5, verify, ship → MVP complete.
+5. Local `master` is far ahead of `origin/master` — push decision still deliberately deferred
+   to a single batched confirm point, not per-phase.
 
 ## Files in this folder
 - `HANDOFF.md` — this file (curated digest)

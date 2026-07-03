@@ -31,55 +31,38 @@ research (storing full lead data beyond `place_id` breaches the "No Caching" cla
 presented to the user, who chose to **accept the risk** for this personal tool, revisit before
 any public/paid launch.
 
-**Autopilot mode active** (user re-confirmed via `/goal`: recommended choices + full autonomy,
-stop only for irreversible/detrimental changes). Phase 1 (Data Foundation & Security): Wave 1
-done (Next.js scaffold, pnpm/Vitest wired, all checks green — survived 2 mid-run rate-limit
-deaths via targeted resume, not restart). Wave 2 built the SEC-01 code mechanism
-(`lib/env.ts` + tests) but is **blocked on real secrets**: Neon project `findleads`
-(`polished-wildflower-97333280`, dev+test branches) was created with user approval and
-connection strings handed to the user to paste into `.env`/`.env.test` (Claude Code is
-structurally denied `.env*` read/write/reference by this repo's own permission config — a
-deliberate guardrail, applies to Bash literal-argument references too, not worked around).
-The Google Cloud Places API key restriction (SEC-02) still needs the user's manual action in
-Cloud Console — re-confirmed still pending (checked once more, not polling repeatedly). Phase
-1 Waves 3-5 stay correctly blocked/un-faked until both are done.
+**Autopilot mode active** (user confirmed via `/goal`: recommended choices + full autonomy,
+stop only for irreversible/detrimental changes). All secrets are now set up (Neon
+`findleads` project `polished-wildflower-97333280`, dev+test branches; Google Cloud project
+`findleads-501305` with Places API (New) enabled and the key restricted — SEC-02 confirmed
+directly by the user).
 
-**Phase 2 (Places API Scrape Client) is fully SHIPPED** — all 4 plans executed, verified
-independently by `gsd-verifier` (didn't just trust summaries), marked complete in
-ROADMAP/STATE/REQUIREMENTS. Two real bugs caught and fixed along the way, both worth
-remembering: (1) accented "Perú" didn't match the locale-detection regex (JS `\b` is
-ASCII-only) — fixed via diacritic stripping; (2) `PlacesApiError`'s `.message` didn't include
-the response body, so the pagination-retry matcher (checking `.message` for
-`INVALID_REQUEST`) would never actually fire against a real API error — this was in
-already-*verified* Phase 2 code, surfaced only when Phase 3's research composed the pieces
-together. Both fixed with regression tests, all green. **Lesson: verification passing doesn't
-mean a later phase can't still surface a latent bug in already-shipped code — worth fixing on
-sight, not deferring.**
+**Phase 1 (Data Foundation & Security): SHIPPED.** All 5 waves executed against real Neon
+Postgres — schema, Drizzle client, DAL (`lib/db/{jobs,businesses,leads}.ts`), integration
+tests. `gsd-verifier` scored 5/5. Marked complete.
 
-**Phase 3 (Job Creation & Checkpointed Worker) is now fully planned and plan-checked** —
-3 plans, execution-ready the instant the user unblocks Phase 1. Plan-checker's one real
-finding (missing `03-VALIDATION.md`) was fixed the same way as before; its other finding was a
-false positive (wanted a fix+test that already existed from the Phase 2 bugfix above — the
-checker missed checking the test file and trusted research text written before that fix
-landed) — resolved by correcting the stale research doc instead of adding a redundant task.
+**Phase 2 (Places API Scrape Client): SHIPPED.** All 4 plans executed, verified independently
+by `gsd-verifier`. Two real bugs caught and fixed along the way: (1) accented "Perú" didn't
+match the locale regex (JS `\b` is ASCII-only) — fixed via diacritic stripping; (2)
+`PlacesApiError.message` didn't include the response body, so the pagination-retry matcher
+would never fire on a real API error — fixed, regression-tested. **Lesson: verification
+passing doesn't mean a later phase can't surface a latent bug in already-shipped code.**
 
-**Phase 1 (Data Foundation & Security) is SHIPPED.** All 5 waves executed against real Neon
-Postgres (dev + test branches) after the user finished secrets setup — schema, Drizzle
-client, DAL (`lib/db/{jobs,businesses,leads}.ts`), integration tests. 43/43 tests pass across
-Phases 1+2 combined. `gsd-verifier` scored 5/5 (SEC-02's live Cloud Console key restriction
-was confirmed directly by the user after the verifier correctly flagged it as unresolvable
-from code alone). Marked complete and shipped. **Now executing Phase 3** (Job Creation &
-Checkpointed Worker — already fully planned, 3 plans) — first phase composing Phase 1's DB
-layer with Phase 2's Places client. Earlier: walked the user through Google Cloud project
-setup via Chrome automation (project `findleads-501305`, Places API (New) specifically), then
+**Phase 3 (Job Creation & Checkpointed Worker): 2/3 plans done.** 03-01 (checkpoint
+primitives, additive jobs-schema migration on both real Neon DBs) and 03-02 (runScrapeJob
+checkpointed worker loop, including a composition test exercising the real Places-client
+wiring) both executed clean, all tests green. **03-03 (`POST /api/jobs` route + integration
+proof) is the next and last plan** — paused deliberately at this clean, durable point rather
+than push further in a strained context window (a subagent itself flagged high context and
+recommended the pause).
+
+Full test suite: 49+ tests green across Phases 1-3 combined, typecheck/lint clean throughout.
+Earlier: walked the user through Google Cloud project setup via Chrome automation, then
 handed the credential-restriction step to the user per their own request. Delivered a
-live-fetched cost breakdown (Enterprise-tier, $35/1000 after 1,000/month free, ~$0/month at
-MVP scale). **Context ~71% used this session — a pause/compaction is likely soon; this
-handoff carries full state.** Stopped manufacturing
-further speculative Phase 4/5 research since it would compound drift risk on top of
-unexecuted Phase 3 interfaces for diminishing value — waiting for the user instead. Stale
-pre-pivot docs were reconciled earlier — `.planning/` is the source of truth. TaskCreate
-#10-15 tracks phase-by-phase progress. Repo is public on GitHub (`RikepilB/findleads`), MIT
+live-fetched cost breakdown (Enterprise-tier billing, $35/1000 calls after 1,000/month free,
+~$0/month at MVP scale). Stale pre-pivot docs were reconciled earlier — `.planning/` is the
+source of truth. TaskCreate #10-15 tracks phase-by-phase progress. Repo is public on GitHub
+(`RikepilB/findleads`), MIT
 licensed, `master` ~38 commits ahead of `origin/master` (LICENSE push was the last confirmed
 push; not auto-pushing further work — treating that as a deliberate batched confirm point).
 
