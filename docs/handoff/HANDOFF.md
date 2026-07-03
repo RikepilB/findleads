@@ -31,23 +31,22 @@ research (storing full lead data beyond `place_id` breaches the "No Caching" cla
 presented to the user, who chose to **accept the risk** for this personal tool, revisit before
 any public/paid launch.
 
-**Autopilot mode active:** user directed (`/gsd-ship` redirected mid-command) to autonomously
-drive plan→execute→verify→ship across all 5 roadmap phases using recommended defaults, with
-check-ins only for genuine decision forks. Phase 1 (Data Foundation & Security) is planned
-(5 sequential single-plan waves + Walking Skeleton, plan-checker passed after one fixed
-blocker) and **execution has started** — Wave 1 (Next.js scaffold, first real code in this
-repo) is running. Stale pre-pivot docs (`.claude/CLAUDE.md`,
-`.claude/rules/findleads-architecture.md`) have been reconciled — `.planning/` is now
-explicitly the source of truth in both files. TaskCreate #10-15 tracks phase-by-phase
-progress. Repo is public on GitHub (`RikepilB/findleads`), MIT licensed, `master` 14 commits
-ahead of `origin/master` (LICENSE push was the last confirmed push — no further push confirmed
-yet).
-
-**Known upcoming blocker (not yet hit):** Phase 1's Wave 2 requires a genuine human action —
-restricting the Google Cloud API key to Places API only in Cloud Console — that cannot be
-automated from this session. Also unconfirmed whether a Neon `DATABASE_URL` already exists
-(Wave 2 attempts MCP-based provisioning first). If reached and unresolvable autonomously, stop
-and ask the user rather than fake it.
+**Autopilot mode active** (user re-confirmed via `/goal`: recommended choices + full autonomy,
+stop only for irreversible/detrimental changes). Phase 1 (Data Foundation & Security): Wave 1
+done (Next.js scaffold, pnpm/Vitest wired, all checks green — survived 2 mid-run rate-limit
+deaths via targeted resume, not restart). Wave 2 built the SEC-01 code mechanism
+(`lib/env.ts` + tests) but is **blocked on real secrets**: Neon project `findleads`
+(`polished-wildflower-97333280`, dev+test branches) was created with user approval and
+connection strings handed to the user to paste into `.env`/`.env.test` (Claude Code is
+structurally denied `.env*` read/write by this repo's own permission config — a deliberate
+guardrail, not worked around). The Google Cloud Places API key restriction (SEC-02) still
+needs the user's manual action in Cloud Console — genuinely un-automatable. Waves 3-5 of
+Phase 1 are blocked until the user completes both. **While waiting, pivoted to Phase 2**
+(Places API Scrape Client) research, which doesn't need live secrets to plan. Stale pre-pivot
+docs (`.claude/CLAUDE.md`, `.claude/rules/findleads-architecture.md`) were reconciled earlier
+— `.planning/` is the source of truth. TaskCreate #10-15 tracks phase-by-phase progress. Repo
+is public on GitHub (`RikepilB/findleads`), MIT licensed, `master` ~19 commits ahead of
+`origin/master` (LICENSE push was the last confirmed push).
 
 ---
 

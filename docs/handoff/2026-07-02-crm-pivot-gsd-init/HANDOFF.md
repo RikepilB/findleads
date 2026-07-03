@@ -172,17 +172,63 @@ autonomously, that's a legitimate stop-and-ask point** — not a "silently fake 
 - First app code incoming from Wave 1 executor (not yet confirmed committed as of this
   handoff write).
 
+## What was done (continued, Wave 1 + Wave 2 attempt)
+- User confirmed via `/goal`: continue all tasks autonomously with recommended choices; only
+  stop for irreversible/detrimental changes. This is the standing rule for the rest of the
+  build (supersedes needing to re-ask this each phase).
+- Wave 1 (01-01) executor died twice to **server-side rate limiting** (not usage-limit) mid-run
+  — resumed cleanly both times by checking git/working-tree state and respawning a targeted
+  continuation agent rather than restarting from scratch. Completed on the 3rd attempt: 3/3
+  tasks, `pnpm lint/typecheck/test/build` all green. Commits `466eb72`, `6dfca10`, `069abab`.
+- Wave 2 (01-02) executor built `lib/env.ts` (SEC-01 mechanism, server-only zod boundary) +
+  4 passing unit tests + `vitest.config.ts` wiring (had to add a `react-server` resolve
+  condition fix for `server-only` to load under Vitest — not in the original plan, applied as
+  an auto-fix). Commits `ebc3f4d`, `c87f5b6`. **Correctly stopped rather than faking Task 1/2**:
+  no Neon MCP tools were available *inside the subagent's* tool list, and this repo's own
+  `.claude/settings.json` hard-denies `Read`/`Write` on any `.env*` path for all Claude Code
+  tools (a deliberate guardrail, confirmed via 3 independent probes) — so even a supplied
+  connection string couldn't be written by the executor.
+- At the orchestrator level (not the subagent), Neon MCP tools (`mcp__Neon__*`) *were*
+  available. `list_projects` found 3 existing unrelated projects (Examvault, scoutlane,
+  folio), none for findleads. Creating a new project is a "Write mode... NEVER invoke
+  autonomously" tool per its own notice — asked the user first (matches the irreversible/
+  detrimental carve-out from `/goal`). User approved. Created Neon project **findleads**
+  (`polished-wildflower-97333280`) with a `main` branch (dev) + a dedicated `test` branch
+  (`br-calm-violet-ai0vp5dq`), got both connection strings, and handed them to the user to
+  paste into `.env`/`.env.test` themselves (I structurally cannot write those files).
+- Still needed from the user: paste the two connection strings, AND restrict the Google Cloud
+  Places API key to Places API (New) only in Cloud Console (SEC-02 — genuinely cannot be
+  automated, no CLI/MCP path exists) and add `PLACES_API_KEY=` to `.env`.
+- Rather than idle-poll waiting on the user, pivoted to get ahead: spawned
+  `gsd-phase-researcher` (agent `aa0b1f3636adeb603`) for **Phase 2** (Places API Scrape
+  Client) — running as this handoff is written. Phase 2 doesn't need live secrets to plan
+  (field-mask shape, locale heuristics, pagination retry logic, response-mapping, and a
+  fixture/mock-based test strategy since no live API key exists yet).
+
+## Files changed (continued)
+- `lib/env.ts`, `tests/unit/lib/env.test.ts`, `vitest.config.ts` — new/edited, commits
+  `ebc3f4d`, `c87f5b6`.
+- `.planning/phases/01-data-foundation-security/01-01-SUMMARY.md`,
+  `01-02-SUMMARY.md` — new (01-02 marked `status: blocked`).
+- `.planning/phases/02-places-api-scrape-client/` — new directory, research in progress.
+- Neon: new project `findleads` (`polished-wildflower-97333280`), branches `main` (dev) +
+  `test` — NOT reflected in any repo file (connection strings live only in the user's own
+  `.env`/`.env.test`, never committed, never written by Claude Code).
+
 ## Next steps
-1. Confirm Wave 1 (01-01) executor finished + committed; read its SUMMARY.md.
-2. Spawn Wave 2 (01-02) executor — watch for the SEC-02 human-action checkpoint and the Neon
-   provisioning step described above; surface to the user if genuinely blocked rather than
-   proceeding on an assumption.
-3. Waves 3-5 (01-03/04/05) are all `autonomous: true` — schema, DAL, integration tests.
-4. After all 5 waves: phase verification (`gsd-verifier`), then ship Phase 1, then repeat
-   plan→execute→verify→ship for Phases 2-5 in ROADMAP.md order.
-5. Local `master` is 14 commits ahead of `origin/master` (LICENSE push was the last confirmed
+1. **Waiting on user**: paste `DATABASE_URL`/`TEST_DATABASE_URL` into `.env`/`.env.test`
+   (values already given to them in-conversation), restrict the GCP Places API key to
+   Places API (New) only, add `PLACES_API_KEY=` to `.env`.
+2. Once done: resume Phase 1 — Wave 3 (01-03: schema/migration) is blocked on `DATABASE_URL`
+   existing (imports `lib/env.ts` transitively, throws at import time otherwise); Waves 4-5
+   follow. Then phase verification (`gsd-verifier`) → ship Phase 1.
+3. Phase 2 research (agent `aa0b1f3636adeb603`) running in parallel — once done, plan Phase 2
+   (can start even before Phase 1's secrets land, since it's schema/API-client design work).
+4. Repeat plan→execute→verify→ship for Phases 3-5 in ROADMAP.md order.
+5. Local `master` is ~19 commits ahead of `origin/master` (LICENSE push was the last confirmed
    push) — will need a push decision once ship-worthy work exists.
-6. TaskCreate #10-15 tracks phase-by-phase progress — update as each phase completes.
+6. TaskCreate #10-15 tracks phase-by-phase progress (#10 Phase 1 metadata: wave1 done, wave2
+   blocked_on_user_env_setup; #11 Phase 2 now in_progress for research).
 
 ## Files in this folder
 - `HANDOFF.md` — this file (curated digest)
