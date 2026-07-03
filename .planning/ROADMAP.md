@@ -26,7 +26,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Data Foundation & Security** - Durable `businesses`/`leads` schema and secured Places API key handling (completed 2026-07-03)
 - [x] **Phase 2: Places API Scrape Client** - Field-masked, locale-aware search with tier-1 classification and closed-business filtering (completed 2026-07-03)
-- [ ] **Phase 3: Job Creation & Checkpointed Worker** - Submit a scrape request; a resumable worker runs it safely within the platform time limit
+- [x] **Phase 3: Job Creation & Checkpointed Worker** - Submit a scrape request; a resumable worker runs it safely within the platform time limit (completed 2026-07-03)
 - [ ] **Phase 4: Job Monitoring, Resumability & Export** - Poll jobs to completion (auto-resume, honest error/zero-result states) and export CSV
 - [ ] **Phase 5: CRM Leads Dashboard** - Review leads, manage notes/contacted status, and view job history with attribution
 
@@ -93,9 +93,9 @@ Plans:
 **Plans**: 3 plans
 Plans:
 
-- [ ] 03-01-PLAN.md — checkpoint.ts/buildTextQuery.ts + additive jobs schema (leads_found/cursor/error_reason) + updateJobProgress (JOB-02, JOB-03 substrate)
-- [ ] 03-02-PLAN.md — runScrapeJob checkpointed worker loop (JOB-02, JOB-03, JOB-07)
-- [ ] 03-03-PLAN.md — POST /api/jobs route + real-DB integration proof (SCRAPE-01, JOB-01, JOB-07)
+- [x] 03-01-PLAN.md — checkpoint.ts/buildTextQuery.ts + additive jobs schema (leads_found/cursor/error_reason) + updateJobProgress (JOB-02, JOB-03 substrate)
+- [x] 03-02-PLAN.md — runScrapeJob checkpointed worker loop (JOB-02, JOB-03, JOB-07)
+- [x] 03-03-PLAN.md — POST /api/jobs route + real-DB integration proof (SCRAPE-01, JOB-01, JOB-07)
 
 ### Phase 4: Job Monitoring, Resumability & Export
 
@@ -138,7 +138,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 |-------|----------------|--------|-----------|
 | 1. Data Foundation & Security | 5/5 | Complete    | 2026-07-03 |
 | 2. Places API Scrape Client | 4/4 | Complete    | 2026-07-03 |
-| 3. Job Creation & Checkpointed Worker | 0/3 | Not started | - |
+| 3. Job Creation & Checkpointed Worker | 3/3 | Complete    | 2026-07-03 |
 | 4. Job Monitoring, Resumability & Export | 0/TBD | Not started | - |
 | 5. CRM Leads Dashboard | 0/TBD | Not started | - |
 

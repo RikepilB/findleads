@@ -9,7 +9,7 @@ Requirements for initial release. Each maps to a roadmap phase.
 
 ### Scrape (Places API integration)
 
-- [ ] **SCRAPE-01**: User can create a scrape job by category + free-text location, validated against Toronto and Lima
+- [x] **SCRAPE-01**: User can create a scrape job by category + free-text location, validated against Toronto and Lima
 - [x] **SCRAPE-02**: Every scrape request field-masks `websiteUri` and `business_status` on the same call (no separate Place Details lookup per result)
 - [x] **SCRAPE-03**: Scrape requests wire `languageCode`/`regionCode` per target market so Lima isn't silently under-served by an English/Canada default
 - [x] **SCRAPE-04**: Scrape excludes closed businesses using the `business_status` field (`CLOSED_PERMANENTLY`/`CLOSED_TEMPORARILY`)
@@ -19,13 +19,13 @@ Requirements for initial release. Each maps to a roadmap phase.
 
 ### Job Execution
 
-- [ ] **JOB-01**: `POST /api/jobs` validates params (Zod), inserts a `pending` job row, and returns `{ jobId }` immediately while the scrape runs via Next.js `after()`
-- [ ] **JOB-02**: The scrape worker is checkpointed/resumable — one search call is one unit of work, progress (`leads_found`, cursor) persists after every unit
-- [ ] **JOB-03**: The worker stops cleanly near a safety-window threshold (~250s, under Vercel Hobby's 300s ceiling) and marks the job `partial` with a saved cursor
+- [x] **JOB-01**: `POST /api/jobs` validates params (Zod), inserts a `pending` job row, and returns `{ jobId }` immediately while the scrape runs via Next.js `after()`
+- [x] **JOB-02**: The scrape worker is checkpointed/resumable — one search call is one unit of work, progress (`leads_found`, cursor) persists after every unit
+- [x] **JOB-03**: The worker stops cleanly near a safety-window threshold (~250s, under Vercel Hobby's 300s ceiling) and marks the job `partial` with a saved cursor
 - [ ] **JOB-04**: `GET /api/jobs/:id` (polled ~1s) triggers continuation via `after()` when status is `partial`, guarded by an atomic claim (`UPDATE ... WHERE status='partial'`) to prevent duplicate continuations
 - [ ] **JOB-05**: Stale `pending`/`running` jobs (no update past a watchdog threshold) auto-flip to `error` with a human-readable reason on read
 - [ ] **JOB-06**: A zero-result job is a valid, non-error outcome, distinguished from a real failure in the UI
-- [ ] **JOB-07**: Leads are deduped per job via `unique(job_id, place_id)` — no cross-job global dedup in v1
+- [x] **JOB-07**: Leads are deduped per job via `unique(job_id, place_id)` — no cross-job global dedup in v1
 
 ### Data Model
 
@@ -103,11 +103,11 @@ Explicitly excluded. Documented to prevent scope creep.
 | SCRAPE-04 | Phase 2: Places API Scrape Client | Complete |
 | SCRAPE-05 | Phase 2: Places API Scrape Client | Complete |
 | SCRAPE-06 | Phase 2: Places API Scrape Client | Complete |
-| SCRAPE-01 | Phase 3: Job Creation & Checkpointed Worker | Pending |
-| JOB-01 | Phase 3: Job Creation & Checkpointed Worker | Pending |
-| JOB-02 | Phase 3: Job Creation & Checkpointed Worker | Pending |
-| JOB-03 | Phase 3: Job Creation & Checkpointed Worker | Pending |
-| JOB-07 | Phase 3: Job Creation & Checkpointed Worker | Pending |
+| SCRAPE-01 | Phase 3: Job Creation & Checkpointed Worker | Complete |
+| JOB-01 | Phase 3: Job Creation & Checkpointed Worker | Complete |
+| JOB-02 | Phase 3: Job Creation & Checkpointed Worker | Complete |
+| JOB-03 | Phase 3: Job Creation & Checkpointed Worker | Complete |
+| JOB-07 | Phase 3: Job Creation & Checkpointed Worker | Complete |
 | JOB-04 | Phase 4: Job Monitoring, Resumability & Export | Pending |
 | JOB-05 | Phase 4: Job Monitoring, Resumability & Export | Pending |
 | JOB-06 | Phase 4: Job Monitoring, Resumability & Export | Pending |
