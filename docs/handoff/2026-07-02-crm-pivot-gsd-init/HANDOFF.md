@@ -275,22 +275,67 @@ autonomously, that's a legitimate stop-and-ask point** — not a "silently fake 
   `tests/helpers/mockFetch.ts` — new, first Phase 2 product code.
 - `lib/places/locale.ts` — the diacritics fix, commit `8bbf67b`.
 
+## What was done (continued — Phase 2 shipped, real bugfix, Phase 3 research+planning)
+- Phase 2 verifier confirmed all 5 success criteria genuinely met (ran commands itself, didn't
+  trust SUMMARY.md claims) — full suite 37/37, typecheck/lint clean, field mask/locale/
+  closed-business-filter/tier-1-copy/pagination-retry all independently re-verified against
+  actual code. Wrote `02-VERIFICATION.md`, committed `ba9a659`.
+- Marked Phase 2 complete via `gsd-tools query phase.complete 2` (updates ROADMAP/STATE/
+  REQUIREMENTS tracking) — committed `1e5e7f8`. **No PR/branch needed** —
+  `branching_strategy: "none"` in config.json means work stays on `master` directly; "ship"
+  for this config is just the tracking-complete step, not a merge flow. Did NOT push to
+  `origin` — treating that as a separate, deliberately-batched confirm point (visible external
+  action per global guardrails), not something to auto-do per phase.
+- Started Phase 3 (Job Creation & Checkpointed Worker) research even though Phase 3
+  execution is doubly blocked (needs Phase 1's actual DB code AND real secrets) — research
+  itself has no dependency, and getting ahead pays off once unblocked. `gsd-phase-researcher`
+  (agent `af3fa9734c8cba36f`) produced a thorough 999-line `03-RESEARCH.md` — designed the
+  `POST /api/jobs` Route Handler + `after()` pattern, the checkpointed worker's cursor shape,
+  and **caught a real cross-phase bug via advisor-prompted verification**: Phase 2's already-
+  shipped `PlacesApiError` puts Google's error reason (e.g. `INVALID_REQUEST`) only in
+  `.body`, but `paginate.ts`'s retry matcher checks `.message` — so SCRAPE-06's pagination
+  retry (verified passing in Phase 2!) would never actually fire against a real API error.
+  Committed research `bebfebd`.
+- **Fixed the bug directly** rather than letting it ride as a research note — cheap, high-value,
+  in already-"verified" code. Changed `PlacesApiError`'s `super()` call to include `body` in
+  `message`; added a regression test in `paginate.test.ts` using the real `PlacesApiError`
+  shape (not just a generic `Error`). All 38 tests pass, typecheck/lint clean. Committed
+  `4ab1a23`. (Lesson: "verified" doesn't mean "future-proof" — a later phase's research can
+  still surface latent bugs in already-shipped, already-verified code; worth fixing on sight
+  rather than deferring.)
+- Re-probed env setup (one lightweight check, not hammering): still blocked — `.env` exists
+  but both keys empty, `.env.test` still doesn't exist. Noted the probe agent correctly
+  flagged and ignored an unrelated `dotenv` sponsor-banner "tip" line as untrusted external
+  content per the prompt-injection guardrail — didn't act on it, just reported it existed.
+- Spawned `gsd-planner` for Phase 3 (agent `a69e7126e030f6788`) — planning against Phase 1's
+  *locked interface* (from `01-03-PLAN.md`/`01-04-PLAN.md`, which fully spec the not-yet-built
+  `lib/db/schema.ts`/DAL) so the plan is execution-ready the moment Phase 1 unblocks, without
+  needing that code to exist on disk yet. Running as this handoff is written.
+
+## Files changed (continued)
+- `.planning/phases/02-places-api-scrape-client/02-VERIFICATION.md` — new, commit `ba9a659`.
+- `.planning/ROADMAP.md`, `.planning/STATE.md`, `.planning/REQUIREMENTS.md` — Phase 2 marked
+  complete, commit `1e5e7f8`.
+- `.planning/phases/03-job-creation-checkpointed-worker/03-RESEARCH.md` — new, commit
+  `bebfebd`.
+- `lib/places/client.ts`, `tests/unit/lib/places/paginate.test.ts` — bugfix, commit `4ab1a23`.
+
 ## Next steps
 1. **Still waiting on user**: paste `DATABASE_URL`/`TEST_DATABASE_URL` into `.env`/`.env.test`,
    restrict the GCP Places API key, add `PLACES_API_KEY=` to `.env`. Confirmed still not done
-   as of this handoff.
-2. Confirm 02-04 (mapPlaceToLead.ts, last Phase 2 plan) finished — then Phase 2 is
-   feature-complete: spawn `gsd-verifier`, then ship per `branching_strategy: none` (no phase
-   branch — likely means "mark complete, commit, continue" rather than a PR flow; check
-   `ship.md` when reached).
-3. Plan Phase 3 (Job Creation & Checkpointed Worker) — this is where Phase 1's schema and
-   Phase 2's `lib/places/*` actually get composed together, and where the real DB dependency
-   becomes unavoidable (unlike Phase 2, which stayed fixture/stub-only by design).
-4. Repeat plan→execute→verify→ship for Phases 4-5 after.
-5. Local `master` is ~30 commits ahead of `origin/master` (LICENSE push was the last confirmed
-   push) — will need a push decision once ship-worthy work exists.
-6. TaskCreate #10-15 tracks phase-by-phase progress (#10 Phase 1: wave1 done, wave2/3
-   blocked_on_user_env_setup; #11 Phase 2: in_progress, 3/4 plans done, 02-04 running).
+   as of this handoff (re-checked once, not polling repeatedly).
+2. Confirm Phase 3 planner (agent `a69e7126e030f6788`) finished, run plan-checker.
+3. Do NOT execute Phase 3 (or resume Phase 1 Waves 3-5) until the user confirms env setup —
+   both are correctly held blocked, not faked. Keep planning ahead (Phase 4/5 research once
+   Phase 3 plan lands) so everything is execution-ready the instant Phase 1 unblocks.
+4. Once unblocked: resume Phase 1 Waves 3-5 → verify → ship, then execute Phase 3 → verify →
+   ship, then Phases 4-5 in order.
+5. Local `master` is ~35 commits ahead of `origin/master` (LICENSE push was the last confirmed
+   push) — will need a push decision once ship-worthy work exists (deliberately not
+   auto-pushing per phase).
+6. TaskCreate #10-15 tracks phase-by-phase progress (#10 Phase 1: wave1 done, waves 2-5
+   blocked_on_user_env_setup; #11 Phase 2: completed; #12 Phase 3: research done, planning in
+   progress).
 
 ## Files in this folder
 - `HANDOFF.md` — this file (curated digest)

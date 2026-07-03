@@ -41,19 +41,29 @@ connection strings handed to the user to paste into `.env`/`.env.test` (Claude C
 structurally denied `.env*` read/write/reference by this repo's own permission config — a
 deliberate guardrail, applies to Bash literal-argument references too, not worked around).
 The Google Cloud Places API key restriction (SEC-02) still needs the user's manual action in
-Cloud Console — confirmed still pending. Waves 3-5 of Phase 1 stay blocked until both are
-done — **pivoted to Phase 2** (Places API Scrape Client) in the meantime, which has zero
-DB/live-secret dependency by design (fixture/stub-based testing). Phase 2 is now
-**near-complete**: 3 of 4 plans executed clean (schema+fixtures, locale+pagination,
-Places API client — all TDD RED/GREEN, all green on typecheck/lint/full-suite), the 4th
-(mapPlaceToLead) executing now. Caught and fixed a real bug along the way — accented "Perú"
-wasn't matching the locale-detection regex (JS `\b` is ASCII-only); fixed via diacritic
-stripping, tested, committed. One Phase 2 subagent hit an account-level **session limit**
-earlier (distinct from transient rate-limiting) but had already written good research output
-before dying — recovered by verifying and committing directly. Stale pre-pivot docs were
-reconciled earlier — `.planning/` is the source of truth. TaskCreate #10-15 tracks
-phase-by-phase progress. Repo is public on GitHub (`RikepilB/findleads`), MIT licensed,
-`master` ~30 commits ahead of `origin/master` (LICENSE push was the last confirmed push).
+Cloud Console — re-confirmed still pending (checked once more, not polling repeatedly). Phase
+1 Waves 3-5 stay correctly blocked/un-faked until both are done.
+
+**Phase 2 (Places API Scrape Client) is fully SHIPPED** — all 4 plans executed, verified
+independently by `gsd-verifier` (didn't just trust summaries), marked complete in
+ROADMAP/STATE/REQUIREMENTS. Two real bugs caught and fixed along the way, both worth
+remembering: (1) accented "Perú" didn't match the locale-detection regex (JS `\b` is
+ASCII-only) — fixed via diacritic stripping; (2) `PlacesApiError`'s `.message` didn't include
+the response body, so the pagination-retry matcher (checking `.message` for
+`INVALID_REQUEST`) would never actually fire against a real API error — this was in
+already-*verified* Phase 2 code, surfaced only when Phase 3's research composed the pieces
+together. Both fixed with regression tests, all green. **Lesson: verification passing doesn't
+mean a later phase can't still surface a latent bug in already-shipped code — worth fixing on
+sight, not deferring.**
+
+Now on **Phase 3 (Job Creation & Checkpointed Worker)**: research done, planning in progress.
+Phase 3 execution is correctly held blocked pending the same user setup (its worker imports
+Phase 1's not-yet-built DB layer) — but planning proceeds now against Phase 1's *locked
+interface* so execution is instant-ready once unblocked. Stale pre-pivot docs were reconciled
+earlier — `.planning/` is the source of truth. TaskCreate #10-15 tracks phase-by-phase
+progress. Repo is public on GitHub (`RikepilB/findleads`), MIT licensed, `master` ~35 commits
+ahead of `origin/master` (LICENSE push was the last confirmed push; not auto-pushing further
+work — treating that as a deliberate batched confirm point).
 
 ---
 
