@@ -191,6 +191,12 @@ than left as blocking placeholders:
    confirm against the actual last-page result count if a false positive (exactly 60 organic,
    no more available) matters — the requirement's own wording ("refine your search") already
    reads as advisory, not a hard guarantee, so the heuristic is acceptable as-is.
+
+   **Superseded (2026-07-03):** 05-RESEARCH.md's domain research found this heuristic has a
+   false-negative mode (closed-business filtering can drop `leads_found` below 60 even when
+   the raw cap was hit) and replaced it with an additive `jobs.resultCapHit` boolean computed
+   from the raw pagination signal before filtering — see 05-01-PLAN.md Task 2. 05-04-PLAN.md
+   renders the cap message off `resultCapHit`, not this heuristic.
 4. **No destructive actions exist in this phase's scope.** CRM-02/CRM-03 (notes, contacted
    toggle) are reversible, non-destructive edits — no confirmation dialog needed. There is no
    delete-lead, delete-job, or delete-note action in v1. If one is added later, it needs its own
