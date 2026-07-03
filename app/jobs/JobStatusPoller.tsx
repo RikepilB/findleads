@@ -1,5 +1,7 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
+import { useRef } from 'react'
 import useSWR from 'swr'
 import { isTerminalStatus } from './isTerminalStatus'
 
@@ -49,12 +51,25 @@ export default function JobStatusPoller({
   jobId: string
   initialStatus: string
 }) {
+  const router = useRouter()
+  const hasRefreshed = useRef(false)
+
   const { data } = useSWR<JobStatusResponse>(
     isTerminalStatus(initialStatus) ? null : `/api/jobs/${jobId}`,
     fetcher,
     {
       refreshInterval: (latest) =>
         latest && isTerminalStatus(latest.status) ? 0 : 1500,
+      // The badge below updates from SWR's own client state, but leadsFound/
+      // resultCapHit/the Export CSV link are server-rendered from the initial
+      // `rows` array — without this, they'd stay stale ("0 leads", no export
+      // link) even after the badge flips to "done" until an unrelated reload.
+      onSuccess: (latest) => {
+        if (isTerminalStatus(latest.status) && !hasRefreshed.current) {
+          hasRefreshed.current = true
+          router.refresh()
+        }
+      },
     },
   )
 
