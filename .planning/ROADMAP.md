@@ -27,7 +27,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: Data Foundation & Security** - Durable `businesses`/`leads` schema and secured Places API key handling (completed 2026-07-03)
 - [x] **Phase 2: Places API Scrape Client** - Field-masked, locale-aware search with tier-1 classification and closed-business filtering (completed 2026-07-03)
 - [x] **Phase 3: Job Creation & Checkpointed Worker** - Submit a scrape request; a resumable worker runs it safely within the platform time limit (completed 2026-07-03)
-- [ ] **Phase 4: Job Monitoring, Resumability & Export** - Poll jobs to completion (auto-resume, honest error/zero-result states) and export CSV
+- [x] **Phase 4: Job Monitoring, Resumability & Export** - Poll jobs to completion (auto-resume, honest error/zero-result states) and export CSV (completed 2026-07-03)
 - [ ] **Phase 5: CRM Leads Dashboard** - Review leads, manage notes/contacted status, and view job history with attribution
 
 ## Phase Details
@@ -114,8 +114,8 @@ Plans:
 **Plans**: 2 plans
 Plans:
 
-- [ ] 04-01-PLAN.md — GET /api/jobs/:id: atomic claim + continuation (JOB-04), stale-job watchdog (JOB-05), zero-result-vs-error response shape (JOB-06)
-- [ ] 04-02-PLAN.md — CSV export: csv-stringify install (legitimacy checkpoint), leads/businesses join, formula-injection sanitization (EXPORT-01, EXPORT-02)
+- [x] 04-01-PLAN.md — GET /api/jobs/:id: atomic claim + continuation (JOB-04), stale-job watchdog (JOB-05), zero-result-vs-error response shape (JOB-06)
+- [x] 04-02-PLAN.md — CSV export: csv-stringify install (legitimacy checkpoint), leads/businesses join, formula-injection sanitization (EXPORT-01, EXPORT-02)
 
 ### Phase 5: CRM Leads Dashboard
 
@@ -143,7 +143,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 1. Data Foundation & Security | 5/5 | Complete    | 2026-07-03 |
 | 2. Places API Scrape Client | 4/4 | Complete    | 2026-07-03 |
 | 3. Job Creation & Checkpointed Worker | 3/3 | Complete    | 2026-07-03 |
-| 4. Job Monitoring, Resumability & Export | 0/2 | Not started | - |
+| 4. Job Monitoring, Resumability & Export | 2/2 | Complete    | 2026-07-03 |
 | 5. CRM Leads Dashboard | 0/TBD | Not started | - |
 
 ---

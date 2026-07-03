@@ -22,9 +22,9 @@ Requirements for initial release. Each maps to a roadmap phase.
 - [x] **JOB-01**: `POST /api/jobs` validates params (Zod), inserts a `pending` job row, and returns `{ jobId }` immediately while the scrape runs via Next.js `after()`
 - [x] **JOB-02**: The scrape worker is checkpointed/resumable — one search call is one unit of work, progress (`leads_found`, cursor) persists after every unit
 - [x] **JOB-03**: The worker stops cleanly near a safety-window threshold (~250s, under Vercel Hobby's 300s ceiling) and marks the job `partial` with a saved cursor
-- [ ] **JOB-04**: `GET /api/jobs/:id` (polled ~1s) triggers continuation via `after()` when status is `partial`, guarded by an atomic claim (`UPDATE ... WHERE status='partial'`) to prevent duplicate continuations
-- [ ] **JOB-05**: Stale `pending`/`running` jobs (no update past a watchdog threshold) auto-flip to `error` with a human-readable reason on read
-- [ ] **JOB-06**: A zero-result job is a valid, non-error outcome, distinguished from a real failure in the UI
+- [x] **JOB-04**: `GET /api/jobs/:id` (polled ~1s) triggers continuation via `after()` when status is `partial`, guarded by an atomic claim (`UPDATE ... WHERE status='partial'`) to prevent duplicate continuations
+- [x] **JOB-05**: Stale `pending`/`running` jobs (no update past a watchdog threshold) auto-flip to `error` with a human-readable reason on read
+- [x] **JOB-06**: A zero-result job is a valid, non-error outcome, distinguished from a real failure in the UI
 - [x] **JOB-07**: Leads are deduped per job via `unique(job_id, place_id)` — no cross-job global dedup in v1
 
 ### Data Model
@@ -43,8 +43,8 @@ Requirements for initial release. Each maps to a roadmap phase.
 
 ### Export
 
-- [ ] **EXPORT-01**: CSV export of a completed job's leads, joined to current `businesses` CRM state
-- [ ] **EXPORT-02**: CSV cells starting with `=+-@` are sanitized against formula injection
+- [x] **EXPORT-01**: CSV export of a completed job's leads, joined to current `businesses` CRM state
+- [x] **EXPORT-02**: CSV cells starting with `=+-@` are sanitized against formula injection
 
 ### Security
 
@@ -108,11 +108,11 @@ Explicitly excluded. Documented to prevent scope creep.
 | JOB-02 | Phase 3: Job Creation & Checkpointed Worker | Complete |
 | JOB-03 | Phase 3: Job Creation & Checkpointed Worker | Complete |
 | JOB-07 | Phase 3: Job Creation & Checkpointed Worker | Complete |
-| JOB-04 | Phase 4: Job Monitoring, Resumability & Export | Pending |
-| JOB-05 | Phase 4: Job Monitoring, Resumability & Export | Pending |
-| JOB-06 | Phase 4: Job Monitoring, Resumability & Export | Pending |
-| EXPORT-01 | Phase 4: Job Monitoring, Resumability & Export | Pending |
-| EXPORT-02 | Phase 4: Job Monitoring, Resumability & Export | Pending |
+| JOB-04 | Phase 4: Job Monitoring, Resumability & Export | Complete |
+| JOB-05 | Phase 4: Job Monitoring, Resumability & Export | Complete |
+| JOB-06 | Phase 4: Job Monitoring, Resumability & Export | Complete |
+| EXPORT-01 | Phase 4: Job Monitoring, Resumability & Export | Complete |
+| EXPORT-02 | Phase 4: Job Monitoring, Resumability & Export | Complete |
 | SCRAPE-07 | Phase 5: CRM Leads Dashboard | Pending |
 | CRM-01 | Phase 5: CRM Leads Dashboard | Pending |
 | CRM-02 | Phase 5: CRM Leads Dashboard | Pending |
