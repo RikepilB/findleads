@@ -365,35 +365,26 @@ send `category` alone.
 **Warning signs:** a Toronto job returning results from Vancouver or Ottawa; a Lima job returning
 results from another Peruvian city.
 
-### Pitfall 5 (verified, cross-component): `fetchNextPage`'s retry likely does not fire against a real `PlacesApiError`
-**What goes wrong:** confirmed by reading both files directly this session.
-`lib/places/paginate.ts`'s `isTokenNotYetActiveError` matches on
-`err.message.includes('INVALID_REQUEST')`. But `lib/places/client.ts`'s `PlacesApiError` (the error
-`searchTextPlaces` actually throws on a non-2xx response) constructs its `.message` as
-`` `Places API request failed: ${status}` `` — the literal string `'INVALID_REQUEST'` lives only in
-`.body` (the raw response text), never in `.message`. `tests/unit/lib/places/paginate.test.ts`
-(read this session) only ever stubs a plain `new Error('INVALID_REQUEST: token not active')`
-directly — it never constructs a real `PlacesApiError`, so this gap is untested and currently
-invisible. Net effect: when this phase's `defaultFetchOnePage` calls
-`fetchNextPage(doFetch)` where `doFetch = () => searchTextPlaces(...)`, a real "token not yet
-active" 400 response from Google throws a `PlacesApiError` whose `.message` does **not** contain
-`'INVALID_REQUEST'` — `isTokenNotYetActiveError` returns `false`, `fetchNextPage` rethrows
-immediately without retrying, and this phase's `runScrapeJob` catch block marks the whole job
-`status: 'error'` on what should have been a transient, retryable pagination blip. This directly
-undermines JOB-03's "safe" framing (a legitimate multi-page job fails outright instead of the
-retry SCRAPE-06 was built to provide).
-**Why it happens:** a pre-existing Phase 2 defect (Phase 2 shipped and is marked complete) that this
-phase is the first to actually exercise end-to-end — Phase 2's own unit tests pass because they stub
-a matching-shaped generic `Error`, not the real error type Phase 2's own client throws.
-**How to avoid:** this phase's plan should include a small, targeted fix to
-`isTokenNotYetActiveError` (in already-shipped `lib/places/paginate.ts`) to also check
-`err.name === 'PlacesApiError' && (err as PlacesApiError).body.includes('INVALID_REQUEST')` (or
-equivalent), alongside the existing `err.message` check — an additive, backward-compatible change,
-not a rewrite of Phase 2's design. Add a regression test (Validation Architecture below) using a
-real `PlacesApiError` instance, not a generic `Error`, so this class of gap can't recur silently.
-**Warning signs:** a job with a query dense enough to need page 2/3 reliably erroring instead of
-completing, especially once a real `PLACES_API_KEY` is available and this path is exercised against
-the live API for the first time.
+### Pitfall 5 (RESOLVED before Phase 3 planning — kept for history): `fetchNextPage`'s retry didn't fire against a real `PlacesApiError`
+**Status: fixed at commit `4ab1a23`, before this phase's plans were written.** Originally found
+this session by reading both files directly: `lib/places/paginate.ts`'s `isTokenNotYetActiveError`
+matched on `err.message.includes('INVALID_REQUEST')`, but `lib/places/client.ts`'s `PlacesApiError`
+constructed its `.message` as `` `Places API request failed: ${status}` `` with no body — the
+literal string `'INVALID_REQUEST'` lived only in `.body`, never `.message`. The fix (applied
+directly, not deferred to this phase) changed `PlacesApiError`'s constructor to
+`` super(`Places API request failed: ${status}: ${body}`) `` — `.message` now includes the body
+text, so the existing `err.message.includes('INVALID_REQUEST')` check works against a real
+`PlacesApiError` without needing a `.body`-specific check or an `instanceof PlacesApiError` branch.
+A regression test using a real `PlacesApiError` instance (not a generic `Error`) already exists in
+`tests/unit/lib/places/paginate.test.ts` ("retries on a real PlacesApiError whose INVALID_REQUEST
+reason lives in the response body, not message alone"). **No task in this phase's plans touches
+`lib/places/paginate.ts` or `client.ts` — that is correct, not a gap.** Read the current
+`lib/places/client.ts` before relying on this section if resuming after a long gap, to confirm the
+fix is still in place.
+**Why it happened:** a pre-existing Phase 2 defect (Phase 2 shipped and was marked complete) that
+this phase's research was the first to actually exercise end-to-end — Phase 2's own unit tests
+passed because they stubbed a matching-shaped generic `Error`, not the real error type Phase 2's
+own client throws.
 
 ### Pitfall 4: Adding a persisted `started_at` column "to be safe" — unnecessary and subtly wrong
 **What goes wrong:** it's tempting to add a `started_at` timestamp column to `jobs` (set once, read
@@ -763,9 +754,9 @@ established (`fetchImpl`, `sleep`) plus this phase's own `now`/`fetchOnePage` in
 - [ ] `tests/integration/jobs/runScrapeJob.test.ts` — none exists yet; depends on Phase 1's `lib/db/*` actually existing (blocked until Phase 1 executes — see Environment Availability)
 - [ ] `tests/unit/app/api/jobs/route.test.ts` — none exists yet
 - [ ] `lib/db/jobs.ts`'s `updateJobProgress` — needs to exist before any of the above can pass; this phase's plan must sequence it early (alongside the schema migration), not as an afterthought
-- [ ] `lib/places/paginate.ts`'s `isTokenNotYetActiveError` fix (Pitfall 5) — a one-line, additive
-      fix to an already-shipped Phase 2 file; sequence it before `runScrapeJob`'s integration tests,
-      since those tests' correctness depends on the retry actually working end-to-end
+- [x] `lib/places/paginate.ts`'s `isTokenNotYetActiveError` fix (Pitfall 5) — already resolved at
+      commit `4ab1a23` before this phase's plans were written; regression test already exists in
+      `tests/unit/lib/places/paginate.test.ts`. No task needed in this phase's plans.
 </validation_architecture>
 
 <security_domain>
@@ -825,22 +816,11 @@ design).
      asserting a page-3 response with a (hypothetical) `nextPageToken` still present is treated as
      `done: true` regardless.
 
-3. **(Verified this session, cross-component — see Pitfall 5) Does `fetchNextPage`'s retry actually
-   fire against the real `PlacesApiError` this phase's worker will trigger it with?**
-   - What we know: reading both files directly this session confirms `isTokenNotYetActiveError`
-     (`lib/places/paginate.ts`) matches on `err.message`, but `PlacesApiError`'s (`lib/places/
-     client.ts`) message never contains `'INVALID_REQUEST'` — only its `.body` does. Phase 2's own
-     unit tests never exercise this with a real `PlacesApiError` instance, only a hand-shaped
-     generic `Error`.
-   - What's unclear: whether this was a deliberate simplification (e.g. an assumption that callers
-     would pre-inspect `.body` before invoking `fetchNextPage`) or a genuine oversight — nothing in
-     Phase 2's research or code comments addresses `.body` vs. `.message` explicitly.
-   - Recommendation: this phase's plan should include a small additive fix to
-     `isTokenNotYetActiveError` (check `.body` for `PlacesApiError` instances, not just `.message`)
-     plus a regression test using a real `PlacesApiError`, before relying on SCRAPE-06's retry
-     inside this phase's worker. Do not silently work around it only inside `runScrapeJob` (e.g. by
-     duplicating retry logic there) — fix it at the source so Phase 2's own guarantee is actually
-     true for every caller, not just this one.
+3. **RESOLVED before Phase 3 planning — see Pitfall 5.** `PlacesApiError`'s `.message` now
+   includes `.body` (commit `4ab1a23`), so `isTokenNotYetActiveError`'s existing `err.message`
+   check already matches a real `PlacesApiError`. A regression test using a real `PlacesApiError`
+   instance exists in `tests/unit/lib/places/paginate.test.ts`. No task needed in this phase's
+   plans — do not re-open this as a planning gap.
 
 4. **Is `errorReason` column length unbounded (`text`, no max), and could a very long/malicious
    error message from an unexpected code path still exceed reasonable UI display bounds even after
