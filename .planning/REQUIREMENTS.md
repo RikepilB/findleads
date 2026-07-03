@@ -113,12 +113,12 @@ Explicitly excluded. Documented to prevent scope creep.
 | JOB-06 | Phase 4: Job Monitoring, Resumability & Export | Complete |
 | EXPORT-01 | Phase 4: Job Monitoring, Resumability & Export | Complete |
 | EXPORT-02 | Phase 4: Job Monitoring, Resumability & Export | Complete |
-| SCRAPE-07 | Phase 5: CRM Leads Dashboard | Pending |
-| CRM-01 | Phase 5: CRM Leads Dashboard | Pending |
-| CRM-02 | Phase 5: CRM Leads Dashboard | Pending |
-| CRM-03 | Phase 5: CRM Leads Dashboard | Pending |
-| CRM-04 | Phase 5: CRM Leads Dashboard | Pending |
-| CRM-05 | Phase 5: CRM Leads Dashboard | Pending |
+| SCRAPE-07 | Phase 5: CRM Leads Dashboard (05-04, pending) | Pending |
+| CRM-01 | Phase 5: CRM Leads Dashboard (05-03, pending) | Pending |
+| CRM-02 | Phase 5: CRM Leads Dashboard (05-03, pending) | Pending |
+| CRM-03 | Phase 5: CRM Leads Dashboard (05-03, pending) | Pending |
+| CRM-04 | Phase 5: CRM Leads Dashboard (05-03, pending) | Pending |
+| CRM-05 | Phase 5: CRM Leads Dashboard (05-04, pending) | Pending |
 | SEC-03 | Phase 5: CRM Leads Dashboard | Complete |
 
 **Coverage:**
@@ -131,6 +131,13 @@ Explicitly excluded. Documented to prevent scope creep.
 satisfied at the API layer in Phase 3 (`POST /api/jobs`) — REQUIREMENTS.md has no separate
 job-creation-*UI* requirement, so any job-creation form is incidental Phase 5 scope rather than
 a tracked requirement of its own.
+
+**Note:** Plan 05-01-PLAN.md's own frontmatter lists `requirements: [CRM-01..05, SCRAPE-07]`
+even though it ships no UI (it's the DAL/worker plumbing those requirements' UI depends on —
+see its objective text: "necessary plumbing goal-backward from CRM-01..05 and SCRAPE-07").
+The actual owning plans per this ROADMAP are 05-03 (`requirements: [CRM-01..04]`) and 05-04
+(`requirements: [CRM-05, SCRAPE-07]`) — these six requirements stay `Pending` here until those
+plans execute and their UI is verified, not marked `Complete` off 05-01's backend work alone.
 
 ---
 *Requirements defined: 2026-07-02*

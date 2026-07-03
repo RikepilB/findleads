@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 5
 current_phase_name: CRM Leads Dashboard
 status: planning
-stopped_at: Completed 05-02-PLAN.md
-last_updated: "2026-07-03T19:55:46.531Z"
+stopped_at: Completed 05-01-PLAN.md
+last_updated: "2026-07-03T20:02:14.708Z"
 last_activity: 2026-07-03
 last_activity_desc: Phase 4 complete, transitioned to Phase 5
 progress:
   total_phases: 5
   completed_phases: 4
   total_plans: 18
-  completed_plans: 15
+  completed_plans: 16
   percent: 80
 ---
 
@@ -59,6 +59,7 @@ Progress: [░░░░░░░░░░] 0%
 
 *Updated after each plan completion*
 | Phase 05 P02 | 15 | 2 tasks | 2 files |
+| Phase 05 P01 | 15 | 2 tasks | 11 files |
 
 ## Accumulated Context
 
@@ -78,6 +79,7 @@ Recent decisions affecting current work:
   recommendation, avoids a thin single-purpose phase.
 
 - [Phase 05]: Skipped active-tab highlighting to avoid a use-client boundary on the root layout; static two-link nav satisfies UI-SPEC's two-view requirement
+- [Phase 05]: SCRAPE-07 fix: capHit computed from raw pagesFetched/nextPageToken before mapPlaceToLead's closed-business filter, carried forward monotonically through checkpoints, persisted on final done write as jobs.resultCapHit
 
 ### Pending Todos
 
@@ -108,7 +110,8 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-07-03T19:55:46.522Z
-Stopped at: Completed 05-02-PLAN.md
+Last session: 2026-07-03T20:02:10.130Z
+Stopped at: Completed 05-01-PLAN.md
 final 5-phase mapping.
 Resume file: 
+None
