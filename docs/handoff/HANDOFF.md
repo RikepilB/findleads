@@ -63,18 +63,17 @@ false positive (wanted a fix+test that already existed from the Phase 2 bugfix a
 checker missed checking the test file and trusted research text written before that fix
 landed) — resolved by correcting the stale research doc instead of adding a redundant task.
 
-**Everything that can be done without the user's action is now done.** Phase 1 (partial),
-Phase 2 (shipped), Phase 3 (fully planned) — the ONLY remaining blocker for the whole MVP is
-the user finishing Google Cloud key setup (Neon `.env`/`.env.test` is now confirmed done by
-the user themselves). User asked to use Chrome automation to walk through GCP setup — created
-project `findleads-501305`, enabled **Places API (New)** specifically (not the legacy Places
-API the pasted guide's search would default to), started restricting the auto-generated key
-to that API only, then the user asked to finish the credential step themselves for security —
-handed off cleanly with exact remaining steps, did not click final Save. Also delivered a
-live-fetched (not memorized) cost breakdown: Enterprise-tier billing ($35/1000 calls after a
-1,000/month free quota, since `websiteUri` forces Enterprise pricing), realistically $0/month
-at MVP scale. **Context hit 67% this session — expect a pause/compaction soon; this handoff
-carries full state.** Stopped manufacturing
+**User has now finished ALL secrets setup** (Neon + Google Cloud Places API key, both
+confirmed by the user) — **Phase 1 is unblocked.** Wave 3 (schema/Drizzle/first migration
+against real Neon) is executing now; Waves 4-5 (DAL, integration tests) queued next, then
+Phase 1 verify+ship, then Phase 3 execution (already fully planned: 3 plans ready). Earlier:
+walked the user through Google Cloud project setup via Chrome automation (project
+`findleads-501305`, enabled Places API (New) specifically — not the legacy API), then handed
+the credential-restriction step to the user themselves per their request to keep secrets
+handling in their own hands. Delivered a live-fetched cost breakdown (Enterprise-tier
+billing, $35/1000 calls after 1,000/month free, ~$0/month at MVP scale). **Context ~69% used
+this session — a pause/compaction is likely soon; this handoff carries full state, no need to
+re-derive from transcript.** Stopped manufacturing
 further speculative Phase 4/5 research since it would compound drift risk on top of
 unexecuted Phase 3 interfaces for diminishing value — waiting for the user instead. Stale
 pre-pivot docs were reconciled earlier — `.planning/` is the source of truth. TaskCreate

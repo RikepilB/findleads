@@ -409,6 +409,16 @@ autonomously, that's a legitimate stop-and-ask point** — not a "silently fake 
 6. User confirmed they have the Places API key ready, asked for the exact `.env` line syntax.
    Answered: `PLACES_API_KEY=<key>` (no quotes, no spaces around `=`), same file as
    `DATABASE_URL`. Waiting on user to confirm it's saved before resuming Phase 1.
+7. **User confirmed all secrets done ("ok that is done").** Phase 1 is UNBLOCKED. Spawned
+   `gsd-executor` (agent `a2032d71af0a6fed0`) for Wave 3 (01-03: schema, Drizzle client,
+   first migration, real round-trip proof against Neon) — the first real DB code in this
+   repo. Running as this handoff is written; told it to self-verify secrets are actually
+   valid before starting (not just trust the user's confirmation blindly).
+
+## Context note
+Session context is tight (~69% used as of this handoff). If a compaction/pause hits mid-Wave-3,
+this handoff plus the running executor's own commits are the recovery path — no need to
+re-derive plan state from the transcript.
 
 ## Files in this folder
 - `HANDOFF.md` — this file (curated digest)
