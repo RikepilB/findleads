@@ -620,17 +620,19 @@ but still confirm-first per the session's own established pattern.
 - Wrote a current-UI usage guide inline in chat (jobs/leads pages, what's not built yet).
 - Invoked `superpowers:brainstorming` for the UI/UX improvement-plan ask (real design decision,
   not a quick fix) — asked Q1 (personal tool vs. others-will-use-it).
-- User ran `/handoff-to-issues` mid-brainstorm: harvested the two "still open" cleanup items
-  (orphaned port-3000 process, dev-DB test data) into 2 proposed GitHub issues, `chore` label,
-  deduped against the repo's 1 existing open issue (#1, stale/unrelated). Presented proposal
-  table, still awaiting the single confirm before creating (skill's own gate — asked twice now).
+- User ran `/handoff-to-issues` mid-brainstorm, then said "Yes" — created issue #2 (kill
+  orphaned port-3000 process) and issue #3 (clean up manual-QA dev-DB test data), both `chore`
+  label, `RikepilB/findleads`. Repo's pre-existing #1 left untouched (stale/unrelated).
 - Q1 answered: international ambition, real intent to sell as a service to specific freelancer
-  clients or distribute online — not staying purely personal. This raises the UX bar; flagged
-  the tension with PROJECT.md's current "functional, not polished SaaS" framing without editing
-  that doc yet. Asked Q2 — scope this round as (A) focused visual/UX polish on the existing 2
-  pages only (recommended: tighter, no new features, still single-user) vs (B) broader pass
-  also laying sellability groundwork (branding/onboarding) before the core UX is locked.
-  Awaiting answer.
+  clients or distribute online — not staying purely personal. Raises the UX bar; flagged the
+  tension with PROJECT.md's current "functional, not polished SaaS" framing without editing
+  that doc yet. Scoped this round to (A) focused visual/UX polish, no new features, single-user
+  (user's "Yes" read as picking this — explicitly flagged the reading to let them correct it).
+- Asked what hurts most: user answered precisely — **flow, feedback, and trust**, not visual
+  polish. Doesn't know what to write, what works, what to expect, how to start/finish, whether
+  results are real. Proposed 3 approaches: (A) inline contextual copy at point of confusion,
+  (B) guided first-run empty state, (C) persistent "How this works" help panel. Recommended
+  A+B together, skip C. Awaiting confirm before writing the actual design/copy.
 
 ## Files in this folder
 - `HANDOFF.md` — this file (curated digest)

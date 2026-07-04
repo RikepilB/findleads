@@ -69,19 +69,22 @@ knowingly accepted for this personal tool (revisit before public launch).
 - User asked for (a) a usage guide for the current UI and (b) a UI/UX improvement plan —
   gave (a) inline in chat. For (b), invoked `superpowers:brainstorming` per its mandatory
   skill-check rule (this is a real design decision, not a quick fix).
-- User then ran `/handoff-to-issues` mid-brainstorm — harvested the 2 "still open" items above
-  from this file into 2 proposed GitHub issues (both `chore` label, `RikepilB/findleads`),
-  deduped against the repo's one existing open issue (#1 "Write the MVP design spec", stale/
-  unrelated, not touched). Presented the proposal table, **still awaiting the single required
-  confirm before creating anything** (asked twice now, per that skill's Step 3).
+- `/handoff-to-issues`: harvested the 2 "still open" cleanup items into GitHub issues — user
+  said "Yes" to both the issue creation and (interpreted, flagged explicitly to the user) scope
+  A for the brainstorm. **Created:** issue #2 "Kill orphaned dev server process on port 3000",
+  issue #3 "Clean up manual-QA test data from dev database" (both `chore` label). Repo's
+  pre-existing issue #1 ("Write the MVP design spec") is stale/unrelated, left untouched.
 - Brainstorming Q1 answered: this is meant to go **international**, with real ambition to
   become a **sellable service** (specific freelancer clients, or distributed online) — not
-  just a personal tool. Raises the UX bar significantly; flagged that this changes the framing
-  PROJECT.md currently has ("functional, not polished SaaS") but haven't touched that doc yet.
-  Asked Q2: scope this round as (A) focused visual/UX polish on the existing 2 pages only (no
-  new features, still single-user — my recommendation, tighter/faster), or (B) broader pass
-  that also lays sellability groundwork (branding hooks, onboarding copy) before the core UX
-  is locked. **Awaiting answer.**
+  just a personal tool. Flagged tension with PROJECT.md's current "functional, not polished
+  SaaS" framing, doc not yet edited. Scoped this round to **(A) focused visual/UX polish on
+  the existing 2 pages, no new features, still single-user** (my recommendation, user's "Yes"
+  read as agreeing — explicitly flagged that reading so they can correct it).
+  Q2 (biggest pain point) answered precisely: **flow + feedback + trust**, not visual polish —
+  user doesn't know what to write, what works, what to expect, how to start/finish, whether the
+  results shown are real. Proposed 3 approaches: (A) inline contextual copy at point of
+  confusion, (B) guided first-run empty state replacing the bare "No jobs/leads yet", (C) a
+  persistent "How this works" help panel. **Recommended A+B, skip C** — awaiting confirm.
 
 TaskCreate #10-14 all completed, #15 ("Ship MVP") in_progress — pending the two cleanup
 answers above before it can close. Full detail: this session's own
