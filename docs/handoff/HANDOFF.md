@@ -84,7 +84,11 @@ knowingly accepted for this personal tool (revisit before public launch).
   user doesn't know what to write, what works, what to expect, how to start/finish, whether the
   results shown are real. Proposed 3 approaches: (A) inline contextual copy at point of
   confusion, (B) guided first-run empty state replacing the bare "No jobs/leads yet", (C) a
-  persistent "How this works" help panel. **Recommended A+B, skip C** — awaiting confirm.
+  persistent "How this works" help panel. **User confirmed A+B, skip C.**
+  Presented design Section 1 (placement): intro block + field hints + numbered empty-state
+  walkthrough + a data-provenance trust line, split per-page (`/jobs` and `/leads` each get
+  their own). No new architecture/DB/API — pure copy + small JSX additions to the 2 existing
+  Server Components. **Awaiting confirm on placement before drafting exact copy.**
 
 TaskCreate #10-14 all completed, #15 ("Ship MVP") in_progress — pending the two cleanup
 answers above before it can close. Full detail: this session's own

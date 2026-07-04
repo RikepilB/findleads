@@ -631,8 +631,15 @@ but still confirm-first per the session's own established pattern.
 - Asked what hurts most: user answered precisely — **flow, feedback, and trust**, not visual
   polish. Doesn't know what to write, what works, what to expect, how to start/finish, whether
   results are real. Proposed 3 approaches: (A) inline contextual copy at point of confusion,
-  (B) guided first-run empty state, (C) persistent "How this works" help panel. Recommended
-  A+B together, skip C. Awaiting confirm before writing the actual design/copy.
+  (B) guided first-run empty state, (C) persistent "How this works" help panel. **User
+  confirmed A+B, skip C.**
+  Presented design Section 1 (placement): `/jobs` gets an intro block + field hints
+  (Category/Location placeholder examples) + numbered empty-state walkthrough + a trust line
+  near results (data straight from Google Places API); `/leads` gets an intro block (what the
+  tier badge means, that re-scraping refreshes without wiping notes/contacted) + its own
+  numbered empty-state pointing to Job History. No new architecture — pure copy + small JSX
+  additions to the 2 existing Server Components. Awaiting confirm on this placement before
+  drafting exact copy (Section 2).
 
 ## Files in this folder
 - `HANDOFF.md` — this file (curated digest)
