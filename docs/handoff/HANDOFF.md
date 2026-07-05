@@ -89,6 +89,10 @@ knowingly accepted for this personal tool (revisit before public launch).
   walkthrough + a data-provenance trust line, split per-page (`/jobs` and `/leads` each get
   their own). No new architecture/DB/API — pure copy + small JSX additions to the 2 existing
   Server Components. **Awaiting confirm on placement before drafting exact copy.**
+  User ran `/gsd-ship` mid-brainstorm — checked `init.phase-op`: `phase_found: false`, nothing
+  to ship (Phase 5 already went out via direct push to master, this project's
+  `branching_strategy: "none"`; the UI/UX work is still pre-spec, no plan/execute/verify cycle
+  exists for it yet). Explained the mismatch, redirected back to finishing the brainstorm.
 
 TaskCreate #10-14 all completed, #15 ("Ship MVP") in_progress — pending the two cleanup
 answers above before it can close. Full detail: this session's own

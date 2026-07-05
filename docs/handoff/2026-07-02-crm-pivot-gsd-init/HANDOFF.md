@@ -640,6 +640,11 @@ but still confirm-first per the session's own established pattern.
   numbered empty-state pointing to Job History. No new architecture — pure copy + small JSX
   additions to the 2 existing Server Components. Awaiting confirm on this placement before
   drafting exact copy (Section 2).
+- User ran `/gsd-ship` mid-brainstorm — checked `gsd_run query init.phase-op`: `phase_found:
+  false`. Nothing to ship: Phase 5 already went out via a direct push to master (this project's
+  own `branching_strategy: "none"` config, no PR flow used anywhere in the build), and the
+  UI/UX work is still pre-spec — no plan/execute/verify cycle exists for it yet, so `/gsd-ship`
+  has no target. Explained this to the user, redirected back to finishing the brainstorm design.
 
 ## Files in this folder
 - `HANDOFF.md` — this file (curated digest)
