@@ -645,6 +645,10 @@ but still confirm-first per the session's own established pattern.
   own `branching_strategy: "none"` config, no PR flow used anywhere in the build), and the
   UI/UX work is still pre-spec — no plan/execute/verify cycle exists for it yet, so `/gsd-ship`
   has no target. Explained this to the user, redirected back to finishing the brainstorm design.
+- User: finish tasks, commit+push, then start Phase 6. Working tree was already clean (6
+  handoff-doc commits pending) — pushed `0c04f17..ac27e34`. Marked TaskCreate #15 ("Ship MVP")
+  completed — all of #10-15 done now. Told user Phase 6 can't be created in `.planning/` yet
+  per brainstorming's hard gate (design not approved) — still waiting on Section 1 confirm.
 
 ## Files in this folder
 - `HANDOFF.md` — this file (curated digest)

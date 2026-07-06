@@ -94,8 +94,15 @@ knowingly accepted for this personal tool (revisit before public launch).
   `branching_strategy: "none"`; the UI/UX work is still pre-spec, no plan/execute/verify cycle
   exists for it yet). Explained the mismatch, redirected back to finishing the brainstorm.
 
-TaskCreate #10-14 all completed, #15 ("Ship MVP") in_progress — pending the two cleanup
-answers above before it can close. Full detail: this session's own
+**TaskCreate #10-15 all completed now.** Pushed the 6 handoff-doc commits accumulated since the
+MVP push (`0c04f17..ac27e34`) — nothing else was pending. "Ship MVP" is fully closed.
+
+**Next up (not started — brainstorm not yet approved):** UI/UX improvement round, scoped to
+(A) focused polish + (B) guided first-run flow on the existing `/jobs`/`/leads` pages —
+addresses user's stated pain (flow/feedback/trust, not visual style). User wants this tracked
+as **Phase 6** once the design is locked — brainstorming's hard gate means Phase 6 isn't
+created in `.planning/` yet; still waiting on user confirming Section 1 (placement) before
+drafting exact copy (Section 2) and writing the spec. Full detail: this session's own
 `2026-07-02-crm-pivot-gsd-init/HANDOFF.md` (append-only log of the whole build).
 
 ---
