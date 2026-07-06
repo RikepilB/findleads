@@ -105,6 +105,13 @@ created in `.planning/` yet; still waiting on user confirming Section 1 (placeme
 drafting exact copy (Section 2) and writing the spec. Full detail: this session's own
 `2026-07-02-crm-pivot-gsd-init/HANDOFF.md` (append-only log of the whole build).
 
+**2026-07-06 side task (no effect on the paused brainstorm above):** user asked for a read/
+analysis of two external repos, `gosom/google-maps-scraper` (real Go/Playwright scraper, ToS
+risk, useful only as an architecture sanity-check for findleads' own job/REST design — not a
+code source, different method) and `omkarcloud/google-maps-scraper` (confirmed no source code
+in the repo at all — pure marketing funnel for a closed paid desktop app, nothing usable).
+Brainstorm Section 1 confirm is still the actual next step.
+
 ---
 
 ## Session index (append-only, newest first)
@@ -117,8 +124,8 @@ drafting exact copy (Section 2) and writing the spec. Full detail: this session'
   root-level `PROYECTOS/handoff.md` that predated this repo's own handoff tree.
 
 <!-- compact-handoff:auto-snapshot -->
-<!-- Latest auto-snapshot: docs/handoff/2026-07-02-crm-pivot-gsd-init/snapshot-193941.md -->
-## Latest auto snapshot — 2026-07-03T19:39:41.758Z
+<!-- Latest auto-snapshot: docs/handoff/2026-07-02-crm-pivot-gsd-init/snapshot-021537.md -->
+## Latest auto snapshot — 2026-07-06T02:15:37.589Z
 - Session folder: `docs/handoff/2026-07-02-crm-pivot-gsd-init/`
-- Snapshot file: `docs/handoff/2026-07-02-crm-pivot-gsd-init/snapshot-193941.md`
+- Snapshot file: `docs/handoff/2026-07-02-crm-pivot-gsd-init/snapshot-021537.md`
 - Branch: master

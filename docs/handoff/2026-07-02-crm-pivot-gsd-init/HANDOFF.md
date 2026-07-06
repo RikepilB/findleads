@@ -650,6 +650,28 @@ but still confirm-first per the session's own established pattern.
   completed — all of #10-15 done now. Told user Phase 6 can't be created in `.planning/` yet
   per brainstorming's hard gate (design not approved) — still waiting on Section 1 confirm.
 
+## SIDE TASK (2026-07-06) — competitor scraper research, brainstorm still paused
+User asked to read/analyze two external GitHub repos: `gosom/google-maps-scraper` and
+`omkarcloud/google-maps-scraper`. Pure read-only research, unrelated to the paused Section-1
+brainstorm confirm — that is still exactly where it was left (awaiting user confirm on
+placement before drafting Section 2 copy).
+- `gosom/google-maps-scraper` — real open-source Go codebase (4.7k stars, MIT, active). Scrapes
+  Google Maps directly via headless Playwright (own `scrapemate` framework), NOT the official
+  API — its own README carries a ToS-risk legal notice. CLI/Web UI/REST API/optional SaaS
+  edition, 33-36 data points, Postgres-backed distributed job queue for k8s scale, custom Go
+  writer plugins, ~120 places/min. Its job-queue + `POST /jobs`/`GET /jobs/:id` REST shape is a
+  useful external validation of findleads' own DB-job-row + polling design — nothing to copy
+  code-wise (different stack/method), but the pattern rhymes.
+- `omkarcloud/google-maps-scraper` — **not actually open source**: confirmed via
+  `gh api repos/.../contents` that repo root has only README/LICENSE/SECURITY/docs, no source
+  files at all (`language: null`). It's a marketing funnel for a closed-source paid desktop app
+  ($98 one-time + upsell coaching/enrichment credits). Nothing usable — can't inspect its
+  scraping method, and it's a different (paid, closed) product category entirely.
+- Take-away given to user: neither repo's *scraping method* is relevant (findleads is locked to
+  the official Places API, not scraping) but gosom's job/REST-API architecture is a useful
+  independent sanity-check on findleads' own design.
+- No repo files changed this turn.
+
 ## Files in this folder
 - `HANDOFF.md` — this file (curated digest)
 - `transcript.md` — full `/export` of the session (raw archive) — not yet created; remind user
