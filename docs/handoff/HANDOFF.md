@@ -105,12 +105,26 @@ created in `.planning/` yet; still waiting on user confirming Section 1 (placeme
 drafting exact copy (Section 2) and writing the spec. Full detail: this session's own
 `2026-07-02-crm-pivot-gsd-init/HANDOFF.md` (append-only log of the whole build).
 
-**2026-07-06 side task (no effect on the paused brainstorm above):** user asked for a read/
-analysis of two external repos, `gosom/google-maps-scraper` (real Go/Playwright scraper, ToS
-risk, useful only as an architecture sanity-check for findleads' own job/REST design — not a
+**2026-07-06 side task, now closed (no effect on the paused brainstorm above):** user asked for a
+read/analysis of two external repos, `gosom/google-maps-scraper` (real Go/Playwright scraper,
+ToS risk, useful only as an architecture sanity-check for findleads' own job/REST design — not a
 code source, different method) and `omkarcloud/google-maps-scraper` (confirmed no source code
 in the repo at all — pure marketing funnel for a closed paid desktop app, nothing usable).
-Brainstorm Section 1 confirm is still the actual next step.
+Nothing adopted from either. User then asked to "commit, test, push, ship" — `/gsd-ship`
+confirmed `phase_found: false` (nothing to ship, same as the earlier check), so ran `pnpm test`
+(103/103 green) and pushed the session's own handoff-doc edits only, commit `8c22971`
+(`1d426da..8c22971`), repo now fully in sync with origin.
+
+**2026-07-06 knowledge transfer (Fable 5):** full codebase read → wrote root `PROJECT.md`
+(narrative architecture/onboarding), root `GAPS.md` (15 severity-ordered weaknesses with
+scoped fixes), and rewrote the stale `.claude/CLAUDE.md` (real commands/conventions/gotchas).
+Headline discovery: **CI has never run once** — every push dies at pnpm setup
+(`No pnpm version is specified.`; `package.json` lacks `packageManager`), and after that fix
+integration tests still need a CI test-DB decision (GAPS.md #1/#2). Also found: non-UUID job
+id → 500, malformed JSON → 500, JobForm missing catch, watchdog/worker status ping-pong
+off-Vercel (GAPS.md #4-#7). **Brainstorm Section 1 confirm is still the actual next step for
+Phase 6** — but GAPS.md #1 (one-line packageManager fix) is the highest-value quick win
+available any time.
 
 ---
 

@@ -672,6 +672,53 @@ placement before drafting Section 2 copy).
   independent sanity-check on findleads' own design.
 - No repo files changed this turn.
 
+## SIDE TASK CLOSED (2026-07-06) — no adoption, gsd-ship checked, docs pushed
+- Concluded no code change from either repo is worth adopting: both scrape directly (ToS-risk
+  headless Playwright / closed paid app), findleads is locked to official Places API only.
+  gosom's job-queue/REST shape independently matches what findleads already built — validation,
+  not a source to copy.
+- Ran `/gsd-ship` per user ask to "commit, test, push, ship" — `gsd_run query init.phase-op`
+  confirmed `phase_found: false` (same as the earlier mid-brainstorm check): Phase 6 still
+  blocked on the paused Section-1 confirm, nothing to ship. `branching_strategy: "none"`,
+  `origin/master...master` already `0 0` (in sync).
+- Asked user how to handle the only real diff (this session's own handoff-doc edits + stray
+  junk: 2 orphan `/export` .txt files at repo root, an untracked PreCompact snapshot.md, a
+  stray `nul` artifact file). User chose: commit handoff docs only, leave the stray
+  exports/snapshot untracked.
+- Removed the stray `nul` file (junk, not user content). Ran `pnpm test` first — 103/103 green,
+  no regressions from the doc-only change. Committed `.claude/CLAUDE.md` (externally-edited by
+  user/linter this session, synced in) + both `HANDOFF.md` files — commit `8c22971`. Pushed
+  `1d426da..8c22971` to `origin/master`.
+- Repo state after this: fully in sync with origin, no code changes, brainstorm Section-1
+  confirm is still the one real blocker on this project's actual next step (Phase 6).
+
+## KNOWLEDGE TRANSFER (2026-07-06, Fable 5) — PROJECT.md + GAPS.md + CLAUDE.md rewrite
+User ran a one-time deep knowledge-transfer prompt ("most capable model writes down everything
+for less capable ones"). Full codebase read first (every file in `app/`, `lib/`, `components/`,
+all 23 test files, migrations, configs, `.planning/`, docs), then three files produced:
+- **`PROJECT.md` (repo root, new)** — narrative onboarding doc: stack rationale, architecture
+  diagram, identity/sighting data model, checkpointed-worker design, load-bearing vs.
+  safe-to-touch map, all gotchas. Distinct from `.planning/PROJECT.md` (GSD tracker) —
+  cross-referenced, not duplicated.
+- **`GAPS.md` (repo root, new)** — 15 weaknesses, severity-ordered, each with file:line + a
+  single-task fix, plus a "not gaps, don't fix" list guarding deliberate decisions.
+- **`.claude/CLAUDE.md` (rewritten in place)** — was badly stale ("no package.json yet",
+  "_TODO: fill_" style section, branch→PR→merge claim contradicting `branching_strategy:
+  "none"` reality). Now: real commands, actual conventions, gotchas, never-do rules, pointers
+  to PROJECT.md/GAPS.md. No root CLAUDE.md created (would double-load).
+Two significant NEW findings from this audit (not previously recorded anywhere):
+1. **CI has never run — every push fails in ~10s** with `Error: No pnpm version is specified.`
+   (`pnpm/action-setup@v4` needs `packageManager` in package.json; field absent). Confirmed
+   via `gh run list` (6/6 failures) + `gh run view --log-failed`. Fix: one line,
+   `"packageManager": "pnpm@10.30.3"`. Even then integration tests will fail in CI (no
+   `TEST_DATABASE_URL` secret; vitest fallback URL points at nonexistent localhost DB) —
+   GAPS.md #1/#2.
+2. Latent bugs found by code read: non-UUID job id → 500 not 404 (both `[id]` routes);
+   malformed JSON body → 500 not 400 (`POST /api/jobs`); `JobForm` try/finally with no catch
+   (network failure = silent unhandled rejection); watchdog/worker status ping-pong possible
+   off-Vercel (`updateJobProgress` has no status guard) — GAPS.md #4-#7.
+Committed as `docs: knowledge transfer — PROJECT.md, GAPS.md, CLAUDE.md rewrite` and pushed.
+
 ## Files in this folder
 - `HANDOFF.md` — this file (curated digest)
 - `transcript.md` — full `/export` of the session (raw archive) — not yet created; remind user
