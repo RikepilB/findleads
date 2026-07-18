@@ -27,6 +27,10 @@ export default function JobForm() {
       setCategory('')
       setLocation('')
       router.refresh()
+    } catch {
+      // A network-level fetch rejection (offline, server down) must surface
+      // like any other failure — never an unhandled promise rejection.
+      setError('Could not start scrape — check your connection and try again.')
     } finally {
       setSubmitting(false)
     }
