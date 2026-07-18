@@ -33,11 +33,18 @@ export function mapPlaceToLead(place: RawPlace): MappedLead | null {
     return null
   }
 
+  // A nameless lead is unactionable — treat like a closed business rather
+  // than storing '' to satisfy the NOT NULL column and render a blank row.
+  const businessName = place.displayName?.text
+  if (!businessName) {
+    return null
+  }
+
   const hasWebsite = Boolean(place.websiteUri)
 
   return {
     placeId: place.id,
-    businessName: place.displayName?.text ?? '',
+    businessName,
     phone: place.internationalPhoneNumber ?? null,
     address: place.formattedAddress ?? null,
     website: place.websiteUri ?? null,

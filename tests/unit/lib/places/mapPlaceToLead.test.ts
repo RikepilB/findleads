@@ -52,12 +52,16 @@ describe('mapPlaceToLead', () => {
     expect(result?.tierReason).toBeNull()
   })
 
-  it('maps absent optional fields to null (never undefined) and businessName to empty string when displayName is absent', () => {
-    const place: RawPlace = { id: 'place-2', businessStatus: 'OPERATIONAL' }
+  it('maps absent optional fields to null (never undefined)', () => {
+    const place: RawPlace = {
+      id: 'place-2',
+      displayName: { text: 'Nameful Business' },
+      businessStatus: 'OPERATIONAL',
+    }
     const result = mapPlaceToLead(place)
     expect(result).toEqual({
       placeId: 'place-2',
-      businessName: '',
+      businessName: 'Nameful Business',
       phone: null,
       address: null,
       website: null,
@@ -66,6 +70,16 @@ describe('mapPlaceToLead', () => {
       tier: 'tier-1',
       tierReason: 'no website found on Google',
     })
+  })
+
+  it('returns null when displayName is absent — a nameless lead is unactionable', () => {
+    const place: RawPlace = { id: 'place-3', businessStatus: 'OPERATIONAL' }
+    expect(mapPlaceToLead(place)).toBeNull()
+  })
+
+  it('returns null when displayName.text is an empty string', () => {
+    const place: RawPlace = { ...basePlace, displayName: { text: '' } }
+    expect(mapPlaceToLead(place)).toBeNull()
   })
 
   it('does not mutate the input RawPlace object', () => {
