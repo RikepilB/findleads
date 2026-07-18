@@ -21,7 +21,7 @@ vi.mock('@/lib/jobs/runScrapeJob', () => ({
 }))
 
 function makeRequest() {
-  return new Request('http://localhost/api/jobs/test-job-id')
+  return new Request('http://localhost/api/jobs/7f9c24e5-6f2b-4c9a-9c3d-1a2b3c4d5e6f')
 }
 
 function makeParams(id: string) {
@@ -29,7 +29,7 @@ function makeParams(id: string) {
 }
 
 const BASE_JOB = {
-  id: 'test-job-id',
+  id: '7f9c24e5-6f2b-4c9a-9c3d-1a2b3c4d5e6f',
   category: 'restaurant',
   location: 'Toronto, ON',
   createdAt: new Date('2026-07-03T00:00:00Z'),
@@ -47,11 +47,24 @@ describe('GET /api/jobs/[id]', () => {
     runScrapeJobMock.mockClear()
   })
 
+  it('returns 404 for a non-UUID id without touching the database', async () => {
+    const { GET } = await import('@/app/api/jobs/[id]/route')
+
+    const res = await GET(makeRequest(), makeParams('not-a-uuid'))
+    const body = await res.json()
+
+    expect(res.status).toBe(404)
+    expect(body).toEqual({ error: 'Job not found' })
+    expect(getJobMock).not.toHaveBeenCalled()
+    expect(flagStaleJobMock).not.toHaveBeenCalled()
+    expect(claimPartialJobMock).not.toHaveBeenCalled()
+  })
+
   it('returns 404 when the job does not exist', async () => {
     getJobMock.mockResolvedValue(undefined)
     const { GET } = await import('@/app/api/jobs/[id]/route')
 
-    const res = await GET(makeRequest(), makeParams('missing-id'))
+    const res = await GET(makeRequest(), makeParams('00000000-0000-4000-8000-000000000000'))
     const body = await res.json()
 
     expect(res.status).toBe(404)
@@ -67,10 +80,10 @@ describe('GET /api/jobs/[id]', () => {
     flagStaleJobMock.mockResolvedValue(flagged)
     const { GET } = await import('@/app/api/jobs/[id]/route')
 
-    const res = await GET(makeRequest(), makeParams('test-job-id'))
+    const res = await GET(makeRequest(), makeParams('7f9c24e5-6f2b-4c9a-9c3d-1a2b3c4d5e6f'))
     const body = await res.json()
 
-    expect(flagStaleJobMock).toHaveBeenCalledWith('test-job-id')
+    expect(flagStaleJobMock).toHaveBeenCalledWith('7f9c24e5-6f2b-4c9a-9c3d-1a2b3c4d5e6f')
     expect(body.status).toBe('error')
     expect(body.errorReason).toBe('Job timed out — no progress for over 8 minutes')
     expect(claimPartialJobMock).not.toHaveBeenCalled()
@@ -84,16 +97,16 @@ describe('GET /api/jobs/[id]', () => {
     claimPartialJobMock.mockResolvedValue(claimed)
     const { GET } = await import('@/app/api/jobs/[id]/route')
 
-    const res = await GET(makeRequest(), makeParams('test-job-id'))
+    const res = await GET(makeRequest(), makeParams('7f9c24e5-6f2b-4c9a-9c3d-1a2b3c4d5e6f'))
     const body = await res.json()
 
-    expect(claimPartialJobMock).toHaveBeenCalledWith('test-job-id')
+    expect(claimPartialJobMock).toHaveBeenCalledWith('7f9c24e5-6f2b-4c9a-9c3d-1a2b3c4d5e6f')
     expect(afterMock).toHaveBeenCalledTimes(1)
     expect(runScrapeJobMock).not.toHaveBeenCalled() // scheduled, not awaited synchronously
     expect(body.status).toBe('running')
 
     await afterMock.mock.calls[0][0]()
-    expect(runScrapeJobMock).toHaveBeenCalledWith('test-job-id')
+    expect(runScrapeJobMock).toHaveBeenCalledWith('7f9c24e5-6f2b-4c9a-9c3d-1a2b3c4d5e6f')
   })
 
   it('does not schedule a second continuation when the claim race is lost', async () => {
@@ -103,10 +116,10 @@ describe('GET /api/jobs/[id]', () => {
     claimPartialJobMock.mockResolvedValue(undefined) // another poll already won
     const { GET } = await import('@/app/api/jobs/[id]/route')
 
-    const res = await GET(makeRequest(), makeParams('test-job-id'))
+    const res = await GET(makeRequest(), makeParams('7f9c24e5-6f2b-4c9a-9c3d-1a2b3c4d5e6f'))
     const body = await res.json()
 
-    expect(claimPartialJobMock).toHaveBeenCalledWith('test-job-id')
+    expect(claimPartialJobMock).toHaveBeenCalledWith('7f9c24e5-6f2b-4c9a-9c3d-1a2b3c4d5e6f')
     expect(afterMock).not.toHaveBeenCalled()
     expect(body.status).toBe('partial') // reflects current read, unchanged
   })
@@ -117,7 +130,7 @@ describe('GET /api/jobs/[id]', () => {
     flagStaleJobMock.mockResolvedValue(undefined)
     const { GET } = await import('@/app/api/jobs/[id]/route')
 
-    const res = await GET(makeRequest(), makeParams('test-job-id'))
+    const res = await GET(makeRequest(), makeParams('7f9c24e5-6f2b-4c9a-9c3d-1a2b3c4d5e6f'))
     const body = await res.json()
 
     expect(body.status).toBe('done')
@@ -134,7 +147,7 @@ describe('GET /api/jobs/[id]', () => {
     claimPartialJobMock.mockResolvedValue(claimed)
     const { GET } = await import('@/app/api/jobs/[id]/route')
 
-    const res = await GET(makeRequest(), makeParams('test-job-id'))
+    const res = await GET(makeRequest(), makeParams('7f9c24e5-6f2b-4c9a-9c3d-1a2b3c4d5e6f'))
     const body = await res.json()
 
     expect(body.cursor).toBeUndefined()

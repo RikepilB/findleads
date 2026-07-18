@@ -1,6 +1,7 @@
 // Source: nextjs.org/docs/app/api-reference/functions/after (v16.2.10) +
 // nextjs.org/docs/app/api-reference/file-conventions/route (v16.2.10)
 import { after } from 'next/server'
+import { z } from 'zod'
 import { getJob, claimPartialJob, flagStaleJob } from '@/lib/db/jobs'
 import { runScrapeJob } from '@/lib/jobs/runScrapeJob'
 
@@ -15,6 +16,12 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params
+
+  // A non-UUID path segment would otherwise reach Postgres's uuid cast and
+  // throw a 500 — treat it as an address for a job that can't exist.
+  if (!z.uuid().safeParse(id).success) {
+    return Response.json({ error: 'Job not found' }, { status: 404 })
+  }
 
   const job = await getJob(id)
   if (!job) {
