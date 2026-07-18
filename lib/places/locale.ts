@@ -12,7 +12,13 @@ export interface LocaleRule {
 // geocoding dependency for this (see 02-RESEARCH.md Don't Hand-Roll).
 export const LOCALE_RULES: LocaleRule[] = [
   { match: /\b(lima|peru)\b/i, languageCode: 'es', regionCode: 'PE' },
+  // Canada before the UK rule so "London, Ontario" resolves en/CA, not en/GB
+  // (find() scans in order).
   { match: /\b(toronto|ontario|canada)\b/i, languageCode: 'en', regionCode: 'CA' },
+  { match: /\b(barcelona|madrid|spain|espana)\b/i, languageCode: 'es', regionCode: 'ES' },
+  { match: /\b(london|england|uk|united kingdom)\b/i, languageCode: 'en', regionCode: 'GB' },
+  { match: /\b(buenos aires|argentina)\b/i, languageCode: 'es', regionCode: 'AR' },
+  { match: /\b(santiago|chile)\b/i, languageCode: 'es', regionCode: 'CL' },
 ]
 
 export const DEFAULT_LOCALE = { languageCode: 'en', regionCode: 'CA' } as const
