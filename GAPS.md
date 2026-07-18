@@ -9,6 +9,28 @@
 > Places API key is server-only; CSV formula injection is mitigated and integration-tested;
 > SQL is parameterized via Drizzle throughout; job-continuation race is genuinely atomic.
 
+## Status update — 2026-07-18 (fix sweep)
+
+| # | Status |
+|---|--------|
+| 1 | **FIXED** `29f8ae6` — `packageManager` added |
+| 2 | **FIXED (stopgap b)** `d58b594` — CI runs unit suite only + placeholder env; upgrade path: `TEST_DATABASE_URL` repo secret → drop the exclude |
+| 3 | **DEFERRED, decided** — no deploy target exists; before any public deploy enable Vercel Deployment Protection (or a shared-secret gate). A client-side token gate would break the app's own UI, so nothing shipped now |
+| 4 | **FIXED** `9c33bce` — `z.uuid()` guard, 404 |
+| 5 | **FIXED** `9e2091f` — malformed JSON → 400 |
+| 6 | **FIXED** `27d0639` — JobForm catch |
+| 7 | **FIXED** `4be2598` — terminal-status guard + worker stops on 0-row checkpoint |
+| 8 | **FIXED** `2113083` — README/AGENTS/architecture/decisions/tests-README rewritten |
+| 9 | **OPEN** — Playwright smoke spec still the next testing investment |
+| 10 | **FIXED** `f54163a` — transcripts local-only (moved + gitignored, never committed) |
+| 11 | **FIXED** `415a363` — ES/GB/AR/CL rules |
+| 12 | **FIXED** `85f64c6` — `lib/format/relativeTime.ts` |
+| 13 | **FIXED** `b71ce56` — indexes migrated on dev DB; **test DB still needs `pnpm drizzle-kit migrate` against `.env.test`** (harmless until run — indexes don't affect test correctness) |
+| 14 | **FIXED** `4be2598` — errorReason truncated to 200 chars |
+| 15 | **FIXED** `a776b92` — nameless places dropped |
+
+Suite after sweep: 123/123 green (was 103), lint/typecheck/build green.
+
 ## 1. CI has never run — fails at setup on every push (CRITICAL, confirmed)
 
 - **What:** Every GitHub Actions run since the first push fails in 7-11 seconds with
