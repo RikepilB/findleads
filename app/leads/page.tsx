@@ -1,4 +1,5 @@
 import { listBusinesses } from '@/lib/db/businesses'
+import { relativeTime } from '@/lib/format/relativeTime'
 import ContactedToggle from './ContactedToggle'
 import NotesField from './NotesField'
 
@@ -72,19 +73,4 @@ export default async function LeadsPage() {
       </table>
     </main>
   )
-}
-
-// Intl.RelativeTimeFormat, no date library — per 05-RESEARCH.md Don't Hand-Roll.
-function relativeTime(date: Date): string {
-  const rtf = new Intl.RelativeTimeFormat('en', { numeric: 'auto' })
-  const diffMs = date.getTime() - Date.now()
-
-  const diffMin = Math.round(diffMs / 60_000)
-  if (Math.abs(diffMin) < 60) return rtf.format(diffMin, 'minute')
-
-  const diffHour = Math.round(diffMs / 3_600_000)
-  if (Math.abs(diffHour) < 24) return rtf.format(diffHour, 'hour')
-
-  const diffDay = Math.round(diffMs / 86_400_000)
-  return rtf.format(diffDay, 'day')
 }
