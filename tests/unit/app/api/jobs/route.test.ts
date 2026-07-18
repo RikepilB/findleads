@@ -49,6 +49,22 @@ describe('POST /api/jobs', () => {
     expect(runScrapeJobMock).toHaveBeenCalledWith('test-job-id')
   })
 
+  it('returns 400 (not 500) for a malformed/non-JSON body', async () => {
+    const { POST } = await import('@/app/api/jobs/route')
+
+    const req = new Request('http://localhost/api/jobs', {
+      method: 'POST',
+      body: 'not json at all',
+    })
+    const res = await POST(req)
+    const body = await res.json()
+
+    expect(res.status).toBe(400)
+    expect(body.error).toBe('Invalid request body')
+    expect(createJobMock).not.toHaveBeenCalled()
+    expect(afterMock).not.toHaveBeenCalled()
+  })
+
   it('returns 400 without creating a job or scheduling the worker when the body is invalid', async () => {
     const { POST } = await import('@/app/api/jobs/route')
 

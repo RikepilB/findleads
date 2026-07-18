@@ -22,7 +22,14 @@ const createJobSchema = z.object({
 })
 
 export async function POST(request: Request) {
-  const body = await request.json()
+  // request.json() throws on an empty/non-JSON body before Zod ever runs —
+  // that's still caller error, so it gets the same 400 as a schema miss.
+  let body: unknown
+  try {
+    body = await request.json()
+  } catch {
+    return Response.json({ error: 'Invalid request body' }, { status: 400 })
+  }
   const parsed = createJobSchema.safeParse(body)
 
   if (!parsed.success) {
