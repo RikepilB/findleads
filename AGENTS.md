@@ -1,39 +1,45 @@
 # Repository Guidelines
 
 > Shared instruction file read by **Claude Code** and **Codex**. Keep it tool-agnostic;
-> Claude-Code-specific workflow lives in `.claude/CLAUDE.md`.
+> Claude-Code-specific workflow lives in `.claude/CLAUDE.md`. Deep architecture narrative:
+> root `PROJECT.md`. Known weaknesses: root `GAPS.md`.
 
 ## Project Structure & Module Organization
 
-No source tree yet — design-only phase. Once implementation starts (see
-`.claude/rules/findleads-architecture.md`), expect a standard Next.js App Router layout:
-`src/app/api/jobs/` (job create/poll routes), a scrape-runner module, `src/lib/places/`
-(Places API client), `src/schemas/` (Zod). Tests live in `tests/{unit,integration,e2e}`.
+Shipped Next.js 16 App Router MVP, root-level layout (no `src/`):
+
+- `app/` — routes and pages: `app/api/jobs/` (create/poll/export), `app/jobs/` (job history
+  UI), `app/leads/` (CRM UI + Server Actions in `actions.ts`).
+- `lib/` — `lib/db/` (Drizzle schema + DAL), `lib/places/` (Places API client, Zod schemas,
+  locale, mapping), `lib/jobs/` (checkpointed worker `runScrapeJob.ts`), `lib/csv/`,
+  `lib/env.ts` (the ONLY sanctioned `process.env` read).
+- `drizzle/` — shipped SQL migrations (additive only, never edit).
+- `tests/{unit,integration,e2e}` — mirroring source paths.
 
 ## Build, Test, and Development Commands
 
-Not yet available — no `package.json`. Planned (pnpm): `pnpm dev`, `pnpm build`, `pnpm lint`,
-`pnpm typecheck`, `pnpm test`. Update this section the moment they exist.
+pnpm only (never npm/yarn): `pnpm dev`, `pnpm build`, `pnpm lint`, `pnpm typecheck`,
+`pnpm test -- --run`, `pnpm drizzle-kit generate|migrate`. Integration tests hit a real Neon
+test DB via `.env.test` (`TEST_DATABASE_URL`); CI runs the unit suite only.
 
 ## Coding Style & Naming Conventions
 
-TypeScript, Zod schemas shared between server/client, Server Components by default
-(`"use client"` only where interactivity is required) — standard Next.js App Router
-conventions. Formatter/linter config lands with the first implementation PR.
+TypeScript strict, path alias `@/*` = repo root. Zod at every boundary. Server Components by
+default (`'use client'` only in the smallest interactive leaves). Every server-side module
+starts with `import 'server-only'`. Tailwind utilities inline. Comments explain *why*, often
+citing REQ-IDs (`JOB-04`, `SCRAPE-07`).
 
 ## Testing Guidelines
 
-Tests live in `tests/{unit,integration,e2e}`. Planned coverage (per the locked MVP design):
-unit tests for dedup + CSV export + Places-API-response mapping; integration tests for job
-creation against a **mocked** Places API (never call the real API in tests); a light E2E
-happy-path (create job → complete → export). Run lint + typecheck + tests before handing off
-substantial work, once those commands exist.
+Unit tests for pure logic, integration tests for DB-touching code (self-clean in
+`afterEach`), against a **mocked** Places API — never call the real API in tests. Run
+lint + typecheck + tests before handing off substantial work.
 
 ## Commit & Pull Request Guidelines
 
-Conventional commits (`feat:`, `fix:`, `docs:`, `test:`, `chore:`). Never push directly to
-`main` — branch → PR → merge. PRs include the user-facing change, verification commands,
-linked issue, and migration/UI notes.
+Conventional commits (`feat:`, `fix:`, `docs:`, `test:`, `chore:`). This project ships via
+direct pushes to `master` with explicit user go-ahead per push (`branching_strategy: "none"`)
+— never push without the user asking.
 
 ## Security & Configuration
 
