@@ -30,5 +30,15 @@ Thumbs.db
 .idea/
 .vscode/
 
+# Windows redirect artifact (self-respawns — see PROJECT.md Gotchas)
+nul
+
+# Session /export transcript dumps — full tool-call/reasoning logs. They stay
+# LOCAL (repo is public): at root (careless /export) or inside a session's
+# handoff folder. Curated HANDOFF.md/snapshots stay committed.
+/2026-*.txt
+docs/handoff/**/2026-*.txt
+docs/handoff/**/transcript.md
+
 # NOTE: .claude/ IS committed on purpose — agents, rules, commands and hooks are
 # part of the prompt. Only the local-override files above are ignored.
