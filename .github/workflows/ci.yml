@@ -6,6 +6,12 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      # Placeholders, not secrets: lib/env.ts validates presence/shape at
+      # module load, and `next build` imports server modules. No DB or Places
+      # call happens in this job (integration tests are excluded below).
+      DATABASE_URL: postgresql://user:pass@localhost:5432/ci-placeholder
+      PLACES_API_KEY: ci-placeholder-not-a-real-key
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -16,5 +22,9 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint
       - run: pnpm typecheck
-      - run: pnpm test -- --run
+      # Integration tests need a real Neon test database (TEST_DATABASE_URL,
+      # local-only via .env.test) — CI runs the unit suite only (GAPS.md #2,
+      # stopgap b). Upgrade path: add a TEST_DATABASE_URL repo secret pointing
+      # at a Neon test branch and drop the exclude.
+      - run: pnpm test -- --run --exclude "tests/integration/**"
       - run: pnpm build
