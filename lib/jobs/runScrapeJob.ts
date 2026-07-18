@@ -13,6 +13,9 @@ import { inferLocale } from '@/lib/places/locale'
 import { buildTextQuery } from './buildTextQuery'
 import { SAFETY_WINDOW_MS, MAX_PAGES, initialCursor, type JobCursor } from './checkpoint'
 
+// User-facing cap for jobs.error_reason — /jobs renders it in a table cell.
+const MAX_ERROR_REASON_LENGTH = 200
+
 interface FetchOnePageResult {
   mapped: MappedLead[]
   nextCursor: JobCursor
@@ -90,8 +93,10 @@ export async function runScrapeJob(
   try {
     // Write 'running' before any Places call — an invocation killed mid-
     // page-1 (before the first post-unit checkpoint) would otherwise leave
-    // the row at 'pending' with no error (Pitfall 1).
-    await updateJobProgress(jobId, { status: 'running', leadsFound, cursor })
+    // the row at 'pending' with no error (Pitfall 1). 0 rows affected means
+    // the job is already terminal (watchdog or a racing worker) — stop.
+    const claimed = await updateJobProgress(jobId, { status: 'running', leadsFound, cursor })
+    if (claimed === 0) return
 
     while (!cursor.done) {
       if (now() - startedAt > SAFETY_WINDOW_MS) {
@@ -113,8 +118,11 @@ export async function runScrapeJob(
       leadsFound += mapped.length
       cursor = nextCursor
 
-      // JOB-02: checkpoint after every unit of work.
-      await updateJobProgress(jobId, { status: 'running', leadsFound, cursor })
+      // JOB-02: checkpoint after every unit of work. A 0-rows-affected
+      // checkpoint means the watchdog flagged this job terminal mid-run —
+      // stop looping instead of resurrecting it (status ping-pong bug).
+      const affected = await updateJobProgress(jobId, { status: 'running', leadsFound, cursor })
+      if (affected === 0) return
     }
 
     await updateJobProgress(jobId, {
@@ -131,9 +139,13 @@ export async function runScrapeJob(
       leadsFound,
       cursor,
       // See Pitfall 2: only known-safe error messages pass through raw.
+      // Truncated: a PlacesApiError message embeds Google's whole response
+      // body and /jobs renders errorReason verbatim. Keeping the START of the
+      // message preserves the status + reason token (paginate.ts retry-matches
+      // on message.includes('INVALID_REQUEST'), which happens pre-truncation).
       errorReason:
         err instanceof Error && (err.name === 'PlacesApiError' || err.name === 'ZodError')
-          ? err.message
+          ? err.message.slice(0, MAX_ERROR_REASON_LENGTH)
           : 'Unexpected worker error',
     })
   }

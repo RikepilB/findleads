@@ -42,8 +42,12 @@ export async function updateJobProgress(
     // covers the very first row before any write).
     resultCapHit?: boolean
   },
-): Promise<void> {
-  await db
+): Promise<number> {
+  // Never overwrite a terminal status: the watchdog (flagStaleJob) may have
+  // flipped a slow-but-alive job to 'error' between checkpoints, and a
+  // checkpoint write must not resurrect it to running/done. Returns the
+  // affected-row count so the worker can detect that and stop its loop.
+  const rows = await db
     .update(jobs)
     .set({
       status: params.status,
@@ -53,7 +57,9 @@ export async function updateJobProgress(
       updatedAt: new Date(),
       ...(params.resultCapHit !== undefined ? { resultCapHit: params.resultCapHit } : {}),
     })
-    .where(eq(jobs.id, jobId))
+    .where(and(eq(jobs.id, jobId), inArray(jobs.status, ['pending', 'running', 'partial'])))
+    .returning({ id: jobs.id })
+  return rows.length
 }
 
 /**

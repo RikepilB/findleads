@@ -211,6 +211,56 @@ describe('runScrapeJob', () => {
     expect(finalCall).toMatchObject({ status: 'error', errorReason: 'Unexpected worker error' })
   })
 
+  it('truncates a long PlacesApiError message to 200 chars, keeping the start (status + reason token)', async () => {
+    getJobMock.mockResolvedValue(makeJob())
+    class FakePlacesApiError extends Error {
+      constructor(message: string) {
+        super(message)
+        this.name = 'PlacesApiError'
+      }
+    }
+    const longBody = `Places API request failed: 400: INVALID_REQUEST ${'x'.repeat(500)}`
+    const fetchOnePage = vi.fn().mockRejectedValue(new FakePlacesApiError(longBody))
+
+    await runScrapeJob('job-1', { now: () => 0, fetchOnePage })
+
+    const finalCall = updateJobProgressMock.mock.calls.at(-1)?.[1]
+    expect(finalCall.status).toBe('error')
+    expect(finalCall.errorReason).toHaveLength(200)
+    expect(finalCall.errorReason.startsWith('Places API request failed: 400: INVALID_REQUEST')).toBe(true)
+  })
+
+  it('stops immediately when the initial running write affects 0 rows (job already terminal)', async () => {
+    getJobMock.mockResolvedValue(makeJob())
+    updateJobProgressMock.mockResolvedValue(0)
+    const fetchOnePage = vi.fn()
+
+    await runScrapeJob('job-1', { now: () => 0, fetchOnePage })
+
+    expect(fetchOnePage).not.toHaveBeenCalled()
+    expect(updateJobProgressMock).toHaveBeenCalledTimes(1)
+  })
+
+  it('stops looping when a mid-run checkpoint affects 0 rows (watchdog flagged the job terminal)', async () => {
+    getJobMock.mockResolvedValue(makeJob())
+    // initial 'running' write succeeds (1 row), first checkpoint reports 0.
+    updateJobProgressMock.mockResolvedValueOnce(1).mockResolvedValueOnce(0)
+    const fetchOnePage = vi
+      .fn()
+      .mockResolvedValueOnce({
+        mapped: [lead('a')],
+        nextCursor: { pageToken: 'x', pagesFetched: 1, done: false },
+      })
+
+    await runScrapeJob('job-1', { now: () => 0, fetchOnePage })
+
+    expect(fetchOnePage).toHaveBeenCalledTimes(1)
+    // No further fetch, no 'done'/'partial' write after the dead checkpoint.
+    expect(updateJobProgressMock).toHaveBeenCalledTimes(2)
+    const statuses = updateJobProgressMock.mock.calls.map(([, p]) => p.status)
+    expect(statuses).toEqual(['running', 'running'])
+  })
+
   it('throws if the job is not found (nothing to checkpoint against)', async () => {
     getJobMock.mockResolvedValue(undefined)
 

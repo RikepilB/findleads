@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it } from 'vitest'
 import { eq } from 'drizzle-orm'
 import { db } from '@/lib/db/client'
 import { jobs } from '@/lib/db/schema'
-import { createJob, listJobs } from '@/lib/db/jobs'
+import { createJob, listJobs, updateJobProgress } from '@/lib/db/jobs'
 
 // Integration tests — run against the real, isolated test Neon database
 // (vitest.config.ts injects TEST_DATABASE_URL as DATABASE_URL for the test
@@ -32,5 +32,43 @@ describe('listJobs (CRM-01..05)', () => {
     const secondIndex = ids.indexOf(second.id)
     // second was created after first, so it must sort earlier (descending).
     expect(secondIndex).toBeLessThan(firstIndex)
+  })
+})
+
+describe('updateJobProgress terminal-status guard', () => {
+  afterEach(cleanup)
+
+  it('updates a pending job and reports 1 row affected', async () => {
+    const { id } = await createJob({ category: CATEGORY, location: 'Toronto, ON' })
+
+    const affected = await updateJobProgress(id, {
+      status: 'running',
+      leadsFound: 0,
+      cursor: null,
+    })
+
+    expect(affected).toBe(1)
+    const [row] = await db.select().from(jobs).where(eq(jobs.id, id))
+    expect(row.status).toBe('running')
+  })
+
+  it('refuses to overwrite a terminal error status and reports 0 rows affected', async () => {
+    const { id } = await createJob({ category: CATEGORY, location: 'Toronto, ON' })
+    await db
+      .update(jobs)
+      .set({ status: 'error', errorReason: 'watchdog flagged' })
+      .where(eq(jobs.id, id))
+
+    const affected = await updateJobProgress(id, {
+      status: 'running',
+      leadsFound: 5,
+      cursor: null,
+    })
+
+    expect(affected).toBe(0)
+    const [row] = await db.select().from(jobs).where(eq(jobs.id, id))
+    expect(row.status).toBe('error')
+    expect(row.errorReason).toBe('watchdog flagged')
+    expect(row.leadsFound).toBe(0)
   })
 })
