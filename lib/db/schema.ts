@@ -1,4 +1,4 @@
-import { pgTable, pgEnum, serial, uuid, text, real, integer, boolean, timestamp, unique, jsonb } from 'drizzle-orm/pg-core'
+import { pgTable, pgEnum, serial, uuid, text, real, integer, boolean, timestamp, unique, jsonb, index } from 'drizzle-orm/pg-core'
 import type { JobCursor } from '@/lib/jobs/checkpoint'
 
 export const jobStatusEnum = pgEnum('job_status', ['pending', 'running', 'partial', 'done', 'error'])
@@ -34,6 +34,9 @@ export const leads = pgTable('leads', {
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 }, (table) => [
   unique('leads_job_id_place_id_unique').on(table.jobId, table.placeId),
+  // Postgres doesn't auto-index FK columns — the CSV-export join and per-job
+  // lead reads scan without this.
+  index('leads_job_id_idx').on(table.jobId),
 ])
 
 export const businesses = pgTable('businesses', {
@@ -51,4 +54,7 @@ export const businesses = pgTable('businesses', {
   lastSeenAt: timestamp('last_seen_at', { withTimezone: true }).notNull().defaultNow(),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
-})
+}, (table) => [
+  // listBusinesses orders every row by updated_at on each /leads render.
+  index('businesses_updated_at_idx').on(table.updatedAt),
+])
