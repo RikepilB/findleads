@@ -42,3 +42,6 @@ docs/handoff/**/transcript.md
 
 # NOTE: .claude/ IS committed on purpose — agents, rules, commands and hooks are
 # part of the prompt. Only the local-override files above are ignored.
+
+# foglamp codebase-scan lock file holds an edit token — secret
+.foglamp/
