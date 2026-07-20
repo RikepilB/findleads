@@ -12,32 +12,47 @@ export default async function JobsPage() {
   const rows = await listJobs()
 
   return (
-    <main className="mx-auto max-w-6xl px-6 py-12">
-      <h1 className="mb-8 text-[28px] font-semibold leading-tight">Job History</h1>
+    <main className="mx-auto max-w-6xl px-6 py-16">
+      <p className="text-xs font-semibold tracking-[0.16em] text-muted-foreground uppercase">
+        Job History
+      </p>
+      <h1 className="mt-3 mb-10 font-serif text-3xl italic text-accent">Run a scrape</h1>
       <JobForm />
 
       {rows.length === 0 ? (
-        <div>
-          <h2 className="text-xl font-semibold">No jobs yet</h2>
-          <p className="mt-2 text-sm text-gray-600">
+        <div className="mt-10">
+          <h2 className="text-sm font-semibold">No jobs yet</h2>
+          <p className="mt-2 text-sm text-muted-foreground">
             Start your first scrape above — it&apos;ll appear here once it&apos;s running.
           </p>
         </div>
       ) : (
-        <table className="w-full border-collapse text-sm">
+        <table className="mt-10 w-full border-collapse text-sm">
           <thead>
-            <tr className="bg-[#F3F4F6] text-left">
-              <th className="p-2 font-semibold">Status</th>
-              <th className="p-2 font-semibold">Category</th>
-              <th className="p-2 font-semibold">Location</th>
-              <th className="p-2 font-semibold">Leads found</th>
-              <th className="p-2 font-semibold">Created</th>
-              <th className="p-2 font-semibold">Export</th>
+            <tr className="border-b border-border text-left">
+              <th className="p-3 text-xs font-semibold tracking-[0.08em] text-muted-foreground uppercase">
+                Status
+              </th>
+              <th className="p-3 text-xs font-semibold tracking-[0.08em] text-muted-foreground uppercase">
+                Category
+              </th>
+              <th className="p-3 text-xs font-semibold tracking-[0.08em] text-muted-foreground uppercase">
+                Location
+              </th>
+              <th className="p-3 text-xs font-semibold tracking-[0.08em] text-muted-foreground uppercase">
+                Leads found
+              </th>
+              <th className="p-3 text-xs font-semibold tracking-[0.08em] text-muted-foreground uppercase">
+                Created
+              </th>
+              <th className="p-3 text-xs font-semibold tracking-[0.08em] text-muted-foreground uppercase">
+                Export
+              </th>
             </tr>
           </thead>
           <tbody>
             {rows.map((r, i) => (
-              <tr key={r.id} className={i % 2 === 1 ? 'bg-[#F3F4F6]' : 'bg-white'}>
+              <tr key={r.id} className={`border-b border-border ${i % 2 === 1 ? 'bg-surface' : ''}`}>
                 <td className="p-2 align-top">
                   <JobStatusPoller jobId={r.id} initialStatus={r.status} />
                 </td>
@@ -62,7 +77,7 @@ export default async function JobsPage() {
                   ) : null}
                   {r.status === 'error' ? (
                     <div className="mt-1">
-                      <p className="text-xs font-semibold text-red-700">This job failed.</p>
+                      <p className="text-xs font-semibold text-danger-foreground">This job failed.</p>
                       <p className="text-xs text-gray-600">
                         {r.errorReason}. Check the category and location, then start a new
                         scrape — failed jobs aren&apos;t retried automatically.

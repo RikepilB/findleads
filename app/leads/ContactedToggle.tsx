@@ -27,8 +27,8 @@ export default function ContactedToggle({
         type="submit"
         className={
           contacted
-            ? 'rounded-full bg-[#DCFCE7] px-2 py-0.5 text-xs font-semibold text-[#15803D]'
-            : 'rounded-full bg-[#F3F4F6] px-2 py-0.5 text-xs font-semibold text-[#4B5563]'
+            ? 'rounded-full bg-success-bg px-2 py-0.5 text-xs font-semibold text-success-foreground'
+            : 'rounded-full bg-surface px-2 py-0.5 text-xs font-semibold text-muted-foreground'
         }
       >
         {contacted ? 'Contacted' : 'Not contacted'}

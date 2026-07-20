@@ -30,7 +30,7 @@ export default function NotesField({
         placeholder="Add a note about this lead…"
         onBlur={(e) => e.currentTarget.form?.requestSubmit()}
         rows={2}
-        className="w-full min-w-40 rounded border border-gray-200 p-1 text-sm"
+        className="w-full min-w-40 rounded border border-border bg-background p-1 text-sm"
       />
     </form>
   )
