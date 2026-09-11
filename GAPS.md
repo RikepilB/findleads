@@ -15,7 +15,7 @@
 |---|--------|
 | 1 | **FIXED** `29f8ae6` — `packageManager` added |
 | 2 | **FIXED (stopgap b)** `d58b594` — CI runs unit suite only + placeholder env; upgrade path: `TEST_DATABASE_URL` repo secret → drop the exclude |
-| 3 | **DEFERRED, decided** — no deploy target exists; before any public deploy enable Vercel Deployment Protection (or a shared-secret gate). A client-side token gate would break the app's own UI, so nothing shipped now |
+| 3 | **OPEN, HIGH** — a public Vercel deployment now exists, but endpoint protection is not verified; enable Vercel Deployment Protection for personal use or add real authentication plus server-side rate limiting |
 | 4 | **FIXED** `9c33bce` — `z.uuid()` guard, 404 |
 | 5 | **FIXED** `9e2091f` — malformed JSON → 400 |
 | 6 | **FIXED** `27d0639` — JobForm catch |
@@ -61,22 +61,23 @@ Suite after sweep: 123/123 green (was 103), lint/typecheck/build green.
      local-only.
   (a) is better; (b) is a one-line stopgap.
 
-## 3. Zero protection on cost-incurring endpoints (HIGH if ever deployed; by-design today)
+## 3. Public cost-incurring endpoints have zero verified protection (HIGH, live)
 
-- **What:** No auth and no rate limiting anywhere. `POST /api/jobs` triggers Enterprise-tier
+- **What:** No application auth or rate limiting exists. `POST /api/jobs` triggers Enterprise-tier
   Places calls (1,000 free/month, then ~$35/1,000). `GET /api/jobs/[id]/export` and the leads
-  page expose all data; Server Actions accept CRM writes from anyone.
+  page expose all data; Server Actions accept CRM writes from anyone. The app is live at
+  `findleads-opal.vercel.app`; Vercel Deployment Protection was not verified during the
+  2026-09-11 release check.
 - **Where:** `app/api/jobs/route.ts`, `app/api/jobs/[id]/route.ts`,
   `app/api/jobs/[id]/export/route.ts`, `app/leads/actions.ts`.
-- **Why it matters:** "No auth" is a locked v1 decision for a single-user tool, and there is
-  **no deployment yet** — so this is not a live vulnerability. But the repo is public, the
-  ambition is to sell it, and the codebase's own rules (`.claude/rules/common/security.md`)
-  demand rate limiting + auth checks — the code contradicts its own guardrails. If anyone
-  deploys this to a public URL as-is, the Google bill is the blast radius.
-- **Fix (single task):** Smallest honest gate: a `JOBS_API_TOKEN` env var checked via a
-  shared-secret header in the three route handlers (+ reject Server Actions when absent), or
-  enable Vercel Deployment Protection when a deploy target is chosen. Do this BEFORE any
-  public deploy; record the decision in `.planning/PROJECT.md` Key Decisions.
+- **Why it matters:** This is now a live cost and data-integrity risk, not a hypothetical one.
+  Anyone who can reach the public deployment may create paid searches, export stored business
+  data, or mutate CRM state. The repo's own rules (`.claude/rules/common/security.md`) require
+  rate limiting and authorization checks.
+- **Fix (single task):** For the current personal deployment, enable Vercel Deployment Protection
+  and verify an unauthenticated request is rejected. Before sharing the app with end users,
+  replace that perimeter-only gate with real authentication plus server-side rate limiting on
+  job creation and authorization on exports/CRM writes. Do not add a client-visible shared token.
 
 ## 4. Non-UUID job id returns 500, not 404 (MEDIUM — trivially triggered)
 

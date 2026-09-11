@@ -61,6 +61,10 @@ files as part of the same product diff. Do not stage unrelated untracked agent b
 - `git diff --check`: passed (only expected Windows LF-to-CRLF warnings).
 - Product commit `df4b291` is published in GitHub PR #4. Treat GitHub's PR state and the live
   FindLeads URL as the authoritative hosted-check, merge, and deployment evidence.
+- PR #4 squash-merged to `master` as `bc24512`. Final PR CI and post-merge `master` CI passed;
+  Vercel production deployment succeeded.
+- Browser-verified `https://findleads-opal.vercel.app/leads` and `/jobs` after deployment: live
+  data and the new controls render, and the browser reported no console or page errors.
 
 ## Failed attempts and limits
 
@@ -79,11 +83,16 @@ files as part of the same product diff. Do not stage unrelated untracked agent b
 - Browser QA remains manual; GAPS #9 (repeatable Playwright golden-path coverage) is still open.
 - The running `pnpm dev` process rewrote tracked `next-env.d.ts` from `.next/types/routes.d.ts` to
   `.next/dev/types/routes.d.ts`. The production build restored it; no generated diff was committed.
+- The first hosted CI run exposed a cross-platform command bug: Ubuntu preserved the extra `--`
+  in `pnpm test -- --run --exclude`, so integration tests were not excluded. Commit `efea937`
+  switched CI and current docs to `pnpm exec vitest run --exclude`; the rerun passed 111 unit tests.
+- Production is public while GAPS #3 remains unresolved: no application auth/rate limit or Vercel
+  Deployment Protection was verified. This is a live cost and CRM-integrity risk.
 
 ## Next steps
 
-1. Use PR #4 as this release's sole merge vehicle. Verify its hosted checks and the production URL
-   directly; do not infer deployment from a local build or merge alone.
+1. Resolve live GAPS #3: enable and verify Vercel Deployment Protection for personal use, or design
+   real authentication plus server-side rate limiting before sharing the app.
 2. Add the focused Playwright golden path from GAPS #9: create/poll/export plus lead search,
    note-save, and contacted-state persistence against the isolated test database.
 3. Add deliberate ESLint ignores for `.agents/`, `.claude/`, and `.codex/` in a separate hygiene

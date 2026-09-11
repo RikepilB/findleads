@@ -21,7 +21,7 @@ session. Solved tasks â†’ one concrete one-liner (file / PR / command).
 
 ---
 
-## Current state - 2026-09-11 - workflow polish shipping through PR #4
+## Current state - 2026-09-11 - workflow polish shipped through PR #4
 
 The 2026-09-10 operational redesign now has a second verified usability pass: Ready to call is
 an explicit actionable segment; queue filters show counts; leads support priority/recent/rating/name
@@ -31,10 +31,12 @@ Desktop stays table-led with 25 rows, while mobile renders complete stacked rows
 page instead of hiding actions behind horizontal scrolling. No schema, Places client, or worker
 contract changed. Verification: 130/130 tests, typecheck, product-source ESLint, production build,
 and browser checks at 1440x900 and 390x844 pass on the real 400-business/7-run dataset with no page
-overflow or fresh-session console errors. Bare `pnpm lint` remains blocked locally only by
-unrelated untracked `.claude/skills/**` bundles. Product commit `df4b291` is in GitHub PR #4;
-the PR and deployed URL are the authoritative merge/release evidence. Do not sweep `.agents/`,
-`.claude/skills/`, `.codex/`, `PATs`, or old handoff folders into this work. Detail:
+overflow or fresh-session console errors. PR #4 squash-merged to `master` as `bc24512`; its final
+PR checks and the post-merge `master` CI run both passed. Vercel reported the production deployment
+successful, and browser verification confirmed the new `/leads` and `/jobs` surfaces against live
+data with no console/page errors. GAPS #3 is now a live HIGH risk: the public deployment has no
+verified auth/rate limit or Deployment Protection. Do not sweep `.agents/`, `.claude/skills/`,
+`.codex/`, `PATs`, or old handoff folders into later work. Detail:
 `docs/handoff/2026-09-11-findleads-workflow-polish/HANDOFF.md`.
 
 ### Prior state — 2026-07-21
