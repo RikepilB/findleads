@@ -21,7 +21,7 @@ export default function JobForm() {
         body: JSON.stringify({ category, location }),
       })
       if (!res.ok) {
-        setError('Could not start scrape — check the category and location and try again.')
+        setError('Could not start search — check the category and location and try again.')
         return
       }
       setCategory('')
@@ -30,42 +30,50 @@ export default function JobForm() {
     } catch {
       // A network-level fetch rejection (offline, server down) must surface
       // like any other failure — never an unhandled promise rejection.
-      setError('Could not start scrape — check your connection and try again.')
+      setError('Could not start search — check your connection and try again.')
     } finally {
       setSubmitting(false)
     }
   }
 
   return (
-    <form onSubmit={handleSubmit} className="mb-8 flex items-end gap-4">
-      <label className="flex flex-col gap-1 text-sm">
-        Category
-        <input
-          type="text"
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          required
-          className="rounded border border-gray-300 px-2 py-1 text-sm"
-        />
-      </label>
-      <label className="flex flex-col gap-1 text-sm">
-        Location
-        <input
-          type="text"
-          value={location}
-          onChange={(e) => setLocation(e.target.value)}
-          required
-          className="rounded border border-gray-300 px-2 py-1 text-sm"
-        />
-      </label>
-      <button
-        type="submit"
-        disabled={submitting}
-        className="rounded bg-[#2563EB] px-4 py-1.5 text-sm font-semibold text-white disabled:opacity-50"
-      >
-        Start Scrape
-      </button>
-      {error ? <p className="text-sm text-red-700">{error}</p> : null}
+    <form onSubmit={handleSubmit} className="border-y border-border py-6">
+      <div className="grid gap-4 md:grid-cols-[1fr_1fr_auto] md:items-end">
+        <label className="flex flex-col gap-2 text-sm font-medium">
+          Business category
+          <input
+            type="text"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            required
+            maxLength={200}
+            autoComplete="off"
+            placeholder="e.g. shoe repair"
+            className="h-11 border border-border bg-background px-3 text-sm font-normal outline-none transition focus:border-accent focus:ring-2 focus:ring-focus"
+          />
+        </label>
+        <label className="flex flex-col gap-2 text-sm font-medium">
+          Location
+          <input
+            type="text"
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+            required
+            maxLength={200}
+            autoComplete="off"
+            placeholder="e.g. Toronto, ON"
+            className="h-11 border border-border bg-background px-3 text-sm font-normal outline-none transition focus:border-accent focus:ring-2 focus:ring-focus"
+          />
+        </label>
+        <button
+          type="submit"
+          disabled={submitting}
+          className="h-11 bg-accent px-5 text-sm font-semibold text-accent-foreground transition hover:opacity-90 disabled:cursor-wait disabled:opacity-50"
+        >
+          {submitting ? 'Starting…' : 'Start search'}
+        </button>
+      </div>
+      {error ? <p role="alert" className="mt-3 text-sm text-danger-foreground">{error}</p> : null}
     </form>
   )
 }

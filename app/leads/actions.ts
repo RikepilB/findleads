@@ -30,9 +30,13 @@ export async function updateNotesAction(
     return { ok: false, error: 'Invalid input' }
   }
 
-  await updateBusinessNotes(parsed.data.businessId, parsed.data.notes)
-  revalidatePath('/leads')
-  return { ok: true }
+  try {
+    await updateBusinessNotes(parsed.data.businessId, parsed.data.notes)
+    revalidatePath('/leads')
+    return { ok: true }
+  } catch {
+    return { ok: false, error: 'Could not save notes' }
+  }
 }
 
 export async function setContactedAction(
@@ -47,7 +51,11 @@ export async function setContactedAction(
     return { ok: false, error: 'Invalid input' }
   }
 
-  await setBusinessContacted(parsed.data.businessId, parsed.data.contacted)
-  revalidatePath('/leads')
-  return { ok: true }
+  try {
+    await setBusinessContacted(parsed.data.businessId, parsed.data.contacted)
+    revalidatePath('/leads')
+    return { ok: true }
+  } catch {
+    return { ok: false, error: 'Could not update status' }
+  }
 }

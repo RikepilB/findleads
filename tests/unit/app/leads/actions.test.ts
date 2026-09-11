@@ -24,7 +24,7 @@ function makeFormData(fields: Record<string, string>): FormData {
 
 describe('updateNotesAction', () => {
   beforeEach(() => {
-    updateBusinessNotesMock.mockClear()
+    updateBusinessNotesMock.mockReset()
     revalidatePathMock.mockClear()
   })
 
@@ -74,11 +74,21 @@ describe('updateNotesAction', () => {
     expect(result).toEqual({ ok: false, error: 'Invalid input' })
     expect(updateBusinessNotesMock).not.toHaveBeenCalled()
   })
+
+  it('returns safe feedback when the database write fails', async () => {
+    updateBusinessNotesMock.mockRejectedValueOnce(new Error('database unavailable'))
+    const fd = makeFormData({ businessId: '42', notes: 'Retry this note' })
+
+    const result = await updateNotesAction(fd)
+
+    expect(result).toEqual({ ok: false, error: 'Could not save notes' })
+    expect(revalidatePathMock).not.toHaveBeenCalled()
+  })
 })
 
 describe('setContactedAction', () => {
   beforeEach(() => {
-    setBusinessContactedMock.mockClear()
+    setBusinessContactedMock.mockReset()
     revalidatePathMock.mockClear()
   })
 
@@ -108,5 +118,15 @@ describe('setContactedAction', () => {
 
     expect(result).toEqual({ ok: false, error: 'Invalid input' })
     expect(setBusinessContactedMock).not.toHaveBeenCalled()
+  })
+
+  it('returns safe feedback when the database write fails', async () => {
+    setBusinessContactedMock.mockRejectedValueOnce(new Error('database unavailable'))
+    const fd = makeFormData({ businessId: '7', contacted: 'true' })
+
+    const result = await setContactedAction(fd)
+
+    expect(result).toEqual({ ok: false, error: 'Could not update status' })
+    expect(revalidatePathMock).not.toHaveBeenCalled()
   })
 })

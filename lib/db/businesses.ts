@@ -1,5 +1,5 @@
 import 'server-only'
-import { desc, eq } from 'drizzle-orm'
+import { desc, eq, sql } from 'drizzle-orm'
 import { db } from '@/lib/db/client'
 import { businesses } from '@/lib/db/schema'
 
@@ -12,7 +12,6 @@ export async function upsertBusiness(place: {
   rating: number | null
   reviewCount: number | null
 }): Promise<void> {
-  const now = new Date()
   await db
     .insert(businesses)
     .values({
@@ -23,8 +22,6 @@ export async function upsertBusiness(place: {
       website: place.website,
       rating: place.rating,
       reviewCount: place.reviewCount,
-      firstSeenAt: now,
-      lastSeenAt: now,
     })
     .onConflictDoUpdate({
       target: businesses.placeId,
@@ -36,8 +33,11 @@ export async function upsertBusiness(place: {
         website: place.website,
         rating: place.rating,
         reviewCount: place.reviewCount,
-        lastSeenAt: now,
-        updatedAt: now,
+        // Use Postgres's clock consistently. Mixing defaultNow() on insert
+        // with the app process clock on update can move timestamps backward
+        // when the two hosts differ by even a few seconds.
+        lastSeenAt: sql`now()`,
+        updatedAt: sql`now()`,
         // Deliberately NOT listed here: notes, contacted, firstSeenAt.
         // Omitting a column from `set` is what makes Postgres leave its
         // existing value untouched on conflict — this omission IS DATA-01.
@@ -58,13 +58,13 @@ export function listBusinesses() {
 export async function updateBusinessNotes(id: number, notes: string): Promise<void> {
   await db
     .update(businesses)
-    .set({ notes, updatedAt: new Date() })
+    .set({ notes, updatedAt: sql`now()` })
     .where(eq(businesses.id, id))
 }
 
 export async function setBusinessContacted(id: number, contacted: boolean): Promise<void> {
   await db
     .update(businesses)
-    .set({ contacted, updatedAt: new Date() })
+    .set({ contacted, updatedAt: sql`now()` })
     .where(eq(businesses.id, id))
 }
