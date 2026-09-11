@@ -21,7 +21,53 @@ session. Solved tasks â†’ one concrete one-liner (file / PR / command).
 
 ---
 
-## Current state - 2026-07-19 - MVP shipped, GAPS fix-sweep mostly closed, Phase 6 still paused
+## Current state - 2026-09-11 - workflow polish shipping through PR #4
+
+The 2026-09-10 operational redesign now has a second verified usability pass: Ready to call is
+an explicit actionable segment; queue filters show counts; leads support priority/recent/rating/name
+sorting and safe website links; note writes skip unchanged values and expose real mutation state;
+contacted state uses a checkbox; and jobs show human-readable status plus Created/Updated activity.
+Desktop stays table-led with 25 rows, while mobile renders complete stacked rows with 10 leads per
+page instead of hiding actions behind horizontal scrolling. No schema, Places client, or worker
+contract changed. Verification: 130/130 tests, typecheck, product-source ESLint, production build,
+and browser checks at 1440x900 and 390x844 pass on the real 400-business/7-run dataset with no page
+overflow or fresh-session console errors. Bare `pnpm lint` remains blocked locally only by
+unrelated untracked `.claude/skills/**` bundles. Product commit `df4b291` is in GitHub PR #4;
+the PR and deployed URL are the authoritative merge/release evidence. Do not sweep `.agents/`,
+`.claude/skills/`, `.codex/`, `PATs`, or old handoff folders into this work. Detail:
+`docs/handoff/2026-09-11-findleads-workflow-polish/HANDOFF.md`.
+
+### Prior state — 2026-07-21
+
+**New sibling project (2026-07-21, not part of this repo):** user asked for a separate
+coworking-spot-finder scraper ("coworking-scout") - cafes/hotel lounges/restaurants/libraries
+per city, multi-source (Google Places + Reddit + Google Custom Search + forums/articles now;
+X dropped, budget too tight; IG/TikTok scraping via CloakBrowser deferred to a later milestone).
+Deliberately a NEW repo (findleads' own CLAUDE.md locks it to Places-API-only, no scraping) -
+Python/CLI/SQLite, personal single-user tool. Mid-brainstorm, design NOT yet approved - full
+detail in `docs/handoff/2026-07-21-coworking-scout-brainstorm/HANDOFF.md`. No findleads code
+touched. Later same day: studied 5 prior-art scraping-skill resources (Scrapfly, BrightData
+scraper-builder, Firecrawl, Browseract survey, mvanhorn/last30days-skill); proposed hybrid
+pivot - install last30days as the multi-source mentions layer, custom-build only venue
+resolution + scoring. SkillSpector flagged CRITICAL but manual file-read verified all hits are
+defensive test fixtures (false positive, user concurred) - installed v3.16.0 globally
+(`~/.agents/skills/last30days`, `/last30days` skill live), diagnose green on free sources,
+Toronto test query returned Reddit results. Design then APPROVED; new repo
+`PROYECTOS/coworking-scout` created (git init) with committed design doc + 9-task TDD
+implementation plan. User picked subagent-driven execution: **8/9 tasks done, reviewed clean,
+22/22 tests green**, branch `feat/layer2`. Task 9 done via a safe substitute (full pytest regression + a real
+mocked-API end-to-end demo run + `docs/USAGE.md`), since the actual live-API smoke test
+triggered a **security incident**: sourcing `.env` printed a live GitHub PAT into the
+conversation (malformed line, bash error echoed it). **User still needs to rotate that
+token** - unresolved as of this snapshot. coworking-scout is now on GitHub as a private repo
+(`RikepilB/coworking-scout`), `feat/layer2` merged to `master`, pushed. Real finding from the
+demo run: composite scores land ~12-15/100 because the keyword-signal check never sees the
+words that actually appear in social-media mentions - documented as a known v1 gap in
+USAGE.md, not yet fixed. Also researched 5 more sources for the deferred Layer-3 (raw
+scraping) milestone - recommended Crawlee-python as its engine and ScrapeCreators API over
+credential-based IG/TikTok scraping (real account-ban risk). Nothing further happens in
+findleads itself for this thread - all code lives in the sibling repo (findleads' own 3 stale
+GitHub issues and GAPS.md #9 are unrelated leftover housekeeping, not yet re-checked).
 
 **MVP shipped** (2026-07-03, see below for full detail) - all 5 phases, 27/27 requirements,
 pushed to `origin/master`, repo `RikepilB/findleads` public on GitHub.
@@ -175,6 +221,19 @@ available any time.
 
 ## Session index (append-only, newest first)
 
+- 2026-09-11-findleads-workflow-polish - added Ready to call priority, sort/count controls,
+  safe website links, reliable CRM feedback, and complete mobile lead/run rows; 130 tests pass.
+- 2026-09-10-codex-019f64cfc8a4 — redacted Codex Desktop archive for the repository study,
+  knowledge transfer, gap fixes, and verified FindLeads usability/capacity/tracking refresh;
+  includes a curated deep handoff plus Markdown and JSONL transcripts.
+- 2026-09-10-findleads-usability-refresh — redesigned the recurring workflow around lead
+  pipeline tracking and scrape capacity; added metrics/search/filters/pagination, fixed
+  Neon/app timestamp skew, and verified desktop/mobile plus 125 tests.
+- 2026-07-21-coworking-scout-brainstorm — brainstormed a NEW separate repo (multi-source
+  coworking-spot scraper, Python/CLI/SQLite), mid-design, not yet approved; no findleads code
+  touched.
+- 2026-07-20-remotion-global-install — off-repo request: installed `create-video`/`@remotion/cli`
+  globally (npm) for the user's other-projects social-media demo clips; no findleads code touched.
 - 2026-07-02-crm-pivot-gsd-init â€” pivoted design to web-presence filter + CRM, fixed an
   unauthorized public push (made private then user explicitly open-sourced it under MIT),
   initialized full `.planning/` GSD project, wrote `PROJECT.md`, kicked off domain research.
@@ -183,8 +242,8 @@ available any time.
   root-level `PROYECTOS/handoff.md` that predated this repo's own handoff tree.
 
 <!-- compact-handoff:auto-snapshot -->
-<!-- Latest auto-snapshot: docs/handoff/2026-07-19-foglamp-scan/snapshot-062739.md -->
-## Latest auto snapshot — 2026-07-20T06:27:39.489Z
-- Session folder: `docs/handoff/2026-07-19-foglamp-scan/`
-- Snapshot file: `docs/handoff/2026-07-19-foglamp-scan/snapshot-062739.md`
+<!-- Latest auto-snapshot: docs/handoff/2026-07-18-codex-019f64cfc8a4/snapshot-121149.md -->
+## Latest auto snapshot — 2026-09-11T12:11:49.837Z
+- Session folder: `docs/handoff/2026-07-18-codex-019f64cfc8a4/`
+- Snapshot file: `docs/handoff/2026-07-18-codex-019f64cfc8a4/snapshot-121149.md`
 - Branch: master
