@@ -82,7 +82,7 @@ pnpm dev          # Next.js dev server
 pnpm build        # production build — check the route table: DB-reading pages must be ƒ (Dynamic)
 pnpm lint         # ESLint (eslint-config-next)
 pnpm typecheck    # tsc --noEmit
-pnpm test         # Vitest watch; `pnpm test -- --run` for one-shot
+pnpm test         # Vitest watch; `pnpm exec vitest run` for one-shot
 pnpm drizzle-kit generate   # new migration from schema.ts changes
 pnpm drizzle-kit migrate    # apply to DATABASE_URL (run for .env AND .env.test DBs — ask user)
 ```
@@ -135,7 +135,7 @@ until the father is fresh. GSD skills (`/gsd-*`) drive phase work; `.claude/agen
 
 ## 5. Quality (before delivering)
 
-- Run `pnpm lint && pnpm typecheck && pnpm test -- --run && pnpm build` locally — CI does not
+- Run `pnpm lint && pnpm typecheck && pnpm exec vitest run && pnpm build` locally — CI does not
   have your back (GAPS.md #1) until fixed.
 - New logic gets a test next to the existing pattern (unit for pure logic, integration for
   DB-touching); UI-only conditional renders currently have no test harness — verify manually
