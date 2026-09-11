@@ -19,7 +19,7 @@ Shipped Next.js 16 App Router MVP, root-level layout (no `src/`):
 ## Build, Test, and Development Commands
 
 pnpm only (never npm/yarn): `pnpm dev`, `pnpm build`, `pnpm lint`, `pnpm typecheck`,
-`pnpm test -- --run`, `pnpm drizzle-kit generate|migrate`. Integration tests hit a real Neon
+`pnpm exec vitest run`, `pnpm drizzle-kit generate|migrate`. Integration tests hit a real Neon
 test DB via `.env.test` (`TEST_DATABASE_URL`); CI runs the unit suite only.
 
 ## Coding Style & Naming Conventions

@@ -40,7 +40,7 @@ planning record; `PROJECT.md` (repo root) is the narrative walkthrough.
 
 ## Commands
 
-`pnpm dev` · `pnpm build` · `pnpm lint` · `pnpm typecheck` · `pnpm test -- --run`
+`pnpm dev` · `pnpm build` · `pnpm lint` · `pnpm typecheck` · `pnpm exec vitest run`
 (unit + integration; integration needs a `.env.test` with `TEST_DATABASE_URL`).
 
 ## Map

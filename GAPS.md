@@ -57,7 +57,7 @@ Suite after sweep: 123/123 green (was 103), lint/typecheck/build green.
   a. Add `TEST_DATABASE_URL` as a GitHub Actions secret (Neon test branch) and pass it in
      `ci.yml`'s env — full-fidelity CI; or
   b. Make CI unit-only: change the test step to
-     `pnpm test -- --run --exclude tests/integration/**` and note integration tests are
+     `pnpm exec vitest run --exclude tests/integration/**` and note integration tests are
      local-only.
   (a) is better; (b) is a one-line stopgap.
 

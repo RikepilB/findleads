@@ -44,12 +44,22 @@ function badgeClasses(status: string, leadsFound?: number): string {
   return 'bg-[#F3F4F6] text-[#4B5563]'
 }
 
+function statusLabel(status: string): string {
+  if (status === 'done') return 'Completed'
+  if (status === 'partial') return 'Continuing'
+  if (status === 'error') return 'Failed'
+  if (status === 'running') return 'Running'
+  return 'Queued'
+}
+
 export default function JobStatusPoller({
   jobId,
   initialStatus,
+  initialLeadsFound,
 }: {
   jobId: string
   initialStatus: string
+  initialLeadsFound: number
 }) {
   const router = useRouter()
   const hasRefreshed = useRef(false)
@@ -74,12 +84,15 @@ export default function JobStatusPoller({
   )
 
   const status = data?.status ?? initialStatus
+  const leadsFound = data?.leadsFound ?? initialLeadsFound
 
   return (
     <span
-      className={`inline-block rounded px-2 py-0.5 text-xs font-semibold ${badgeClasses(status, data?.leadsFound)}`}
+      role="status"
+      aria-live="polite"
+      className={`inline-block rounded px-2 py-0.5 text-xs font-semibold ${badgeClasses(status, leadsFound)}`}
     >
-      {status}
+      {statusLabel(status)}
     </span>
   )
 }
